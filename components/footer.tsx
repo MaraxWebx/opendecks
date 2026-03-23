@@ -81,6 +81,7 @@ export async function Footer() {
         <Link
           href="https://www.instagram.com/marettax_/"
           className="transition hover:text-white/80"
+          target="_blank"
         >
           ❤️ ☠️ 🧠by Marettax
         </Link>
