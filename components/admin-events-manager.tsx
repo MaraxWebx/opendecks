@@ -179,9 +179,9 @@ export function AdminEventsManager({
         });
 
         if (!uploadResponse.ok) {
-          const uploadResult = (await uploadResponse.json().catch(() => null)) as
-            | { error?: string }
-            | null;
+          const uploadResult = (await uploadResponse
+            .json()
+            .catch(() => null)) as { error?: string } | null;
           throw new Error(
             uploadResult?.error || "Upload immagine non riuscito.",
           );
@@ -398,7 +398,7 @@ export function AdminEventsManager({
                 >
                   <div className="mb-3 flex items-center justify-between">
                     <span
-                      className={`text-sm font-medium ${
+                      className={`text-sm font-medium  ${
                         day.inCurrentMonth ? "text-white" : "text-white/35"
                       }`}
                     >
@@ -417,7 +417,7 @@ export function AdminEventsManager({
                         key={event.id}
                         className="rounded-lg border border-[color:var(--color-brand-14)] bg-[color:var(--color-brand-10)] p-2"
                       >
-                        <p className="text-xs font-medium leading-5 text-white">
+                        <p className="text-xs  break-all font-medium leading-5 text-white">
                           {event.title}
                         </p>
                         <p className="mt-1 text-[11px] leading-4 text-white/70">
@@ -543,7 +543,9 @@ export function AdminEventsManager({
                       id="event-title"
                       className={ui.form.field}
                       value={form.title}
-                      onChange={(event) => updateField("title", event.target.value)}
+                      onChange={(event) =>
+                        updateField("title", event.target.value)
+                      }
                       required
                     />
                   </Field>
@@ -552,7 +554,9 @@ export function AdminEventsManager({
                       id="event-venue"
                       className={ui.form.field}
                       value={form.venue}
-                      onChange={(event) => updateField("venue", event.target.value)}
+                      onChange={(event) =>
+                        updateField("venue", event.target.value)
+                      }
                       required
                     />
                   </Field>
@@ -561,7 +565,9 @@ export function AdminEventsManager({
                       id="event-city"
                       className={ui.form.field}
                       value={form.city}
-                      onChange={(event) => updateField("city", event.target.value)}
+                      onChange={(event) =>
+                        updateField("city", event.target.value)
+                      }
                       required
                     />
                   </Field>
@@ -573,7 +579,9 @@ export function AdminEventsManager({
                       type="date"
                       className={ui.form.field}
                       value={form.date}
-                      onChange={(event) => updateField("date", event.target.value)}
+                      onChange={(event) =>
+                        updateField("date", event.target.value)
+                      }
                       required
                     />
                   </Field>
@@ -583,16 +591,26 @@ export function AdminEventsManager({
                       type="time"
                       className={ui.form.field}
                       value={form.time}
-                      onChange={(event) => updateField("time", event.target.value)}
+                      onChange={(event) =>
+                        updateField("time", event.target.value)
+                      }
                       required
                     />
                   </Field>
-                  <Field label="Candidature aperte" htmlFor="event-applications">
+                  <Field
+                    label="Candidature aperte"
+                    htmlFor="event-applications"
+                  >
                     <select
                       id="event-applications"
                       className={ui.form.select}
                       value={form.applicationsOpen ? "yes" : "no"}
-                      onChange={(event) => updateField("applicationsOpen", event.target.value === "yes")}
+                      onChange={(event) =>
+                        updateField(
+                          "applicationsOpen",
+                          event.target.value === "yes",
+                        )
+                      }
                     >
                       <option value="yes">Si</option>
                       <option value="no">No</option>
@@ -607,7 +625,9 @@ export function AdminEventsManager({
                         type="file"
                         accept="image/png,image/jpeg,image/webp,image/avif"
                         className={ui.form.field}
-                        onChange={(event) => setImageFile(event.target.files?.[0] || null)}
+                        onChange={(event) =>
+                          setImageFile(event.target.files?.[0] || null)
+                        }
                       />
                     </Field>
                     <Field label="Alt immagine" htmlFor="event-cover-alt">
@@ -615,7 +635,9 @@ export function AdminEventsManager({
                         id="event-cover-alt"
                         className={ui.form.field}
                         value={form.coverAlt}
-                        onChange={(event) => updateField("coverAlt", event.target.value)}
+                        onChange={(event) =>
+                          updateField("coverAlt", event.target.value)
+                        }
                         required
                       />
                     </Field>
@@ -628,7 +650,11 @@ export function AdminEventsManager({
                         </span>
                         <div className="max-w-xs overflow-hidden rounded-xl border border-[#E31F29]/18 bg-white/[0.03]">
                           <img
-                            src={imageFile ? URL.createObjectURL(imageFile) : form.coverImage}
+                            src={
+                              imageFile
+                                ? URL.createObjectURL(imageFile)
+                                : form.coverImage
+                            }
                             alt={form.coverAlt || "Anteprima copertina evento"}
                             className="w-full object-cover"
                           />
@@ -643,7 +669,9 @@ export function AdminEventsManager({
                       id="event-excerpt"
                       className={`${ui.form.field} min-h-28 resize-y`}
                       value={form.excerpt}
-                      onChange={(event) => updateField("excerpt", event.target.value)}
+                      onChange={(event) =>
+                        updateField("excerpt", event.target.value)
+                      }
                       required
                     />
                   </Field>
@@ -652,7 +680,9 @@ export function AdminEventsManager({
                       id="event-description"
                       className={`${ui.form.field} min-h-32 resize-y`}
                       value={form.description}
-                      onChange={(event) => updateField("description", event.target.value)}
+                      onChange={(event) =>
+                        updateField("description", event.target.value)
+                      }
                       required
                     />
                   </Field>
@@ -661,7 +691,9 @@ export function AdminEventsManager({
                       <TagMultiSelect
                         tags={tags}
                         value={form.tagIds}
-                        onChange={(nextValue) => updateField("tagIds", nextValue)}
+                        onChange={(nextValue) =>
+                          updateField("tagIds", nextValue)
+                        }
                         onTagsChange={setTags}
                       />
                     </div>

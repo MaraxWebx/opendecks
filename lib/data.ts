@@ -369,6 +369,21 @@ export async function updateArchiveEntry(id: string, input: UpdateArchiveEntry) 
   );
 }
 
+export async function deleteArchiveEntry(id: string) {
+  if (!isMongoConfigured()) {
+    return deleteArchiveMock(id);
+  }
+
+  return withMongoFallback(
+    async () => {
+      const db = await getDatabase();
+      const result = await db.collection<ArchiveRecord>("archive").deleteOne({ id });
+      return Boolean(result.deletedCount);
+    },
+    () => deleteArchiveMock(id)
+  );
+}
+
 function updateArchiveMock(id: string, input: UpdateArchiveEntry) {
   const index = mockArchive.findIndex((item) => item.id === id);
 
@@ -383,6 +398,17 @@ function updateArchiveMock(id: string, input: UpdateArchiveEntry) {
 
   mockArchive.sort((a, b) => a.order - b.order);
   return mockArchive[index];
+}
+
+function deleteArchiveMock(id: string) {
+  const index = mockArchive.findIndex((item) => item.id === id);
+
+  if (index === -1) {
+    return false;
+  }
+
+  mockArchive.splice(index, 1);
+  return true;
 }
 
 function updateEventMock(id: string, input: UpdateEventInput) {

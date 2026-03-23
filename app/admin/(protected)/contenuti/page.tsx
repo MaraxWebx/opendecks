@@ -1,18 +1,18 @@
 import { ArchiveAdminManager } from "@/components/archive-admin-manager";
 import { SectionHeading } from "@/components/section-heading";
-import { getArchiveEntries } from "@/lib/data";
+import { getArchiveEntries, getEvents } from "@/lib/data";
 
 export default async function AdminContentsPage() {
-  const archive = await getArchiveEntries();
+  const [archive, events] = await Promise.all([getArchiveEntries(), getEvents()]);
 
   return (
     <section className="py-8 md:py-10">
       <SectionHeading
-        eyebrow="Contenuti"
+        eyebrow="Gallery"
         title="Gestione gallery da admin"
-        description="Pannello base per aggiungere e modificare elementi della gallery editoriale. Ogni item supporta foto, video o gif."
+        description="Carica media su Blob, collegali a un evento e gestisci la gallery editoriale in modo più rapido."
       />
-      <ArchiveAdminManager initialItems={archive} />
+      <ArchiveAdminManager initialItems={archive} events={events} />
     </section>
   );
 }

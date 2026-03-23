@@ -66,4 +66,5 @@ export type ArchiveRecord = {
   year: string;
   description: string;
   order: number;
+  linkUrl?: string;
 };

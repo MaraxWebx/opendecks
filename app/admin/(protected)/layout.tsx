@@ -14,7 +14,7 @@ const sidebarItems = [
   { key: "eventi", label: "Eventi", href: "/admin/eventi" },
   { key: "candidature", label: "Candidature", href: "/admin/candidature" },
   { key: "dj", label: "DJ roster", href: "/admin/dj" },
-  { key: "contenuti", label: "Contenuti", href: "/admin/contenuti" },
+  { key: "contenuti", label: "Gallery", href: "/admin/contenuti" },
 ] satisfies Array<{ key: string; label: string; href: Route }>;
 
 export default function ProtectedAdminLayout({

@@ -9,18 +9,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-
-  const requiredFields = [
-    "title",
-    "format",
-    "mediaType",
-    "mediaUrl",
-    "alt",
-    "event",
-    "year",
-    "description",
-    "order"
-  ];
+  const requiredFields = ["mediaUrl", "alt", "order"];
 
   const missingField = requiredFields.find((field) => !body?.[field] && body?.[field] !== 0);
 
@@ -32,17 +21,36 @@ export async function POST(request: NextRequest) {
   }
 
   const item = await createArchiveEntry({
-    title: body.title,
+    title: body.title || body.event || body.alt,
     format: "gallery",
-    mediaType: body.mediaType,
+    mediaType: body.mediaType || inferMediaType(body.mediaUrl),
     mediaUrl: body.mediaUrl,
     thumbnailUrl: body.thumbnailUrl,
     alt: body.alt,
-    event: body.event,
-    year: body.year,
-    description: body.description,
-    order: Number(body.order)
+    event: body.event || "",
+    year: body.year || new Date().getFullYear().toString(),
+    description: body.description || "",
+    order: Number(body.order),
+    linkUrl: body.linkUrl || undefined
   });
 
   return NextResponse.json({ item }, { status: 201 });
+}
+
+function inferMediaType(mediaUrl: string): "photo" | "video" | "gif" {
+  const normalized = mediaUrl.toLowerCase();
+
+  if (normalized.endsWith(".gif")) {
+    return "gif";
+  }
+
+  if (
+    normalized.endsWith(".mp4") ||
+    normalized.endsWith(".webm") ||
+    normalized.endsWith(".mov")
+  ) {
+    return "video";
+  }
+
+  return "photo";
 }
