@@ -119,7 +119,7 @@ export function Header() {
           </div>
 
           <nav
-            className="menu-panel-enter relative flex flex-1 flex-col justify-center gap-2"
+            className="menu-panel-enter relative flex flex-1 flex-col  gap-2"
             aria-label="Menu mobile"
           >
             {navItems.map((item) => (
