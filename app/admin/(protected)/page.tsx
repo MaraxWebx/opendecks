@@ -38,43 +38,43 @@ export default async function AdminPage() {
 
       <section className="pb-10 md:pb-12">
         <div className="grid gap-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5">
-          <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-6">
+          <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-4">
             <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
               Eventi
             </span>
-            <h3 className="mt-3 text-4xl font-semibold text-[#f7f3ee]">
+            <h3 className="mt-2  text-2xl font-semibold text-[#f7f3ee]">
               {events.length}
             </h3>
           </div>
-          <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-6">
+          <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-4">
             <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
               Candidature
             </span>
-            <h3 className="mt-3 text-4xl font-semibold text-[#f7f3ee]">
+            <h3 className="mt-2 text-2xl font-semibold text-[#f7f3ee]">
               {applications.length}
             </h3>
           </div>
-          <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-6">
+          <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-4">
             <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
               Archivio
             </span>
-            <h3 className="mt-3 text-4xl font-semibold text-[#f7f3ee]">
+            <h3 className="mt-2 text-2xl font-semibold text-[#f7f3ee]">
               {archive.length}
             </h3>
           </div>
-          <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-6">
+          <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-4">
             <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
               DJ roster
             </span>
-            <h3 className="mt-3 text-4xl font-semibold text-[#f7f3ee]">
+            <h3 className="mt-2 text-2xl font-semibold text-[#f7f3ee]">
               {djRoster.length}
             </h3>
           </div>
-          <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-6">
+          <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-4">
             <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
               Membership
             </span>
-            <h3 className="mt-3 text-4xl font-semibold text-[#f7f3ee]">
+            <h3 className="mt-2 text-2xl font-semibold text-[#f7f3ee]">
               {activeMembershipCards}
             </h3>
           </div>
