@@ -1,0 +1,170 @@
+{
+  "events": [
+    {
+      "id": "ev-rome-001",
+      "slug": "rome-spring-session",
+      "title": "Rome Spring Session",
+      "city": "Roma",
+      "venue": "Spazio Rialto",
+      "coverImage": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1600&q=80",
+      "coverAlt": "DJ set in uno spazio urbano al tramonto",
+      "date": "2026-04-18",
+      "time": "18:00",
+      "status": "upcoming",
+      "excerpt": "Una giornata tra listening session, open decks e selezione locale.",
+      "description": "OpenDecks Italia arriva a Roma con una sessione dedicata a nuovi selector, community locale e formati ibridi tra club culture e spazio culturale.",
+      "capacity": 180,
+      "applicationsOpen": true,
+      "tagIds": ["tag-open-decks", "tag-vinyl", "tag-selector"]
+    },
+    {
+      "id": "ev-milan-002",
+      "slug": "milan-night-transmission",
+      "title": "Milan Night Transmission",
+      "city": "Milano",
+      "venue": "Ex Cartiera",
+      "coverImage": "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1600&q=80",
+      "coverAlt": "Crowd e luci club per evento serale",
+      "date": "2026-05-23",
+      "time": "20:30",
+      "status": "upcoming",
+      "excerpt": "Formato notturno con set brevi, rotazione rapida e ospiti speciali.",
+      "description": "Una notte pensata per raccontare scene diverse in dialogo: club, radio indipendenti e nuovi progetti emergenti.",
+      "capacity": 240,
+      "applicationsOpen": true,
+      "tagIds": ["tag-club", "tag-guest", "tag-night"]
+    },
+    {
+      "id": "ev-bologna-003",
+      "slug": "bologna-community-cuts",
+      "title": "Bologna Community Cuts",
+      "city": "Bologna",
+      "venue": "Cortile 21",
+      "coverImage": "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1600&q=80",
+      "coverAlt": "Pubblico in uno spazio culturale dal vivo",
+      "date": "2025-11-09",
+      "time": "17:00",
+      "status": "past",
+      "excerpt": "Recap community-driven con set registrati, foto e interviste.",
+      "description": "Un appuntamento dedicato ai collettivi indipendenti, con tavolo editoriale, micro talk e selezioni aperte.",
+      "capacity": 150,
+      "applicationsOpen": false,
+      "tagIds": ["tag-community", "tag-talk", "tag-archive"]
+    }
+  ],
+  "tags": [
+    { "id": "tag-open-decks", "slug": "open-decks", "label": "Open Decks" },
+    { "id": "tag-vinyl", "slug": "vinyl", "label": "Vinyl" },
+    { "id": "tag-selector", "slug": "selector", "label": "Selector" },
+    { "id": "tag-club", "slug": "club-culture", "label": "Club Culture" },
+    { "id": "tag-guest", "slug": "guest-slot", "label": "Guest Slot" },
+    { "id": "tag-night", "slug": "night", "label": "Night" },
+    { "id": "tag-community", "slug": "community", "label": "Community" },
+    { "id": "tag-talk", "slug": "talk", "label": "Talk" },
+    { "id": "tag-archive", "slug": "archive", "label": "Archive" }
+  ],
+  "applications": [
+    {
+      "id": "app-001",
+      "eventId": "ev-rome-001",
+      "eventTitle": "Rome Spring Session",
+      "name": "Nina Ferri",
+      "city": "Firenze",
+      "email": "nina.ferri@example.com",
+      "instagram": "@ninaferri",
+      "setLink": "https://soundcloud.com/ninaferri/warehouse-cut",
+      "bio": "Selector con focus house leftfield, downtempo e dischi afro-latin.",
+      "submittedAt": "2026-03-16T09:30:00.000Z",
+      "status": "new"
+    },
+    {
+      "id": "app-002",
+      "eventId": "ev-milan-002",
+      "eventTitle": "Milan Night Transmission",
+      "name": "Marco Dune",
+      "city": "Torino",
+      "email": "marco.dune@example.com",
+      "instagram": "@marcodune",
+      "setLink": "https://www.mixcloud.com/marcodune/night-drive-45/",
+      "bio": "Set ibridi tra breaks, electro e techno lenta su supporto misto.",
+      "submittedAt": "2026-03-18T14:10:00.000Z",
+      "status": "reviewing"
+    }
+  ],
+  "djRoster": [],
+  "archive": [
+    {
+      "id": "ar-001",
+      "title": "Bologna Crowd Frame",
+      "format": "gallery",
+      "mediaType": "photo",
+      "mediaUrl": "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1200&q=80",
+      "alt": "Crowd editoriale in uno spazio live",
+      "event": "Bologna Community Cuts",
+      "year": "2025",
+      "description": "Frame crowd e luce naturale per la galleria editoriale.",
+      "order": 1
+    },
+    {
+      "id": "ar-002",
+      "title": "Backstage Motion Loop",
+      "format": "gallery",
+      "mediaType": "gif",
+      "mediaUrl": "https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif",
+      "alt": "Loop animato backstage",
+      "event": "Bologna Community Cuts",
+      "year": "2025",
+      "description": "Momento rapido, quasi editoriale, utile per contenuti social e archive.",
+      "order": 2
+    },
+    {
+      "id": "ar-003",
+      "title": "Selector Portrait",
+      "format": "gallery",
+      "mediaType": "photo",
+      "mediaUrl": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=80",
+      "alt": "Ritratto ravvicinato di una selector",
+      "event": "Bologna Community Cuts",
+      "year": "2025",
+      "description": "Ritratto pulito per costruire una narrazione piu autoriale.",
+      "order": 3
+    },
+    {
+      "id": "ar-004",
+      "title": "Live Room Clip",
+      "format": "gallery",
+      "mediaType": "video",
+      "mediaUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      "thumbnailUrl": "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=80",
+      "alt": "Clip video verticale di una sala evento",
+      "event": "Rome Spring Session",
+      "year": "2026",
+      "description": "Video breve per raccontare spazio, movimento e atmosfera.",
+      "order": 4
+    },
+    {
+      "id": "ar-005",
+      "title": "Turntable Detail",
+      "format": "gallery",
+      "mediaType": "photo",
+      "mediaUrl": "https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1200&q=80",
+      "alt": "Dettaglio di giradischi in close-up",
+      "event": "Rome Spring Session",
+      "year": "2026",
+      "description": "Dettaglio tecnico usato come pausa visiva nella griglia.",
+      "order": 5
+    },
+    {
+      "id": "ar-006",
+      "title": "Night Floor Energy",
+      "format": "gallery",
+      "mediaType": "photo",
+      "mediaUrl": "https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?auto=format&fit=crop&w=1200&q=80",
+      "alt": "Dancefloor in bianco e nero",
+      "event": "Milan Night Transmission",
+      "year": "2026",
+      "description": "Una tessera piu scura per dare ritmo alla sequenza visiva.",
+      "order": 6
+    }
+  ]
+}

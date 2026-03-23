@@ -1,0 +1,740 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import Link from "next/link";
+
+import { DjRosterRecord, EventRecord, TagRecord } from "@/lib/types";
+import { ui } from "@/lib/ui";
+import { GlobalLoader } from "@/components/global-loader";
+import { TagMultiSelect } from "@/components/tag-multi-select";
+
+type AdminEventsManagerProps = {
+  initialEvents: EventRecord[];
+  djRoster: DjRosterRecord[];
+  availableTags: TagRecord[];
+};
+
+type EventFormState = {
+  title: string;
+  city: string;
+  venue: string;
+  coverImage: string;
+  coverAlt: string;
+  date: string;
+  time: string;
+  excerpt: string;
+  description: string;
+  applicationsOpen: boolean;
+  tagIds: string[];
+};
+
+const emptyForm: EventFormState = {
+  title: "",
+  city: "",
+  venue: "",
+  coverImage: "",
+  coverAlt: "",
+  date: "",
+  time: "",
+  excerpt: "",
+  description: "",
+  applicationsOpen: true,
+  tagIds: [],
+};
+
+export function AdminEventsManager({
+  initialEvents,
+  djRoster,
+  availableTags,
+}: AdminEventsManagerProps) {
+  const [events, setEvents] = useState(initialEvents);
+  const [tags, setTags] = useState(availableTags);
+  const [open, setOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState("");
+  const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | EventRecord["status"]
+  >("all");
+  const [cityFilter, setCityFilter] = useState("all");
+  const [monthFilter, setMonthFilter] = useState("all");
+  const [form, setForm] = useState<EventFormState>(emptyForm);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const sortedEvents = useMemo(
+    () => [...events].sort((a, b) => a.date.localeCompare(b.date)),
+    [events],
+  );
+  const cities = useMemo(
+    () => Array.from(new Set(events.map((event) => event.city))).sort(),
+    [events],
+  );
+  const months = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          events.map((event) => {
+            const date = new Date(event.date);
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+          }),
+        ),
+      ).sort(),
+    [events],
+  );
+  const filteredEvents = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+
+    return sortedEvents.filter((event) => {
+      const eventMonth = `${new Date(event.date).getFullYear()}-${String(
+        new Date(event.date).getMonth() + 1,
+      ).padStart(2, "0")}`;
+
+      const matchesQuery =
+        !normalizedQuery ||
+        [event.title, event.city, event.venue, event.slug, event.excerpt]
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedQuery);
+
+      const matchesStatus =
+        statusFilter === "all" || event.status === statusFilter;
+      const matchesCity = cityFilter === "all" || event.city === cityFilter;
+      const matchesMonth = monthFilter === "all" || eventMonth === monthFilter;
+
+      return matchesQuery && matchesStatus && matchesCity && matchesMonth;
+    });
+  }, [cityFilter, monthFilter, query, sortedEvents, statusFilter]);
+  const approvedRosterByEvent = useMemo(() => {
+    return djRoster.reduce<Record<string, DjRosterRecord[]>>((acc, record) => {
+      acc[record.eventId] ??= [];
+      acc[record.eventId].push(record);
+      return acc;
+    }, {});
+  }, [djRoster]);
+  const activeCalendarMonth = useMemo(() => {
+    if (monthFilter !== "all") {
+      return monthFilter;
+    }
+
+    const todayMonth = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
+
+    if (months.includes(todayMonth)) {
+      return todayMonth;
+    }
+
+    return months[0] || todayMonth;
+  }, [monthFilter, months]);
+  const calendarEvents = useMemo(
+    () =>
+      filteredEvents.filter((event) => {
+        const eventMonth = `${new Date(event.date).getFullYear()}-${String(
+          new Date(event.date).getMonth() + 1,
+        ).padStart(2, "0")}`;
+        return eventMonth === activeCalendarMonth;
+      }),
+    [activeCalendarMonth, filteredEvents],
+  );
+  const calendarDays = useMemo(
+    () => buildCalendarDays(activeCalendarMonth, calendarEvents),
+    [activeCalendarMonth, calendarEvents],
+  );
+
+  function updateField<Key extends keyof EventFormState>(
+    key: Key,
+    value: EventFormState[Key],
+  ) {
+    setForm((current) => ({ ...current, [key]: value }));
+  }
+
+  function shiftCalendarMonth(direction: -1 | 1) {
+    if (!months.length) {
+      return;
+    }
+
+    const currentIndex = months.indexOf(activeCalendarMonth);
+    const safeIndex = currentIndex === -1 ? 0 : currentIndex;
+    const nextIndex = Math.min(
+      Math.max(safeIndex + direction, 0),
+      months.length - 1,
+    );
+    setMonthFilter(months[nextIndex]);
+  }
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSaving(true);
+    setStatus("");
+
+    try {
+      let coverImage = form.coverImage;
+
+      if (imageFile) {
+        const uploadData = new FormData();
+        uploadData.append("file", imageFile);
+
+        const uploadResponse = await fetch("/api/uploads/event-image", {
+          method: "POST",
+          body: uploadData,
+        });
+
+        if (!uploadResponse.ok) {
+          const uploadResult = (await uploadResponse.json().catch(() => null)) as
+            | { error?: string }
+            | null;
+          throw new Error(
+            uploadResult?.error || "Upload immagine non riuscito.",
+          );
+        }
+
+        const uploadResult = (await uploadResponse.json()) as { url: string };
+        coverImage = uploadResult.url;
+      }
+
+      const response = await fetch("/api/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          coverImage,
+          tagIds: form.tagIds,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Salvataggio evento non riuscito.");
+      }
+
+      const result = (await response.json()) as { event: EventRecord };
+      setEvents((current) => [...current, result.event]);
+      setForm(emptyForm);
+      setImageFile(null);
+      setOpen(false);
+      setStatus("Evento aggiunto correttamente.");
+    } catch (error) {
+      setStatus(
+        error instanceof Error ? error.message : "Errore salvataggio evento.",
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="grid gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <button
+          type="button"
+          className={ui.action.primary}
+          onClick={() => setOpen(true)}
+        >
+          Nuovo evento
+        </button>
+        <p className="min-h-6 text-sm text-white/65" aria-live="polite">
+          {status}
+        </p>
+      </div>
+
+      <div className={ui.surface.panel}>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              className={`${ui.action.secondary} ${viewMode === "list" ? ui.nav.sidebarActive : ""}`}
+              onClick={() => setViewMode("list")}
+            >
+              Lista
+            </button>
+            <button
+              type="button"
+              className={`${ui.action.secondary} ${viewMode === "calendar" ? ui.nav.sidebarActive : ""}`}
+              onClick={() => setViewMode("calendar")}
+            >
+              Calendario
+            </button>
+          </div>
+          {viewMode === "calendar" ? (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className={ui.action.secondary}
+                onClick={() => shiftCalendarMonth(-1)}
+                disabled={!months.length || activeCalendarMonth === months[0]}
+              >
+                Indietro
+              </button>
+              <span className="min-w-36 text-center text-sm text-white/80">
+                {formatMonth(activeCalendarMonth)}
+              </span>
+              <button
+                type="button"
+                className={ui.action.secondary}
+                onClick={() => shiftCalendarMonth(1)}
+                disabled={
+                  !months.length ||
+                  activeCalendarMonth === months[months.length - 1]
+                }
+              >
+                Avanti
+              </button>
+            </div>
+          ) : null}
+        </div>
+
+        <div className="mb-4 grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_repeat(3,minmax(0,0.7fr))]">
+          <div className="grid gap-2">
+            <label htmlFor="events-query" className={ui.form.label}>
+              Cerca
+            </label>
+            <input
+              id="events-query"
+              className={ui.form.field}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Titolo, citta, venue..."
+            />
+          </div>
+          <div className="grid gap-2">
+            <label htmlFor="events-status" className={ui.form.label}>
+              Stato
+            </label>
+            <select
+              id="events-status"
+              className={ui.form.select}
+              value={statusFilter}
+              onChange={(event) =>
+                setStatusFilter(event.target.value as typeof statusFilter)
+              }
+            >
+              <option value="all">Tutti</option>
+              <option value="upcoming">Prossimi</option>
+              <option value="past">Passati</option>
+            </select>
+          </div>
+          <div className="grid gap-2">
+            <label htmlFor="events-city" className={ui.form.label}>
+              Citta
+            </label>
+            <select
+              id="events-city"
+              className={ui.form.select}
+              value={cityFilter}
+              onChange={(event) => setCityFilter(event.target.value)}
+            >
+              <option value="all">Tutte</option>
+              {cities.map((city) => (
+                <option key={city} value={city}>
+                  {city}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="grid gap-2">
+            <label htmlFor="events-month" className={ui.form.label}>
+              Mese
+            </label>
+            <select
+              id="events-month"
+              className={ui.form.select}
+              value={monthFilter}
+              onChange={(event) => setMonthFilter(event.target.value)}
+            >
+              <option value="all">Tutti</option>
+              {months.map((month) => (
+                <option key={month} value={month}>
+                  {formatMonth(month)}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="mb-5 md:hidden">
+          <span className={ui.form.label}>Calendario rapido</span>
+          <div className="mt-3 flex gap-2 overflow-x-auto pb-2">
+            <button
+              type="button"
+              className={`${ui.action.secondary} shrink-0`}
+              onClick={() => setMonthFilter("all")}
+            >
+              Tutti
+            </button>
+            {months.map((month) => (
+              <button
+                key={month}
+                type="button"
+                className={`shrink-0 rounded-xl border px-4 py-3 text-sm transition ${
+                  monthFilter === month
+                    ? ui.nav.sidebarActive
+                    : ui.nav.sidebarIdle
+                }`}
+                onClick={() => setMonthFilter(month)}
+              >
+                {formatMonth(month)}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {viewMode === "calendar" ? (
+          <div className="grid gap-4">
+            <div className="grid grid-cols-7 gap-2">
+              {["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"].map((day) => (
+                <div
+                  key={day}
+                  className="rounded-lg border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] px-2 py-3 text-center text-xs uppercase tracking-[0.16em] text-white/55"
+                >
+                  {day}
+                </div>
+              ))}
+              {calendarDays.map((day) => (
+                <div
+                  key={day.date}
+                  className={`min-h-36 rounded-xl border p-3 align-top ${
+                    day.inCurrentMonth
+                      ? "border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)]"
+                      : "border-[color:var(--color-brand-10)] bg-black/20"
+                  }`}
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <span
+                      className={`text-sm font-medium ${
+                        day.inCurrentMonth ? "text-white" : "text-white/35"
+                      }`}
+                    >
+                      {day.dayNumber}
+                    </span>
+                    {day.events.length ? (
+                      <span className="rounded-full bg-[color:var(--color-brand-12)] px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-white">
+                        {day.events.length}
+                      </span>
+                    ) : null}
+                  </div>
+
+                  <div className="grid gap-2">
+                    {day.events.map((event) => (
+                      <div
+                        key={event.id}
+                        className="rounded-lg border border-[color:var(--color-brand-14)] bg-[color:var(--color-brand-10)] p-2"
+                      >
+                        <p className="text-xs font-medium leading-5 text-white">
+                          {event.title}
+                        </p>
+                        <p className="mt-1 text-[11px] leading-4 text-white/70">
+                          {event.time} / {event.city}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {!calendarEvents.length ? (
+              <div className={ui.surface.card}>
+                <p className="text-sm text-white/65">
+                  Nessun evento trovato per il mese selezionato con i filtri
+                  attuali.
+                </p>
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {filteredEvents.map((event) => (
+              <div key={event.id} className={ui.surface.card}>
+                <div className="grid gap-4 md:grid-cols-[140px_minmax(0,1fr)] md:items-start">
+                  <div className="overflow-hidden rounded-xl border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)]">
+                    <img
+                      src={event.coverImage}
+                      alt={event.coverAlt}
+                      className=" w-full object-cover"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="mb-2 flex flex-wrap gap-2 text-sm text-white/58">
+                      <span>
+                        {new Date(event.date).toLocaleDateString("it-IT")}
+                      </span>
+                      <span>{event.city}</span>
+                      <span>{event.status}</span>
+                    </div>
+                    <h3 className="mb-2 text-lg font-semibold text-[#f7f3ee]">
+                      {event.title}
+                    </h3>
+                    <p className="text-sm leading-7 text-white/74">
+                      {event.venue} / {event.time}
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-3">
+                      <Link
+                        href={`/admin/eventi/${event.slug}`}
+                        className={ui.action.secondary}
+                      >
+                        Apri dettaglio
+                      </Link>
+                    </div>
+                    <div className="mt-3">
+                      <span className={ui.form.label}>DJ approvati</span>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {(approvedRosterByEvent[event.id] || []).length ? (
+                          approvedRosterByEvent[event.id].map((record) => (
+                            <span
+                              key={record.id}
+                              className="inline-flex rounded-md bg-emerald-500/15 px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-300"
+                            >
+                              {record.name}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-sm text-white/45">
+                            Nessun DJ approvato.
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {open ? (
+        <div className="fixed inset-0 z-50 grid place-items-center p-4">
+          <div
+            className="absolute inset-0 bg-black/72"
+            onClick={() => setOpen(false)}
+          />
+          <div className={`${ui.surface.modal} max-w-5xl`}>
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div className="grid gap-2">
+                <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
+                  Nuovo evento
+                </span>
+                <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
+                  Inserisci evento
+                </h3>
+              </div>
+              <button
+                type="button"
+                className={ui.action.secondary}
+                onClick={() => setOpen(false)}
+              >
+                Chiudi
+              </button>
+            </div>
+
+            {saving ? (
+              <GlobalLoader
+                eyebrow="Salvataggio in corso"
+                title="Stiamo mettendo il disco sul piatto"
+                description="L'evento viene creato ora. Aspetta un istante e poi tornerai alla lista aggiornata."
+              />
+            ) : (
+              <form onSubmit={handleSubmit} className="grid gap-5">
+                <div className="rounded-xl border border-[color:var(--color-brand-14)] bg-[color:var(--color-brand-10)] px-4 py-3 text-sm text-white/72">
+                  Lo slug viene generato automaticamente dal titolo evento.
+                </div>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <Field label="Titolo" htmlFor="event-title">
+                    <input
+                      id="event-title"
+                      className={ui.form.field}
+                      value={form.title}
+                      onChange={(event) => updateField("title", event.target.value)}
+                      required
+                    />
+                  </Field>
+                  <Field label="Location" htmlFor="event-venue">
+                    <input
+                      id="event-venue"
+                      className={ui.form.field}
+                      value={form.venue}
+                      onChange={(event) => updateField("venue", event.target.value)}
+                      required
+                    />
+                  </Field>
+                  <Field label="Citta" htmlFor="event-city">
+                    <input
+                      id="event-city"
+                      className={ui.form.field}
+                      value={form.city}
+                      onChange={(event) => updateField("city", event.target.value)}
+                      required
+                    />
+                  </Field>
+                </div>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <Field label="Data" htmlFor="event-date">
+                    <input
+                      id="event-date"
+                      type="date"
+                      className={ui.form.field}
+                      value={form.date}
+                      onChange={(event) => updateField("date", event.target.value)}
+                      required
+                    />
+                  </Field>
+                  <Field label="Orario" htmlFor="event-time">
+                    <input
+                      id="event-time"
+                      type="time"
+                      className={ui.form.field}
+                      value={form.time}
+                      onChange={(event) => updateField("time", event.target.value)}
+                      required
+                    />
+                  </Field>
+                  <Field label="Candidature aperte" htmlFor="event-applications">
+                    <select
+                      id="event-applications"
+                      className={ui.form.select}
+                      value={form.applicationsOpen ? "yes" : "no"}
+                      onChange={(event) => updateField("applicationsOpen", event.target.value === "yes")}
+                    >
+                      <option value="yes">Si</option>
+                      <option value="no">No</option>
+                    </select>
+                  </Field>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="flex flex-col gap-4">
+                    <Field label="Carica immagine" htmlFor="event-cover-file">
+                      <input
+                        id="event-cover-file"
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp,image/avif"
+                        className={ui.form.field}
+                        onChange={(event) => setImageFile(event.target.files?.[0] || null)}
+                      />
+                    </Field>
+                    <Field label="Alt immagine" htmlFor="event-cover-alt">
+                      <input
+                        id="event-cover-alt"
+                        className={ui.form.field}
+                        value={form.coverAlt}
+                        onChange={(event) => updateField("coverAlt", event.target.value)}
+                        required
+                      />
+                    </Field>
+                  </div>
+                  <div>
+                    {imageFile || form.coverImage ? (
+                      <div className="grid gap-2 md:col-span-2">
+                        <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
+                          Anteprima immagine
+                        </span>
+                        <div className="max-w-xs overflow-hidden rounded-xl border border-[#E31F29]/18 bg-white/[0.03]">
+                          <img
+                            src={imageFile ? URL.createObjectURL(imageFile) : form.coverImage}
+                            alt={form.coverAlt || "Anteprima copertina evento"}
+                            className="w-full object-cover"
+                          />
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Field label="Excerpt" htmlFor="event-excerpt" full>
+                    <textarea
+                      id="event-excerpt"
+                      className={`${ui.form.field} min-h-28 resize-y`}
+                      value={form.excerpt}
+                      onChange={(event) => updateField("excerpt", event.target.value)}
+                      required
+                    />
+                  </Field>
+                  <Field label="Descrizione" htmlFor="event-description" full>
+                    <textarea
+                      id="event-description"
+                      className={`${ui.form.field} min-h-32 resize-y`}
+                      value={form.description}
+                      onChange={(event) => updateField("description", event.target.value)}
+                      required
+                    />
+                  </Field>
+                  <Field label="Tag" htmlFor="event-tags" full>
+                    <div id="event-tags">
+                      <TagMultiSelect
+                        tags={tags}
+                        value={form.tagIds}
+                        onChange={(nextValue) => updateField("tagIds", nextValue)}
+                        onTagsChange={setTags}
+                      />
+                    </div>
+                  </Field>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="submit"
+                    className={ui.action.primary}
+                    disabled={saving}
+                  >
+                    Salva evento
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function Field({
+  label,
+  htmlFor,
+  full = false,
+  children,
+}: {
+  label: string;
+  htmlFor: string;
+  full?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={`grid gap-2 ${full ? "md:col-span-2" : ""}`}>
+      <label htmlFor={htmlFor} className={ui.form.label}>
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
+
+function formatMonth(month: string) {
+  const [year, monthNumber] = month.split("-");
+  const date = new Date(Number(year), Number(monthNumber) - 1, 1);
+  return date.toLocaleDateString("it-IT", {
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function buildCalendarDays(month: string, events: EventRecord[]) {
+  const [year, monthNumber] = month.split("-");
+  const currentMonthDate = new Date(Number(year), Number(monthNumber) - 1, 1);
+  const firstDay = new Date(currentMonthDate);
+  const firstWeekDay = (firstDay.getDay() + 6) % 7;
+  const gridStart = new Date(currentMonthDate);
+  gridStart.setDate(currentMonthDate.getDate() - firstWeekDay);
+
+  return Array.from({ length: 42 }, (_, index) => {
+    const cellDate = new Date(gridStart);
+    cellDate.setDate(gridStart.getDate() + index);
+    const isoDate = cellDate.toISOString().slice(0, 10);
+    const dayEvents = events.filter((event) => event.date === isoDate);
+
+    return {
+      date: isoDate,
+      dayNumber: cellDate.getDate(),
+      inCurrentMonth: cellDate.getMonth() === currentMonthDate.getMonth(),
+      events: dayEvents,
+    };
+  });
+}
