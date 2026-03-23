@@ -20,7 +20,7 @@ type UpdateDjRosterMembershipInput = {
 type NewTag = Omit<TagRecord, "id">;
 
 function sortEvents(events: EventRecord[]) {
-  return [...events].sort((a, b) => a.date.localeCompare(b.date));
+  return [...events].sort((a, b) => b.date.localeCompare(a.date));
 }
 
 async function withMongoFallback<T>(query: () => Promise<T>, fallback: () => T | Promise<T>) {
@@ -79,7 +79,11 @@ export async function getUpcomingEvent() {
 
   const now = new Date().toISOString().slice(0, 10);
   const events = await getEvents();
-  return events.find((event) => event.date >= now) || events[0] || null;
+  const upcomingEvents = events
+    .filter((event) => event.date >= now)
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  return upcomingEvents[0] || events[0] || null;
 }
 
 export async function getArchiveEntries() {

@@ -117,7 +117,7 @@ export default async function HomePage() {
 
       <section className="px-4 py-4 pb-12 md:px-6">
         <div className="mx-auto max-w-[1240px]">
-          <HomeEventsCarousel events={events.slice(0, 6)} />
+          <HomeEventsCarousel events={events.slice(1, 6)} />
         </div>
       </section>
     </div>
