@@ -304,6 +304,29 @@ export async function updateEvent(id: string, input: UpdateEventInput) {
   );
 }
 
+export async function deleteEvent(id: string) {
+  if (!isMongoConfigured()) {
+    return deleteEventMock(id);
+  }
+
+  return withMongoFallback(
+    async () => {
+      const db = await getDatabase();
+      const eventDeleteResult = await db.collection<EventRecord>("events").deleteOne({ id });
+
+      if (!eventDeleteResult.deletedCount) {
+        return false;
+      }
+
+      await db.collection<ApplicationRecord>("applications").deleteMany({ eventId: id });
+      await db.collection<DjRosterRecord>("dj_roster").deleteMany({ eventId: id });
+
+      return true;
+    },
+    () => deleteEventMock(id)
+  );
+}
+
 export async function createArchiveEntry(input: NewArchiveEntry) {
   const record: ArchiveRecord = {
     id: new ObjectId().toHexString(),
@@ -391,6 +414,30 @@ function updateApplicationMock(id: string, input: UpdateApplicationInput) {
 
   syncDjRosterMock(mockApplications[index]);
   return mockApplications[index];
+}
+
+function deleteEventMock(id: string) {
+  const index = mockEvents.findIndex((item) => item.id === id);
+
+  if (index === -1) {
+    return false;
+  }
+
+  mockEvents.splice(index, 1);
+
+  for (let cursor = mockApplications.length - 1; cursor >= 0; cursor -= 1) {
+    if (mockApplications[cursor].eventId === id) {
+      mockApplications.splice(cursor, 1);
+    }
+  }
+
+  for (let cursor = mockDjRoster.length - 1; cursor >= 0; cursor -= 1) {
+    if (mockDjRoster[cursor].eventId === id) {
+      mockDjRoster.splice(cursor, 1);
+    }
+  }
+
+  return true;
 }
 
 function updateDjRosterMembershipMock(id: string, input: UpdateDjRosterMembershipInput) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { DjRosterRecord, EventRecord, TagRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
@@ -27,11 +28,20 @@ type EventFormState = {
   status: EventRecord["status"];
 };
 
+type DeleteState = {
+  open: boolean;
+  requiresForce: boolean;
+  linkedApplicationsCount: number;
+  linkedDjCount: number;
+  message: string;
+};
+
 export function AdminEventDetailEditor({
   event,
   approvedDjs,
   availableTags
 }: AdminEventDetailEditorProps) {
+  const router = useRouter();
   const [form, setForm] = useState<EventFormState>({
     title: event.title,
     city: event.city,
@@ -49,7 +59,15 @@ export function AdminEventDetailEditor({
   const [tags, setTags] = useState(availableTags);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [status, setStatus] = useState("");
+  const [deleteState, setDeleteState] = useState<DeleteState>({
+    open: false,
+    requiresForce: false,
+    linkedApplicationsCount: 0,
+    linkedDjCount: 0,
+    message: "Confermi di voler eliminare questo evento?"
+  });
 
   function updateField<Key extends keyof EventFormState>(key: Key, value: EventFormState[Key]) {
     setForm((current) => ({ ...current, [key]: value }));
@@ -120,6 +138,78 @@ export function AdminEventDetailEditor({
     }
   }
 
+  function openDeleteModal() {
+    setDeleteState({
+      open: true,
+      requiresForce: false,
+      linkedApplicationsCount: 0,
+      linkedDjCount: 0,
+      message: "Confermi di voler eliminare questo evento?"
+    });
+  }
+
+  function closeDeleteModal() {
+    if (deleting) {
+      return;
+    }
+
+    setDeleteState((current) => ({
+      ...current,
+      open: false
+    }));
+  }
+
+  async function handleDeleteConfirmation(force = false) {
+    setDeleting(true);
+    setStatus("");
+
+    try {
+      const response = await fetch(`/api/events/${event.id}${force ? "?force=true" : ""}`, {
+        method: "DELETE"
+      });
+
+      if (response.status === 409) {
+        const warning = (await response.json()) as {
+          error?: string;
+          linkedApplicationsCount?: number;
+          linkedDjCount?: number;
+        };
+        setDeleteState({
+          open: true,
+          requiresForce: true,
+          linkedApplicationsCount: warning.linkedApplicationsCount || 0,
+          linkedDjCount: warning.linkedDjCount || 0,
+          message:
+            warning.error ||
+            "Questo evento ha dati collegati. Conferma di nuovo per eliminarli insieme all'evento."
+        });
+        setDeleting(false);
+        return;
+      }
+
+      if (!response.ok) {
+        const errorPayload = (await response.json().catch(() => null)) as
+          | { error?: string }
+          | null;
+        throw new Error(errorPayload?.error || "Eliminazione evento non riuscita.");
+      }
+
+      setDeleteState((current) => ({
+        ...current,
+        open: false
+      }));
+      router.push("/admin/eventi");
+      router.refresh();
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Errore eliminazione evento.");
+      setDeleting(false);
+    }
+  }
+
+  async function handleForceDelete() {
+    await handleDeleteConfirmation(true);
+  }
+
   return (
     <div className="grid gap-6">
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_360px]">
@@ -188,6 +278,14 @@ export function AdminEventDetailEditor({
               <button type="submit" className={ui.action.primary} disabled={saving}>
                 {saving ? "Salvataggio..." : "Salva modifiche"}
               </button>
+              <button
+                type="button"
+                className="inline-flex min-h-11 items-center justify-center rounded-xl border border-red-500/35 bg-red-500/12 px-5 py-3 text-sm font-medium text-red-200 transition hover:bg-red-500/18 disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={openDeleteModal}
+                disabled={deleting || saving}
+              >
+                {deleting ? "Eliminazione..." : "Elimina evento"}
+              </button>
               {status ? <p className="text-sm text-white/70">{status}</p> : null}
             </div>
           </form>
@@ -235,6 +333,69 @@ export function AdminEventDetailEditor({
           </div>
         </div>
       </div>
+
+      {deleteState.open ? (
+        <div className="fixed inset-0 z-50 grid place-items-center p-4">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/78"
+            onClick={closeDeleteModal}
+            aria-label="Chiudi conferma eliminazione"
+          />
+          <div className={`${ui.surface.modal} max-w-xl`}>
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <span className="text-xs uppercase tracking-[0.24em] text-red-300">
+                  Conferma eliminazione
+                </span>
+                <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
+                  Elimina evento
+                </h3>
+                <p className="text-sm leading-7 text-white/70">
+                  {deleteState.message}
+                </p>
+              </div>
+
+              {deleteState.requiresForce ? (
+                <div className="rounded-xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-white/78">
+                  <p>Candidature collegate: {deleteState.linkedApplicationsCount}</p>
+                  <p>DJ collegati: {deleteState.linkedDjCount}</p>
+                  <p className="mt-2 text-red-200">
+                    Questa azione eliminerà anche i record collegati.
+                  </p>
+                </div>
+              ) : null}
+
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  className="inline-flex min-h-11 items-center justify-center rounded-xl border border-red-500/35 bg-red-500/12 px-5 py-3 text-sm font-medium text-red-200 transition hover:bg-red-500/18 disabled:cursor-not-allowed disabled:opacity-50"
+                  onClick={
+                    deleteState.requiresForce
+                      ? handleForceDelete
+                      : () => void handleDeleteConfirmation(false)
+                  }
+                  disabled={deleting}
+                >
+                  {deleting
+                    ? "Eliminazione..."
+                    : deleteState.requiresForce
+                      ? "Conferma ed elimina tutto"
+                      : "Conferma eliminazione"}
+                </button>
+                <button
+                  type="button"
+                  className={ui.action.secondary}
+                  onClick={closeDeleteModal}
+                  disabled={deleting}
+                >
+                  Annulla
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
