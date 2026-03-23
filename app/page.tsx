@@ -4,7 +4,10 @@ import { HomeEventsCarousel } from "@/components/home-events-carousel";
 import { getEvents, getUpcomingEvent } from "@/lib/data";
 
 export default async function HomePage() {
-  const [nextEvent, events] = await Promise.all([getUpcomingEvent(), getEvents()]);
+  const [nextEvent, events] = await Promise.all([
+    getUpcomingEvent(),
+    getEvents(),
+  ]);
 
   return (
     <div className="bg-[#050505] text-[#f7f3ee]">
@@ -41,51 +44,59 @@ export default async function HomePage() {
       </section>
 
       {nextEvent ? (
-        <section className="px-4 py-4 md:px-6 md:py-5">
-          <div className="mx-auto grid max-w-[1240px] gap-4 md:grid-cols-[0.88fr_1.12fr]">
+        <section className="px-4 py-3 md:px-6 md:py-4">
+          <div className="mx-auto grid max-w-[1240px] gap-4 md:grid-cols-[auto_minmax(0,1fr)] md:items-start">
             <Link
               href={`/eventi/${nextEvent.slug}`}
-              className="relative min-h-[22rem] overflow-hidden rounded-2xl bg-[#111] md:min-h-[34rem]"
+              className="relative min-h-[16rem] overflow-hidden rounded-2xl bg-[#111] md:h-[26rem] md:w-fit"
             >
               <img
                 src={nextEvent.coverImage}
                 alt={nextEvent.coverAlt}
-                className="h-full w-full object-cover"
+                className="h-full w-full bg-[#111] object-contain"
               />
               <div className="absolute left-4 top-4 inline-flex rounded-[0.55rem] border border-[#E31F29] bg-[#E31F29]/90 px-3 py-2 text-[0.72rem] uppercase tracking-[0.12em] text-white">
                 Prossimo evento
               </div>
             </Link>
 
-            <div className="border-t border-[#E31F29]/20 pt-5">
-              <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">In arrivo</span>
+            <div className="border-t border-[#E31F29]/20 pt-4">
+              <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
+                In arrivo
+              </span>
               <h2 className="mt-2 text-[clamp(1.35rem,2.4vw,1.9rem)] font-semibold leading-none tracking-[-0.03em] text-[#f5f2ea]">
                 {nextEvent.title}
               </h2>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-white/72 md:text-base">
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-white/72 md:text-[0.96rem]">
                 {nextEvent.excerpt}
               </p>
 
-              <div className="mt-6 grid gap-0">
-                <div className="flex items-center justify-between gap-4 border-b border-[#E31F29]/15 py-4">
-                  <span className="text-xs uppercase tracking-[0.12em] text-white/50">Data</span>
+              <div className="mt-5 grid gap-0">
+                <div className="flex items-center justify-between gap-4 border-b border-[#E31F29]/15 py-3">
+                  <span className="text-xs uppercase tracking-[0.12em] text-white/50">
+                    Data
+                  </span>
                   <strong className="text-white">
                     {new Date(nextEvent.date).toLocaleDateString("it-IT")}
                   </strong>
                 </div>
-                <div className="flex items-center justify-between gap-4 border-b border-[#E31F29]/15 py-4">
-                  <span className="text-xs uppercase tracking-[0.12em] text-white/50">Luogo</span>
+                <div className="flex items-center justify-between gap-4 border-b border-[#E31F29]/15 py-3">
+                  <span className="text-xs uppercase tracking-[0.12em] text-white/50">
+                    Luogo
+                  </span>
                   <strong className="text-right text-white">
                     {nextEvent.venue}, {nextEvent.city}
                   </strong>
                 </div>
-                <div className="flex items-center justify-between gap-4 border-b border-[#E31F29]/15 py-4">
-                  <span className="text-xs uppercase tracking-[0.12em] text-white/50">Orario</span>
+                <div className="flex items-center justify-between gap-4 border-b border-[#E31F29]/15 py-3">
+                  <span className="text-xs uppercase tracking-[0.12em] text-white/50">
+                    Orario
+                  </span>
                   <strong className="text-white">{nextEvent.time}</strong>
                 </div>
               </div>
 
-              <div className="mt-5 flex flex-wrap gap-3">
+              <div className="mt-4 flex flex-wrap gap-3">
                 <Link
                   href={`/eventi/${nextEvent.slug}`}
                   className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#E31F29] bg-[#E31F29] px-5 py-3 text-sm font-medium text-white transition hover:border-[#c91922] hover:bg-[#c91922]"
