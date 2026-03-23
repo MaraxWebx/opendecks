@@ -86,7 +86,7 @@ export default async function EventDetailPage({
 
               <div className="rounded-xl border border-[#E31F29]/14 bg-white/[0.03] p-4">
                 <h3 className="mb-2 text-base font-semibold text-[#f7f3ee]">
-                  DJ approvati
+                  Line UP
                 </h3>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {approvedRoster.length ? (
