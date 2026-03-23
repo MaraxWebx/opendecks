@@ -45,10 +45,10 @@ export function Header() {
             <Image
               src="/img/loghi/LOGO-OPEN-DECKS_bianco.png"
               alt="OpenDecks Italia"
-              width={260}
-              height={68}
+              width={240}
+              height={48}
               priority
-              className="h-20 w-auto object-contain md:h-24"
+              className="h-14 w-auto object-contain md:h-16"
             />
           </Link>
 
@@ -104,9 +104,9 @@ export function Header() {
             <Image
               src="/img/loghi/LOGO-OPEN-DECKS_bianco.png"
               alt="OpenDecks Italia"
-              width={340}
-              height={90}
-              className="h-24 w-auto object-contain"
+              width={240}
+              height={48}
+              className="h-16 w-auto object-contain"
             />
             <button
               type="button"
