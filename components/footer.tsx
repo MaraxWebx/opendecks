@@ -82,7 +82,7 @@ export async function Footer() {
           href="https://www.instagram.com/marettax_/"
           className="transition hover:text-white/80"
         >
-          by Marettax
+          ❤️ ☠️ 🧠by Marettax
         </Link>
       </div>
     </footer>
