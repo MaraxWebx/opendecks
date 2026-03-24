@@ -48,64 +48,64 @@ export default async function HomePage() {
           <div className="mx-auto grid max-w-[1240px] min-w-0 gap-4 md:grid-cols-[auto_minmax(0,1fr)] md:items-start">
             <Link
               href={`/eventi/${nextEvent.slug}`}
-              className="relative min-h-[16rem] w-full overflow-hidden rounded-2xl bg-[#111] md:h-[26rem] md:w-fit"
+              className="relative block min-h-[16rem] w-full max-w-full overflow-hidden rounded-2xl bg-[#111] md:h-[26rem] md:w-fit"
             >
               <img
                 src={nextEvent.coverImage}
                 alt={nextEvent.coverAlt}
-                className="h-full w-full bg-[#111] object-contain"
+                className="block h-full w-full max-w-full bg-[#111] object-contain"
               />
               <div className="absolute left-4 top-4 inline-flex rounded-[0.55rem] border border-[#E31F29] bg-[#E31F29]/90 px-3 py-2 text-[0.72rem] uppercase tracking-[0.12em] text-white">
                 Prossimo evento
               </div>
             </Link>
 
-            <div className="border-t border-[#E31F29]/20 pt-4">
+            <div className="min-w-0 border-t border-[#E31F29]/20 pt-4">
               <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
                 In arrivo
               </span>
-              <h2 className="mt-2 text-[clamp(1.35rem,2.4vw,1.9rem)] font-semibold leading-none tracking-[-0.03em] text-[#f5f2ea]">
+              <h2 className="mt-2 break-words text-[clamp(1.35rem,2.4vw,1.9rem)] font-semibold leading-none tracking-[-0.03em] text-[#f5f2ea]">
                 {nextEvent.title}
               </h2>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-white/72 md:text-[0.96rem]">
+              <p className="mt-3 max-w-2xl break-words text-sm leading-6 text-white/72 md:text-[0.96rem]">
                 {nextEvent.excerpt}
               </p>
 
               <div className="mt-5 grid gap-0">
-                <div className="flex items-center justify-between gap-4 border-b border-[#E31F29]/15 py-3">
+                <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-4 border-b border-[#E31F29]/15 py-3">
                   <span className="text-xs uppercase tracking-[0.12em] text-white/50">
                     Data
                   </span>
-                  <strong className="text-white">
+                  <strong className="break-words text-right text-white">
                     {new Date(nextEvent.date).toLocaleDateString("it-IT")}
                   </strong>
                 </div>
-                <div className="flex items-center justify-between gap-4 border-b border-[#E31F29]/15 py-3">
+                <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-4 border-b border-[#E31F29]/15 py-3">
                   <span className="text-xs uppercase tracking-[0.12em] text-white/50">
                     Luogo
                   </span>
-                  <strong className="text-right text-white">
+                  <strong className="max-w-[11rem] break-words text-right text-white sm:max-w-none">
                     {nextEvent.venue}, {nextEvent.city}
                   </strong>
                 </div>
-                <div className="flex items-center justify-between gap-4 border-b border-[#E31F29]/15 py-3">
+                <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-4 border-b border-[#E31F29]/15 py-3">
                   <span className="text-xs uppercase tracking-[0.12em] text-white/50">
                     Orario
                   </span>
-                  <strong className="text-white">{nextEvent.time}</strong>
+                  <strong className="break-words text-right text-white">{nextEvent.time}</strong>
                 </div>
               </div>
 
               <div className="mt-4 flex flex-wrap gap-3">
                 <Link
                   href={`/eventi/${nextEvent.slug}`}
-                  className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#E31F29] bg-[#E31F29] px-5 py-3 text-sm font-medium text-white transition hover:border-[#c91922] hover:bg-[#c91922]"
+                  className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border border-[#E31F29] bg-[#E31F29] px-5 py-3 text-sm font-medium text-white transition hover:border-[#c91922] hover:bg-[#c91922] sm:flex-none"
                 >
                   Scheda evento
                 </Link>
                 <Link
                   href={`/prenota?event=${nextEvent.slug}`}
-                  className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#E31F29]/35 px-5 py-3 text-sm font-medium text-[#f3efe5] transition hover:bg-[#E31F29]/10"
+                  className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border border-[#E31F29]/35 px-5 py-3 text-sm font-medium text-[#f3efe5] transition hover:bg-[#E31F29]/10 sm:flex-none"
                 >
                   Candidati ora
                 </Link>
