@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 
+import { BodyScrollLock } from "@/components/body-scroll-lock";
 import { DjRosterRecord, EventRecord, TagRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
 import { GlobalLoader } from "@/components/global-loader";
@@ -503,6 +504,7 @@ export function AdminEventsManager({
 
       {open ? (
         <div className="fixed inset-0 z-50 grid place-items-center p-4">
+          <BodyScrollLock />
           <div
             className="absolute inset-0 bg-black/72"
             onClick={() => setOpen(false)}

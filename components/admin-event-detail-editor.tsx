@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { BodyScrollLock } from "@/components/body-scroll-lock";
 import { DjRosterRecord, EventRecord, TagRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
 import { TagMultiSelect } from "@/components/tag-multi-select";
@@ -24,6 +25,7 @@ type EventFormState = {
   excerpt: string;
   description: string;
   applicationsOpen: boolean;
+  lineupPublished: boolean;
   tagIds: string[];
   status: EventRecord["status"];
 };
@@ -53,6 +55,7 @@ export function AdminEventDetailEditor({
     excerpt: event.excerpt,
     description: event.description,
     applicationsOpen: event.applicationsOpen,
+    lineupPublished: event.lineupPublished,
     tagIds: event.tagIds || [],
     status: event.status
   });
@@ -126,6 +129,7 @@ export function AdminEventDetailEditor({
         excerpt: result.event.excerpt,
         description: result.event.description,
         applicationsOpen: result.event.applicationsOpen,
+        lineupPublished: result.event.lineupPublished,
         tagIds: result.event.tagIds || [],
         status: result.event.status
       });
@@ -250,6 +254,17 @@ export function AdminEventDetailEditor({
                   <option value="no">No</option>
                 </select>
               </Field>
+              <Field label="Line up pubblica" htmlFor="detail-lineup-public">
+                <select
+                  id="detail-lineup-public"
+                  className={ui.form.select}
+                  value={form.lineupPublished ? "yes" : "no"}
+                  onChange={(event) => updateField("lineupPublished", event.target.value === "yes")}
+                >
+                  <option value="no">No</option>
+                  <option value="yes">Si</option>
+                </select>
+              </Field>
               <Field label="Carica immagine" htmlFor="detail-cover-file">
                 <input id="detail-cover-file" type="file" accept="image/png,image/jpeg,image/webp,image/avif" className={ui.form.field} onChange={(event) => setImageFile(event.target.files?.[0] || null)} />
               </Field>
@@ -309,6 +324,9 @@ export function AdminEventDetailEditor({
                 <strong className="text-white">Data:</strong> {new Date(form.date).toLocaleDateString("it-IT")} / {form.time}
               </p>
               <p>
+                <strong className="text-white">Line up pubblica:</strong> {form.lineupPublished ? "Si" : "No"}
+              </p>
+              <p>
                 <strong className="text-white">Slug:</strong> {createSlug(form.title)}
               </p>
             </div>
@@ -336,6 +354,7 @@ export function AdminEventDetailEditor({
 
       {deleteState.open ? (
         <div className="fixed inset-0 z-50 grid place-items-center p-4">
+          <BodyScrollLock />
           <button
             type="button"
             className="absolute inset-0 bg-black/78"

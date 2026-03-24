@@ -84,27 +84,29 @@ export default async function EventDetailPage({
                 </p>
               </div>
 
-              <div className="rounded-xl border border-[#E31F29]/14 bg-white/[0.03] p-4">
-                <h3 className="mb-2 text-base font-semibold text-[#f7f3ee]">
-                  Line UP
-                </h3>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {approvedRoster.length ? (
-                    approvedRoster.map((record) => (
-                      <span
-                        key={record.id}
-                        className="inline-flex rounded-md bg-emerald-500/15 px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-300"
-                      >
-                        {record.name}
+              {event.lineupPublished ? (
+                <div className="rounded-xl border border-[#E31F29]/14 bg-white/[0.03] p-4">
+                  <h3 className="mb-2 text-base font-semibold text-[#f7f3ee]">
+                    Line Up
+                  </h3>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {approvedRoster.length ? (
+                      approvedRoster.map((record) => (
+                        <span
+                          key={record.id}
+                          className="inline-flex rounded-md bg-emerald-500/15 px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-300"
+                        >
+                          {record.name}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-sm text-white/50">
+                        Nessun DJ ancora approvato per questo evento.
                       </span>
-                    ))
-                  ) : (
-                    <span className="text-sm text-white/50">
-                      Nessun DJ ancora approvato per questo evento.
-                    </span>
-                  )}
+                    )}
+                  </div>
                 </div>
-              </div>
+              ) : null}
             </div>
           </div>
 

@@ -503,6 +503,7 @@ function normalizeEvent(record: EventRecord & { _id?: ObjectId }) {
 
   return {
     ...event,
+    lineupPublished: Boolean(event.lineupPublished),
     tagIds: event.tagIds || [],
     id: event.id || _id?.toHexString() || new ObjectId().toHexString()
   };

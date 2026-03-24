@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 
+import { BodyScrollLock } from "@/components/body-scroll-lock";
 import { DjRosterRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
 
@@ -158,6 +159,7 @@ export function AdminDjRosterManager({ initialRoster }: AdminDjRosterManagerProp
 
       {selectedDj ? (
         <div className="fixed inset-0 z-50 grid place-items-center p-4">
+          <BodyScrollLock />
           <div className="absolute inset-0 bg-black/72" onClick={() => setSelectedDj(null)} />
           <div className={`${ui.surface.modal} max-w-3xl`}>
             <div className="mb-5 flex items-start justify-between gap-4">

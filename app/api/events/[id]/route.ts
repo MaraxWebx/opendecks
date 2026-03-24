@@ -23,6 +23,8 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     description: body.description,
     applicationsOpen:
       body.applicationsOpen !== undefined ? Boolean(body.applicationsOpen) : undefined,
+    lineupPublished:
+      body.lineupPublished !== undefined ? Boolean(body.lineupPublished) : undefined,
     tagIds: Array.isArray(body.tagIds) ? body.tagIds : undefined,
     status: body.status
   });

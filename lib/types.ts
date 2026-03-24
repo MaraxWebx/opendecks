@@ -13,6 +13,7 @@ export type EventRecord = {
   description: string;
   capacity: number;
   applicationsOpen: boolean;
+  lineupPublished: boolean;
   tagIds: string[];
 };
 

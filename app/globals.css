@@ -46,7 +46,8 @@
     font-family: inherit;
   }
 
-  body.menu-open {
+  body.menu-open,
+  body.modal-open {
     overflow: hidden;
   }
 

@@ -44,6 +44,7 @@ export async function POST(request: NextRequest) {
     description: body.description,
     capacity: Number(body.capacity) || 0,
     applicationsOpen: Boolean(body.applicationsOpen),
+    lineupPublished: Boolean(body.lineupPublished),
     tagIds: Array.isArray(body.tagIds) ? body.tagIds : [],
     status: body.status
   });
