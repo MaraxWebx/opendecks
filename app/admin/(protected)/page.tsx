@@ -132,6 +132,14 @@ export default async function AdminPage() {
                 </p>
                 <p className="text-sm text-white/55">{application.email}</p>
               </div>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href={`/admin/candidature?applicationId=${application.id}`}
+                  className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#E31F29]/35 px-4 py-3 text-sm font-medium text-[#f7f3ee] transition hover:bg-[#E31F29]/10"
+                >
+                  Dettagli
+                </Link>
+              </div>
             </article>
           ))}
           {!newApplications.length ? (

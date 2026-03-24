@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { BodyScrollLock } from "@/components/body-scroll-lock";
 import { ApplicationRecord } from "@/lib/types";
@@ -8,10 +8,12 @@ import { ui } from "@/lib/ui";
 
 type AdminApplicationsManagerProps = {
   initialApplications: ApplicationRecord[];
+  initialSelectedId?: string;
 };
 
 export function AdminApplicationsManager({
   initialApplications,
+  initialSelectedId,
 }: AdminApplicationsManagerProps) {
   const [applications, setApplications] = useState(initialApplications);
   const [query, setQuery] = useState("");
@@ -25,6 +27,24 @@ export function AdminApplicationsManager({
   const [statusMessage, setStatusMessage] = useState("");
   const [draftStatus, setDraftStatus] =
     useState<ApplicationRecord["status"]>("new");
+
+  useEffect(() => {
+    if (!initialSelectedId) {
+      return;
+    }
+
+    const selected = initialApplications.find(
+      (application) => application.id === initialSelectedId,
+    );
+
+    if (!selected) {
+      return;
+    }
+
+    setSelectedApplication(selected);
+    setDraftStatus(selected.status);
+    setStatusMessage("");
+  }, [initialApplications, initialSelectedId]);
 
   const events = useMemo(
     () =>

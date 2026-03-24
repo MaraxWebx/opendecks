@@ -67,7 +67,7 @@ export function HomeEventsCarousel({ events }: HomeEventsCarouselProps) {
   }
 
   return (
-    <div className="grid gap-4">
+    <div className="grid min-w-0 gap-4 overflow-x-hidden">
       <div className="flex items-center justify-between gap-4">
         <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
           Eventi
@@ -99,7 +99,7 @@ export function HomeEventsCarousel({ events }: HomeEventsCarouselProps) {
       </div>
 
       <div
-        className="grid auto-cols-[88%] grid-flow-col gap-3 overflow-x-auto pb-2 [scrollbar-width:none] md:auto-cols-[calc((100%-0.75rem)/2)] lg:auto-cols-[calc((100%-1.5rem)/3)] [&::-webkit-scrollbar]:hidden"
+        className="grid w-full auto-cols-[88%] grid-flow-col gap-3 overflow-x-auto pb-2 [scrollbar-width:none] md:auto-cols-[calc((100%-0.75rem)/2)] lg:auto-cols-[calc((100%-1.5rem)/3)] [&::-webkit-scrollbar]:hidden"
         ref={trackRef}
       >
         {events.map((event) => (

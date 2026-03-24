@@ -2,8 +2,13 @@ import { AdminApplicationsManager } from "@/components/admin-applications-manage
 import { SectionHeading } from "@/components/section-heading";
 import { getApplications } from "@/lib/data";
 
-export default async function AdminApplicationsPage() {
+export default async function AdminApplicationsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ applicationId?: string }>;
+}) {
   const applications = await getApplications();
+  const resolvedSearchParams = await searchParams;
 
   return (
     <section className="py-8 md:py-10">
@@ -12,7 +17,10 @@ export default async function AdminApplicationsPage() {
         title="Gestione candidature"
         description="Panoramica delle richieste ricevute, con evento associato e stato."
       />
-      <AdminApplicationsManager initialApplications={applications} />
+      <AdminApplicationsManager
+        initialApplications={applications}
+        initialSelectedId={resolvedSearchParams?.applicationId}
+      />
     </section>
   );
 }

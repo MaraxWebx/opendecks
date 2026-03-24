@@ -10,7 +10,7 @@ export default async function HomePage() {
   ]);
 
   return (
-    <div className="bg-[#050505] text-[#f7f3ee]">
+    <div className="overflow-x-hidden bg-[#050505] text-[#f7f3ee]">
       <section className="pb-5">
         <div className="relative w-full overflow-hidden bg-[#101010]">
           <video
@@ -33,7 +33,7 @@ export default async function HomePage() {
               <div className="flex flex-wrap justify-center gap-3">
                 <Link
                   href="/eventi"
-                  className="inline-flex min-h-12 min-w-72 items-center justify-center rounded-xl border border-[#E31F29] bg-[#E31F29] px-6 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-white transition hover:border-[#c91922] hover:bg-[#c91922]"
+                  className="inline-flex min-h-12 w-full max-w-[20rem] items-center justify-center rounded-xl border border-[#E31F29] bg-[#E31F29] px-6 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-white transition hover:border-[#c91922] hover:bg-[#c91922] sm:w-auto sm:min-w-72"
                 >
                   Scopri gli eventi
                 </Link>
@@ -45,10 +45,10 @@ export default async function HomePage() {
 
       {nextEvent ? (
         <section className="px-4 py-3 md:px-6 md:py-4">
-          <div className="mx-auto grid max-w-[1240px] gap-4 md:grid-cols-[auto_minmax(0,1fr)] md:items-start">
+          <div className="mx-auto grid max-w-[1240px] min-w-0 gap-4 md:grid-cols-[auto_minmax(0,1fr)] md:items-start">
             <Link
               href={`/eventi/${nextEvent.slug}`}
-              className="relative min-h-[16rem] overflow-hidden rounded-2xl bg-[#111] md:h-[26rem] md:w-fit"
+              className="relative min-h-[16rem] w-full overflow-hidden rounded-2xl bg-[#111] md:h-[26rem] md:w-fit"
             >
               <img
                 src={nextEvent.coverImage}
@@ -116,7 +116,7 @@ export default async function HomePage() {
       ) : null}
 
       <section className="px-4 py-4 pb-12 md:px-6">
-        <div className="mx-auto max-w-[1240px]">
+        <div className="mx-auto min-w-0 max-w-[1240px]">
           <HomeEventsCarousel events={events.slice(1, 6)} />
         </div>
       </section>

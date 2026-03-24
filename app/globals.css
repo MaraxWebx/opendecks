@@ -35,6 +35,7 @@
     scroll-behavior: smooth;
     scrollbar-width: thin;
     scrollbar-color: var(--color-brand) var(--color-bg);
+    overflow-x: hidden;
   }
 
   body {
@@ -44,6 +45,8 @@
       linear-gradient(180deg, var(--color-bg) 0%, #090909 100%);
     color: var(--color-text);
     font-family: inherit;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   body.menu-open,
@@ -58,6 +61,12 @@
   a {
     color: inherit;
     text-decoration: none;
+  }
+
+  main {
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
   }
 
   img {
