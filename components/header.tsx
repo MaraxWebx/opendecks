@@ -92,21 +92,16 @@ export function Header() {
       {menuOpen ? (
         <div
           id="site-nav"
-          className="menu-overlay-enter fixed inset-0 z-50 flex min-h-screen w-full flex-col overflow-hidden bg-black/95 px-4 py-4 backdrop-blur-xl md:hidden"
+          className="menu-overlay-enter fixed inset-0 z-50 flex min-h-screen w-full flex-col overflow-hidden bg-black px-4 py-4 md:hidden"
           aria-label="Navigazione principale"
         >
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(227,31,41,0.22),transparent_28%)]" />
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-[linear-gradient(180deg,rgba(227,31,41,0.08),transparent)]" />
-          <div className="pointer-events-none absolute -left-16 top-24 h-56 w-56 rounded-full bg-[#E31F29]/12 blur-3xl" />
-          <div className="pointer-events-none absolute -right-12 bottom-24 h-48 w-48 rounded-full bg-[#E31F29]/10 blur-3xl" />
-
           <div className="menu-panel-enter relative mb-4 flex items-center justify-between gap-4 border-b border-[#E31F29]/20 pb-4">
             <Image
               src="/img/loghi/LOGO-OPEN-DECKS_bianco.png"
               alt="OpenDecks Italia"
               width={240}
               height={48}
-              className="h-16 w-auto object-contain"
+              className="h-14 w-auto object-contain"
             />
             <button
               type="button"
