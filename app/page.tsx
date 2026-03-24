@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { HomeEventsCarousel } from "@/components/home-events-carousel";
+import { HomeHeroVideo } from "@/components/home-hero-video";
 import { getEvents, getUpcomingEvent } from "@/lib/data";
 
 export default async function HomePage() {
@@ -13,14 +14,9 @@ export default async function HomePage() {
     <div className="overflow-x-hidden bg-[#050505] text-[#f7f3ee]">
       <section className="pb-5">
         <div className="relative w-full overflow-hidden bg-[#101010]">
-          <video
+          <HomeHeroVideo
             className="h-[82vh] min-h-[32rem] w-full object-cover brightness-[0.38] contrast-105 saturate-[0.82]"
             src="/video/home-banner.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
           />
           <div className="absolute inset-0 grid place-items-center px-6 text-center">
             <div className="grid justify-items-center gap-5">
