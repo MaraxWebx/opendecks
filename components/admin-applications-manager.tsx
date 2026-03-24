@@ -36,6 +36,7 @@ export function AdminApplicationsManager({
           application.name,
           application.city,
           application.email,
+          application.phone,
           application.instagram,
           application.eventTitle,
           application.setLink,
@@ -177,6 +178,7 @@ export function AdminApplicationsManager({
                     {application.city} / {application.instagram}
                   </p>
                   <p className="text-sm text-white/55">{application.email}</p>
+                  <p className="text-sm text-white/55">{application.phone}</p>
                   <p className="line-clamp-2 text-sm leading-7 text-white/68">
                     {application.bio}
                   </p>
@@ -225,10 +227,23 @@ export function AdminApplicationsManager({
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
+              {selectedApplication.photoUrl ? (
+                <div className="md:col-span-2">
+                  <div className={ui.surface.card}>
+                    <span className={ui.form.label}>Foto personale</span>
+                    <img
+                      src={selectedApplication.photoUrl}
+                      alt={selectedApplication.name}
+                      className="mt-3 h-52 w-full rounded-xl object-cover md:h-64"
+                    />
+                  </div>
+                </div>
+              ) : null}
               <DetailItem label="Evento" value={selectedApplication.eventTitle} />
               <DetailItem label="Stato attuale" value={formatApplicationStatus(selectedApplication.status)} />
               <DetailItem label="Citta" value={selectedApplication.city} />
               <DetailItem label="Email" value={selectedApplication.email} />
+              <DetailItem label="Telefono" value={selectedApplication.phone} />
               <DetailItem label="Instagram" value={selectedApplication.instagram} />
               <DetailItem
                 label="Data invio"

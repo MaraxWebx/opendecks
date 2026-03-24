@@ -514,6 +514,8 @@ function normalizeApplication(record: ApplicationRecord & { _id?: ObjectId }) {
   return {
     ...application,
     email: application.email || "",
+    phone: application.phone || "",
+    photoUrl: application.photoUrl || "",
     id: application.id || _id?.toHexString() || new ObjectId().toHexString()
   };
 }
@@ -533,6 +535,8 @@ function normalizeDjRoster(record: DjRosterRecord & { _id?: ObjectId }) {
   return {
     ...roster,
     email: roster.email || "",
+    phone: roster.phone || "",
+    photoUrl: roster.photoUrl || "",
     membershipCardEnabled: Boolean(roster.membershipCardEnabled),
     id: roster.id || _id?.toHexString() || new ObjectId().toHexString()
   };
@@ -578,6 +582,8 @@ async function syncDjRosterForApplication(
       name: application.name,
       city: application.city,
       email: application.email,
+      phone: application.phone,
+      photoUrl: application.photoUrl,
       instagram: application.instagram,
       setLink: application.setLink,
       bio: application.bio,
@@ -606,6 +612,8 @@ function syncDjRosterMock(application: ApplicationRecord) {
       name: application.name,
       city: application.city,
       email: application.email,
+      phone: application.phone,
+      photoUrl: application.photoUrl,
       instagram: application.instagram,
       setLink: application.setLink,
       bio: application.bio,

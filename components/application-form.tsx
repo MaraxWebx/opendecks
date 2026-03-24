@@ -16,6 +16,8 @@ type FormState = {
   name: string;
   city: string;
   email: string;
+  phone: string;
+  photoUrl: string;
   instagram: string;
   setLink: string;
   bio: string;
@@ -26,9 +28,11 @@ const initialState: FormState = {
   name: "",
   city: "",
   email: "",
+  phone: "",
+  photoUrl: "",
   instagram: "",
   setLink: "",
-  bio: ""
+  bio: "",
 };
 
 const fieldClass =
@@ -37,13 +41,41 @@ const fieldClass =
 export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
   const [form, setForm] = useState<FormState>({
     ...initialState,
-    eventSlug: initialSlug || events[0]?.slug || ""
+    eventSlug: initialSlug || events[0]?.slug || "",
   });
-  const [status, setStatus] = useState<{ type: "idle" | "ok" | "error"; message: string }>({
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [status, setStatus] = useState<{
+    type: "idle" | "ok" | "error";
+    message: string;
+  }>({
     type: "idle",
-    message: ""
+    message: "",
   });
   const [loading, setLoading] = useState(false);
+
+  async function uploadPhoto(file: File | null) {
+    if (!file) {
+      throw new Error("Carica una foto personale.");
+    }
+
+    const uploadData = new FormData();
+    uploadData.append("file", file);
+
+    const uploadResponse = await fetch("/api/uploads/application-photo", {
+      method: "POST",
+      body: uploadData,
+    });
+
+    if (!uploadResponse.ok) {
+      const payload = (await uploadResponse.json().catch(() => null)) as {
+        error?: string;
+      } | null;
+      throw new Error(payload?.error || "Upload foto non riuscito.");
+    }
+
+    const result = (await uploadResponse.json()) as { url: string };
+    return result.url;
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -57,10 +89,12 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
         throw new Error("Seleziona un evento valido.");
       }
 
+      const photoUrl = await uploadPhoto(photoFile);
+
       const response = await fetch("/api/applications", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           eventId: selectedEvent.id,
@@ -68,10 +102,12 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
           name: form.name,
           city: form.city,
           email: form.email,
+          phone: form.phone,
+          photoUrl,
           instagram: form.instagram,
           setLink: form.setLink,
-          bio: form.bio
-        })
+          bio: form.bio,
+        }),
       });
 
       if (!response.ok) {
@@ -80,23 +116,28 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
 
       setForm({
         ...initialState,
-        eventSlug: selectedEvent.slug
+        eventSlug: selectedEvent.slug,
       });
+      setPhotoFile(null);
       setStatus({ type: "ok", message: "Candidatura inviata correttamente." });
     } catch (error) {
       setStatus({
         type: "error",
-        message: error instanceof Error ? error.message : "Si e verificato un errore."
+        message:
+          error instanceof Error ? error.message : "Si e verificato un errore.",
       });
     } finally {
       setLoading(false);
     }
   }
 
-  function updateField<Key extends keyof FormState>(key: Key, value: FormState[Key]) {
+  function updateField<Key extends keyof FormState>(
+    key: Key,
+    value: FormState[Key],
+  ) {
     setForm((current) => ({
       ...current,
-      [key]: value
+      [key]: value,
     }));
   }
 
@@ -112,37 +153,48 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
       ) : (
         <form onSubmit={handleSubmit} className="grid gap-6">
           <div className="grid gap-3">
-            <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">Candidatura DJ</span>
+            <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
+              Candidatura DJ
+            </span>
             <h2 className="text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
               Invia il tuo set
             </h2>
             <p className="max-w-3xl text-sm leading-7 text-white/70">
-              Form base gia collegato agli eventi. Quando sara attivo MongoDB, i dati verranno
-              salvati sul database senza cambiare la UI.
+              Form base gia collegato agli eventi. Quando sara attivo MongoDB, i
+              dati verranno salvati sul database senza cambiare la UI.
             </p>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="grid gap-2 md:col-span-2">
-              <label htmlFor="eventSlug" className="text-xs uppercase tracking-[0.18em] text-white/70">
+              <label
+                htmlFor="eventSlug"
+                className="text-xs uppercase tracking-[0.18em] text-white/70"
+              >
                 Evento
               </label>
               <select
                 id="eventSlug"
                 className={ui.form.select}
                 value={form.eventSlug}
-                onChange={(event) => updateField("eventSlug", event.target.value)}
+                onChange={(event) =>
+                  updateField("eventSlug", event.target.value)
+                }
               >
                 {events.map((item) => (
                   <option key={item.id} value={item.slug}>
-                    {item.title} / {item.city} / {new Date(item.date).toLocaleDateString("it-IT")}
+                    {item.title} / {item.city} /{" "}
+                    {new Date(item.date).toLocaleDateString("it-IT")}
                   </option>
                 ))}
               </select>
             </div>
 
             <div className="grid gap-2">
-              <label htmlFor="name" className="text-xs uppercase tracking-[0.18em] text-white/70">
+              <label
+                htmlFor="name"
+                className="text-xs uppercase tracking-[0.18em] text-white/70"
+              >
                 Nome DJ
               </label>
               <input
@@ -155,7 +207,10 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
             </div>
 
             <div className="grid gap-2">
-              <label htmlFor="city" className="text-xs uppercase tracking-[0.18em] text-white/70">
+              <label
+                htmlFor="city"
+                className="text-xs uppercase tracking-[0.18em] text-white/70"
+              >
                 Citta
               </label>
               <input
@@ -168,21 +223,30 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
             </div>
 
             <div className="grid gap-2">
-              <label htmlFor="instagram" className="text-xs uppercase tracking-[0.18em] text-white/70">
-                Instagram
+              <label
+                htmlFor="instagram"
+                className="text-xs uppercase tracking-[0.18em] text-white/70"
+              >
+                Link Instagram
               </label>
               <input
                 id="instagram"
+                type="url"
                 className={fieldClass}
                 value={form.instagram}
-                onChange={(event) => updateField("instagram", event.target.value)}
-                placeholder="@username"
+                onChange={(event) =>
+                  updateField("instagram", event.target.value)
+                }
+                placeholder="https://instagram.com/..."
                 required
               />
             </div>
 
             <div className="grid gap-2">
-              <label htmlFor="email" className="text-xs uppercase tracking-[0.18em] text-white/70">
+              <label
+                htmlFor="email"
+                className="text-xs uppercase tracking-[0.18em] text-white/70"
+              >
                 Email
               </label>
               <input
@@ -197,7 +261,51 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
             </div>
 
             <div className="grid gap-2">
-              <label htmlFor="setLink" className="text-xs uppercase tracking-[0.18em] text-white/70">
+              <label
+                htmlFor="phone"
+                className="text-xs uppercase tracking-[0.18em] text-white/70"
+              >
+                Numero di telefono
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                className={fieldClass}
+                value={form.phone}
+                onChange={(event) => updateField("phone", event.target.value)}
+                placeholder="+39 ..."
+                required
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <label
+                htmlFor="photo"
+                className="text-xs uppercase tracking-[0.18em] text-white/70"
+              >
+                Foto personale
+              </label>
+              <input
+                id="photo"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/avif"
+                className={fieldClass}
+                onChange={(event) =>
+                  setPhotoFile(event.target.files?.[0] || null)
+                }
+                required
+              />
+              <span className="text-xs text-white/45">
+                Carica una foto chiara del profilo. Formati supportati: JPG,
+                PNG, WEBP, AVIF.
+              </span>
+            </div>
+
+            <div className="grid gap-2">
+              <label
+                htmlFor="setLink"
+                className="text-xs uppercase tracking-[0.18em] text-white/70"
+              >
                 Link set
               </label>
               <input
@@ -209,10 +317,17 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
                 placeholder="https://..."
                 required
               />
+              <span className="text-xs leading-6 text-white/45">
+                Inserisci un link al set tramite SoundCloud, Mixcloud, Drive,
+                Dropbox o WeTransfer temporaneo se necessario.
+              </span>
             </div>
 
             <div className="grid gap-2 md:col-span-2">
-              <label htmlFor="bio" className="text-xs uppercase tracking-[0.18em] text-white/70">
+              <label
+                htmlFor="bio"
+                className="text-xs uppercase tracking-[0.18em] text-white/70"
+              >
                 Bio breve
               </label>
               <textarea
@@ -234,7 +349,7 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
               Invia candidatura
             </button>
             <span className="text-sm text-white/60">
-              Campi richiesti: nome, citta, email, IG, set, bio.
+              Campi richiesti: nome, citta, email, telefono, foto, IG, set, bio.
             </span>
           </div>
 

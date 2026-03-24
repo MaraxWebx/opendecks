@@ -5,7 +5,7 @@ import { createApplication } from "@/lib/data";
 export async function POST(request: NextRequest) {
   const body = await request.json();
 
-  const requiredFields = ["eventId", "eventTitle", "name", "city", "email", "instagram", "setLink", "bio"];
+  const requiredFields = ["eventId", "eventTitle", "name", "city", "email", "phone", "photoUrl", "instagram", "setLink", "bio"];
   const missingField = requiredFields.find((field) => !body?.[field]);
 
   if (missingField) {
@@ -21,6 +21,8 @@ export async function POST(request: NextRequest) {
     name: body.name,
     city: body.city,
     email: body.email,
+    phone: body.phone,
+    photoUrl: body.photoUrl,
     instagram: body.instagram,
     setLink: body.setLink,
     bio: body.bio

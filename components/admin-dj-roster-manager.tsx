@@ -28,6 +28,7 @@ export function AdminDjRosterManager({ initialRoster }: AdminDjRosterManagerProp
         item.name,
         item.city,
         item.email,
+        item.phone,
         item.instagram,
         item.eventTitle,
         item.membershipCardId || ""
@@ -85,7 +86,7 @@ export function AdminDjRosterManager({ initialRoster }: AdminDjRosterManagerProp
             className={ui.form.field}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Nome, citta, email, evento..."
+            placeholder="Nome, citta, email, telefono, evento..."
           />
         </div>
         <p className="mt-4 min-h-6 text-sm text-white/65">{message}</p>
@@ -108,6 +109,7 @@ export function AdminDjRosterManager({ initialRoster }: AdminDjRosterManagerProp
                   </div>
                   <h3 className="text-lg font-semibold text-[#f7f3ee]">{entry.name}</h3>
                   <p className="text-sm text-white/70">{entry.email}</p>
+                  <p className="text-sm text-white/55">{entry.phone}</p>
                   <p className="text-sm text-white/55">{entry.instagram}</p>
                   <div className="flex flex-wrap gap-2 pt-1">
                     {entry.membershipCardEnabled ? (
@@ -172,8 +174,9 @@ export function AdminDjRosterManager({ initialRoster }: AdminDjRosterManagerProp
 
             <div className="grid gap-4 md:grid-cols-2">
               <DetailItem label="Evento" value={selectedDj.eventTitle} />
-              <DetailItem label="Città" value={selectedDj.city} />
+              <DetailItem label="Citta" value={selectedDj.city} />
               <DetailItem label="Email" value={selectedDj.email} />
+              <DetailItem label="Telefono" value={selectedDj.phone} />
               <DetailItem label="Instagram" value={selectedDj.instagram} />
               <DetailItem label="Link set" value={selectedDj.setLink} />
               <DetailItem

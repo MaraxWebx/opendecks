@@ -29,6 +29,8 @@ export type ApplicationRecord = {
   name: string;
   city: string;
   email: string;
+  phone: string;
+  photoUrl: string;
   instagram: string;
   setLink: string;
   bio: string;
@@ -44,6 +46,8 @@ export type DjRosterRecord = {
   name: string;
   city: string;
   email: string;
+  phone: string;
+  photoUrl: string;
   instagram: string;
   setLink: string;
   bio: string;
