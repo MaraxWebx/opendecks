@@ -106,7 +106,6 @@ export default async function AdminPage() {
               className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-5"
             >
               <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-white/58">
-                <span>{application.eventTitle}</span>
                 <span
                   className={`inline-flex rounded-md px-2 py-1 text-xs uppercase tracking-[0.12em] ${
                     application.status === "selected"
@@ -118,6 +117,10 @@ export default async function AdminPage() {
                 >
                   {formatApplicationStatus(application.status)}
                 </span>
+              </div>
+              <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-white/58">
+                <span>{application.eventTitle}</span>
+
                 <span>
                   {new Date(application.submittedAt).toLocaleString("it-IT")}
                 </span>

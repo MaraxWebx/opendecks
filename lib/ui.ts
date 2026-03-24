@@ -23,7 +23,7 @@ export const colors = {
 
 export const ui = {
   layout: {
-    page: "mx-auto w-full max-w-[1240px] px-4 md:px-6",
+    page: "mx-auto w-full  px-4 md:px-6",
     section: "py-16 md:py-20",
     sectionCompact: "py-8 md:py-10",
     sectionBottom: "pb-14 md:pb-16",

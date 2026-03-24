@@ -187,7 +187,6 @@ export function AdminApplicationsManager({
           {filteredApplications.map((application) => (
             <article key={application.id} className={ui.surface.card}>
               <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-white/58">
-                <span>{application.eventTitle}</span>
                 <span
                   className={`inline-flex rounded-md px-2 py-1 text-xs uppercase tracking-[0.12em] ${
                     application.status === "selected"
@@ -199,13 +198,17 @@ export function AdminApplicationsManager({
                 >
                   {application.status}
                 </span>
+              </div>
+
+              <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-white/58">
+                <span>{application.eventTitle}</span>
+
                 <span>
                   {new Date(application.submittedAt).toLocaleDateString(
                     "it-IT",
                   )}
                 </span>
               </div>
-
               <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
                 <div className="grid gap-2">
                   <h3 className="text-lg font-semibold text-[#f7f3ee]">

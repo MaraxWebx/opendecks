@@ -31,23 +31,25 @@ const emptyForm: FormState = {
   linkUrl: "",
   mediaUrl: "",
   mediaType: "photo",
-  order: ""
+  order: "",
 };
 
 export function ArchiveAdminManager({
   initialItems,
-  events
+  events,
 }: ArchiveAdminManagerProps) {
   const [items, setItems] = useState(initialItems);
   const [createOpen, setCreateOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(initialItems[0]?.id ?? null);
+  const [selectedId, setSelectedId] = useState<string | null>(
+    initialItems[0]?.id ?? null,
+  );
   const [createForm, setCreateForm] = useState<FormState>({
     ...emptyForm,
-    order: String((initialItems.at(-1)?.order ?? 0) + 1)
+    order: String((initialItems.at(-1)?.order ?? 0) + 1),
   });
   const [editForm, setEditForm] = useState<FormState>({
-    ...emptyForm
+    ...emptyForm,
   });
   const [createFile, setCreateFile] = useState<File | null>(null);
   const [editFile, setEditFile] = useState<File | null>(null);
@@ -55,17 +57,26 @@ export function ArchiveAdminManager({
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const sortedItems = useMemo(() => [...items].sort((a, b) => a.order - b.order), [items]);
+  const sortedItems = useMemo(
+    () => [...items].sort((a, b) => a.order - b.order),
+    [items],
+  );
   const eventMap = useMemo(
     () => new Map(events.map((event) => [event.id, event])),
-    [events]
+    [events],
   );
 
-  function onCreateChange<Key extends keyof FormState>(key: Key, value: FormState[Key]) {
+  function onCreateChange<Key extends keyof FormState>(
+    key: Key,
+    value: FormState[Key],
+  ) {
     setCreateForm((current) => ({ ...current, [key]: value }));
   }
 
-  function onEditChange<Key extends keyof FormState>(key: Key, value: FormState[Key]) {
+  function onEditChange<Key extends keyof FormState>(
+    key: Key,
+    value: FormState[Key],
+  ) {
     setEditForm((current) => ({ ...current, [key]: value }));
   }
 
@@ -79,13 +90,13 @@ export function ArchiveAdminManager({
 
     const uploadResponse = await fetch("/api/uploads/archive-media", {
       method: "POST",
-      body: uploadData
+      body: uploadData,
     });
 
     if (!uploadResponse.ok) {
-      const uploadResult = (await uploadResponse.json().catch(() => null)) as
-        | { error?: string }
-        | null;
+      const uploadResult = (await uploadResponse.json().catch(() => null)) as {
+        error?: string;
+      } | null;
       throw new Error(uploadResult?.error || "Upload media non riuscito.");
     }
 
@@ -102,7 +113,9 @@ export function ArchiveAdminManager({
         throw new Error("Carica un file media per la gallery.");
       }
 
-      const selectedEvent = createForm.eventId ? eventMap.get(createForm.eventId) : undefined;
+      const selectedEvent = createForm.eventId
+        ? eventMap.get(createForm.eventId)
+        : undefined;
 
       const mediaUpload = await uploadMedia(createFile);
 
@@ -113,23 +126,27 @@ export function ArchiveAdminManager({
           toPayload(createForm, selectedEvent, {
             mediaUrl: mediaUpload?.url || createForm.mediaUrl,
             mediaType: mediaUpload?.mediaType || createForm.mediaType,
-          })
-        )
+          }),
+        ),
       });
 
       if (!response.ok) {
-        const payload = (await response.json().catch(() => null)) as
-          | { error?: string }
-          | null;
-        throw new Error(payload?.error || "Salvataggio nuovo contenuto fallito.");
+        const payload = (await response.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        throw new Error(
+          payload?.error || "Salvataggio nuovo contenuto fallito.",
+        );
       }
 
       const result = (await response.json()) as { item: ArchiveRecord };
-      const nextItems = [...items, result.item].sort((a, b) => a.order - b.order);
+      const nextItems = [...items, result.item].sort(
+        (a, b) => a.order - b.order,
+      );
       setItems(nextItems);
       setCreateForm({
         ...emptyForm,
-        order: String((nextItems.at(-1)?.order ?? 0) + 1)
+        order: String((nextItems.at(-1)?.order ?? 0) + 1),
       });
       setCreateFile(null);
       setCreateOpen(false);
@@ -152,7 +169,9 @@ export function ArchiveAdminManager({
     setStatus("");
 
     try {
-      const selectedEvent = editForm.eventId ? eventMap.get(editForm.eventId) : undefined;
+      const selectedEvent = editForm.eventId
+        ? eventMap.get(editForm.eventId)
+        : undefined;
 
       const mediaUpload = await uploadMedia(editFile);
 
@@ -163,14 +182,14 @@ export function ArchiveAdminManager({
           toPayload(editForm, selectedEvent, {
             mediaUrl: mediaUpload?.url || editForm.mediaUrl,
             mediaType: mediaUpload?.mediaType || editForm.mediaType,
-          })
-        )
+          }),
+        ),
       });
 
       if (!response.ok) {
-        const payload = (await response.json().catch(() => null)) as
-          | { error?: string }
-          | null;
+        const payload = (await response.json().catch(() => null)) as {
+          error?: string;
+        } | null;
         throw new Error(payload?.error || "Aggiornamento contenuto fallito.");
       }
 
@@ -184,14 +203,18 @@ export function ArchiveAdminManager({
       setEditOpen(false);
       setStatus("Contenuto gallery aggiornato.");
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Errore aggiornamento.");
+      setStatus(
+        error instanceof Error ? error.message : "Errore aggiornamento.",
+      );
     } finally {
       setSaving(false);
     }
   }
 
   async function handleDelete(id: string) {
-    const confirmDelete = window.confirm("Confermi di voler eliminare questo contenuto gallery?");
+    const confirmDelete = window.confirm(
+      "Confermi di voler eliminare questo contenuto gallery?",
+    );
 
     if (!confirmDelete) {
       return;
@@ -202,13 +225,13 @@ export function ArchiveAdminManager({
 
     try {
       const response = await fetch(`/api/archive/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
       });
 
       if (!response.ok) {
-        const payload = (await response.json().catch(() => null)) as
-          | { error?: string }
-          | null;
+        const payload = (await response.json().catch(() => null)) as {
+          error?: string;
+        } | null;
         throw new Error(payload?.error || "Eliminazione contenuto fallita.");
       }
 
@@ -216,7 +239,9 @@ export function ArchiveAdminManager({
       setItems(nextItems);
       setStatus("Contenuto gallery eliminato.");
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Errore eliminazione.");
+      setStatus(
+        error instanceof Error ? error.message : "Errore eliminazione.",
+      );
     } finally {
       setDeletingId(null);
     }
@@ -244,7 +269,7 @@ export function ArchiveAdminManager({
         </p>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-5 md:grid-cols-3 xl:grid-cols-4">
         {sortedItems.map((item) => (
           <article
             key={item.id}
@@ -340,7 +365,10 @@ type GalleryModalProps = {
   submitLabel: string;
   onClose: () => void;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-  onChange: <Key extends keyof FormState>(key: Key, value: FormState[Key]) => void;
+  onChange: <Key extends keyof FormState>(
+    key: Key,
+    value: FormState[Key],
+  ) => void;
   mediaFile: File | null;
   setMediaFile: (file: File | null) => void;
 };
@@ -364,8 +392,12 @@ function GalleryModal({
       <div className={`${ui.surface.modal} max-w-4xl`}>
         <div className="mb-5 flex items-start justify-between gap-4">
           <div className="grid gap-2">
-            <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">Gallery</span>
-            <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">{title}</h3>
+            <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
+              Gallery
+            </span>
+            <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
+              {title}
+            </h3>
           </div>
           <button
             type="button"
@@ -388,7 +420,8 @@ function GalleryModal({
                 <option value="">Nessun evento collegato</option>
                 {events.map((event) => (
                   <option key={event.id} value={event.id}>
-                    {event.title} / {event.city} / {new Date(event.date).toLocaleDateString("it-IT")}
+                    {event.title} / {event.city} /{" "}
+                    {new Date(event.date).toLocaleDateString("it-IT")}
                   </option>
                 ))}
               </select>
@@ -408,7 +441,9 @@ function GalleryModal({
                 type="file"
                 accept="image/png,image/jpeg,image/webp,image/avif,image/gif,video/mp4,video/webm,video/quicktime"
                 className={ui.form.field}
-                onChange={(event) => setMediaFile(event.target.files?.[0] || null)}
+                onChange={(event) =>
+                  setMediaFile(event.target.files?.[0] || null)
+                }
                 required={!form.mediaUrl}
               />
             </Field>
@@ -433,7 +468,7 @@ function GalleryModal({
             </Field>
           </div>
 
-          {(mediaFile || form.mediaUrl) ? (
+          {mediaFile || form.mediaUrl ? (
             <div className="rounded-xl border border-[color:var(--color-brand-14)] bg-[color:var(--color-brand-10)] px-4 py-3 text-sm text-white/72">
               File principale: {mediaFile?.name || "Media già presente"}
             </div>
@@ -458,7 +493,7 @@ function Field({
   label,
   htmlFor,
   full = false,
-  children
+  children,
 }: {
   label: string;
   htmlFor: string;
@@ -478,7 +513,7 @@ function Field({
 function toPayload(
   form: FormState,
   linkedEvent?: EventRecord,
-  overrides?: Partial<Pick<FormState, "mediaUrl" | "mediaType">>
+  overrides?: Partial<Pick<FormState, "mediaUrl" | "mediaType">>,
 ) {
   return {
     title: linkedEvent?.title || form.alt,
@@ -490,11 +525,14 @@ function toPayload(
     year: linkedEvent?.date.slice(0, 4) || new Date().getFullYear().toString(),
     description: "",
     order: Number(form.order),
-    linkUrl: form.linkUrl || undefined
+    linkUrl: form.linkUrl || undefined,
   };
 }
 
-function toFormState(item: ArchiveRecord | null, events: EventRecord[]): FormState {
+function toFormState(
+  item: ArchiveRecord | null,
+  events: EventRecord[],
+): FormState {
   if (!item) {
     return { ...emptyForm };
   }
@@ -507,6 +545,6 @@ function toFormState(item: ArchiveRecord | null, events: EventRecord[]): FormSta
     linkUrl: item.linkUrl || "",
     mediaUrl: item.mediaUrl,
     mediaType: item.mediaType,
-    order: String(item.order)
+    order: String(item.order),
   };
 }
