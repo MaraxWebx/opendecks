@@ -4,6 +4,13 @@ import { HomeEventsCarousel } from "@/components/home-events-carousel";
 import { HomeHeroVideo } from "@/components/home-hero-video";
 import { getEvents, getUpcomingEvent } from "@/lib/data";
 
+const homeShots = [
+  "/img/home/shots/shot-1.jpeg",
+  "/img/home/shots/shot-2.jpg",
+  "/img/home/shots/shot-3.jpg",
+  "/img/home/shots/shot-4.jpg",
+];
+
 export default async function HomePage() {
   const [nextEvent, events] = await Promise.all([
     getUpcomingEvent(),
@@ -115,7 +122,7 @@ export default async function HomePage() {
 
       <section className="px-4 py-4 md:px-6">
         <div className="mx-auto grid min-w-0 max-w-[1240px] gap-5">
-          <div className="grid gap-4 rounded-2xl bg-white/[0.03] p-4 md:grid-cols-[minmax(0,1fr)_minmax(0,520px)] md:items-center md:gap-8 md:p-6">
+          <div className="grid gap-4  p-4 md:grid-cols-[minmax(0,1fr)_minmax(0,520px)] md:items-center md:gap-8 md:p-6">
             <div className="order-2 grid gap-4 md:order-1">
               <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
                 Ultima sessione
@@ -149,14 +156,8 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="grid gap-4 rounded-2xl  bg-white/[0.03] p-4 md:grid-cols-[minmax(0,520px)_minmax(0,1fr)] md:items-center md:gap-8 md:p-6">
-            <div className="overflow-hidden rounded-2xl bg-[#111]">
-              <img
-                src="/img/home/home-shots-art.svg"
-                alt="OpenDecks latest event shots"
-                className="aspect-[4/3] w-full object-cover"
-              />
-            </div>
+          <div className="grid gap-4 p-4 md:grid-cols-[minmax(0,520px)_minmax(0,1fr)] md:items-center md:gap-8 md:p-6">
+            <ShotsStack />
 
             <div className="grid gap-4">
               <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
@@ -190,6 +191,34 @@ export default async function HomePage() {
           <HomeEventsCarousel events={events.slice(1, 6)} />
         </div>
       </section>
+    </div>
+  );
+}
+
+function ShotsStack() {
+  return (
+    <div className="relative mx-auto aspect-[4/3] w-full max-w-[540px]">
+      {homeShots.map((src, index) => {
+        const offsets = [
+          "left-0 top-0 rotate-[-8deg]",
+          "left-5 top-2 rotate-[-3deg]",
+          "left-10 top-4 rotate-[4deg]",
+          "left-14 top-7 rotate-[8deg]",
+        ];
+
+        return (
+          <div
+            key={src}
+            className={`absolute h-[88%] w-[74%] overflow-hidden rounded-[1.8rem]  bg-[#111] shadow-[0_18px_50px_rgba(0,0,0,0.28)] ${offsets[index]}`}
+          >
+            <img
+              src={src}
+              alt={`OpenDecks shot ${index + 1}`}
+              className="h-full w-full object-cover"
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }
