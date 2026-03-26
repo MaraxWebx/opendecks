@@ -88,7 +88,9 @@ export default async function HomePage() {
                   <span className="text-xs uppercase tracking-[0.12em] text-white/50">
                     Orario
                   </span>
-                  <strong className="break-words text-right text-white">{nextEvent.time}</strong>
+                  <strong className="break-words text-right text-white">
+                    {nextEvent.time}
+                  </strong>
                 </div>
               </div>
 
@@ -111,11 +113,111 @@ export default async function HomePage() {
         </section>
       ) : null}
 
+      <section className="px-4 py-4 md:px-6">
+        <div className="mx-auto grid min-w-0 max-w-[1240px] gap-5">
+          <div className="grid gap-4 rounded-2xl bg-white/[0.03] p-4 md:grid-cols-[minmax(0,1fr)_minmax(0,520px)] md:items-center md:gap-8 md:p-6">
+            <div className="order-2 grid gap-4 md:order-1">
+              <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
+                Ultima sessione
+              </span>
+              <h2 className="text-[clamp(1.5rem,2.8vw,2.3rem)] font-semibold leading-none tracking-[-0.04em] text-[#f7f2e8]">
+                Ascolta l&apos;ultimo set della community.
+              </h2>
+              <p className="max-w-2xl text-sm leading-7 text-white/72 md:text-base">
+                Riascolta la sessione più recente di OpenDecks e resta dentro il
+                flusso degli ultimi DJ passati dalla console.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href="https://soundcloud.com/open-decks-107831124?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#E31F29] bg-[#E31F29] px-5 py-3 text-sm font-medium text-white transition hover:border-[#c91922] hover:bg-[#c91922]"
+                >
+                  <SoundCloudIcon />
+                  Ascolta su SoundCloud
+                </a>
+              </div>
+            </div>
+
+            <div className="order-1 overflow-hidden rounded-2xl bg-[#111] md:order-2">
+              <img
+                src="/img/home/home-session-art.svg"
+                alt="OpenDecks session visual"
+                className="aspect-[4/3] w-full object-cover"
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-4 rounded-2xl  bg-white/[0.03] p-4 md:grid-cols-[minmax(0,520px)_minmax(0,1fr)] md:items-center md:gap-8 md:p-6">
+            <div className="overflow-hidden rounded-2xl bg-[#111]">
+              <img
+                src="/img/home/home-shots-art.svg"
+                alt="OpenDecks latest event shots"
+                className="aspect-[4/3] w-full object-cover"
+              />
+            </div>
+
+            <div className="grid gap-4">
+              <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
+                Ultimi scatti
+              </span>
+              <h2 className="text-[clamp(1.5rem,2.8vw,2.3rem)] font-semibold leading-none tracking-[-0.04em] text-[#f7f2e8]">
+                Vedi gli scatti dell&apos;ultimo evento.
+              </h2>
+              <p className="max-w-2xl text-sm leading-7 text-white/72 md:text-base">
+                Una selezione rapida dei frame più forti della serata, tra
+                pubblico, consolle e momenti catturati live.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href="https://t.me/opendecksitalia?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnpj7YXBWihu6z5LbMl71a-JWR8ghi42oUKWpR9Nc3u-WHwwuaRgo_yUVLaFM_aem_aX73IYbUVPrT6RnEeVirAA"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#E31F29] bg-[#E31F29] px-5 py-3 text-sm font-medium text-white transition hover:border-[#c91922] hover:bg-[#c91922]"
+                >
+                  <TelegramIcon />
+                  Apri Telegram
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="px-4 py-4 pb-12 md:px-6">
         <div className="mx-auto min-w-0 max-w-[1240px]">
           <HomeEventsCarousel events={events.slice(1, 6)} />
         </div>
       </section>
     </div>
+  );
+}
+
+function SoundCloudIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M10.88 8.83a5.28 5.28 0 0 1 7.92 4.58h.7a3.5 3.5 0 1 1 0 7H4.62a.62.62 0 0 1-.62-.62V10.1c0-.34.28-.62.62-.62s.62.28.62.62v9.06h.9V8.66c0-.34.28-.62.62-.62s.62.28.62.62v10.5h.9V7.87c0-.34.28-.62.62-.62s.62.28.62.62v11.29h.9V8.83Zm9.42 10.33a2.25 2.25 0 0 0-.8-4.35h-1.93v-1.4a4.03 4.03 0 0 0-6.04-3.49v9.24h8.77Z" />
+    </svg>
+  );
+}
+
+function TelegramIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M21.07 4.93a1.6 1.6 0 0 0-1.64-.22L3.72 11.1a1.3 1.3 0 0 0 .1 2.44l4.02 1.42 1.45 4.64a1.28 1.28 0 0 0 2.17.54l2.25-2.31 4.42 3.24a1.61 1.61 0 0 0 2.54-.93l2.3-13.55a1.59 1.59 0 0 0-.9-1.66ZM10.28 18.2l-.97-3.12 7.92-6.96a.38.38 0 0 0-.5-.57l-9.55 5.86-2.34-.83 14.5-5.9-1.96 11.58-3.99-2.93a1.27 1.27 0 0 0-1.64.12l-1.47 1.5Z" />
+    </svg>
   );
 }

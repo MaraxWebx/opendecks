@@ -46,15 +46,38 @@ export async function Footer() {
             >
               info@opendecks.it
             </a>
+            <a className="transition hover:text-white" href="tel:+393343461942">
+              +39 334 346 1942
+            </a>
+          </div>
+          <div className="flex flex-wrap gap-3">
             <a
-              className="transition hover:text-white"
               href="https://www.instagram.com/opendecks.italia/"
               target="_blank"
               rel="noreferrer"
+              aria-label="Instagram OpenDecks Italia"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[#E31F29]/35 text-white transition hover:bg-[#E31F29]/10"
             >
-              Instagram
+              <InstagramIcon />
             </a>
-            <span>Italia</span>
+            <a
+              href="https://t.me/opendecksitalia?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnpj7YXBWihu6z5LbMl71a-JWR8ghi42oUKWpR9Nc3u-WHwwuaRgo_yUVLaFM_aem_aX73IYbUVPrT6RnEeVirAA"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Telegram OpenDecks Italia"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[#E31F29]/35 text-white transition hover:bg-[#E31F29]/10"
+            >
+              <TelegramIcon />
+            </a>
+            <a
+              href="https://soundcloud.com/open-decks-107831124?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="SoundCloud OpenDecks Italia"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[#E31F29]/35 text-white transition hover:bg-[#E31F29]/10"
+            >
+              <SoundCloudIcon />
+            </a>
           </div>
         </div>
 
@@ -83,9 +106,61 @@ export async function Footer() {
           className="transition hover:text-white/80"
           target="_blank"
         >
-          ❤️ ☠️ 🧠by Marettax
+          by Marettax
         </Link>
       </div>
     </footer>
+  );
+}
+
+function InstagramIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <rect
+        x="3.75"
+        y="3.75"
+        width="16.5"
+        height="16.5"
+        rx="4.5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <circle cx="12" cy="12" r="3.6" stroke="currentColor" strokeWidth="1.8" />
+      <circle cx="17.3" cy="6.7" r="1.05" fill="currentColor" />
+    </svg>
+  );
+}
+
+function TelegramIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M21.07 4.93a1.6 1.6 0 0 0-1.64-.22L3.72 11.1a1.3 1.3 0 0 0 .1 2.44l4.02 1.42 1.45 4.64a1.28 1.28 0 0 0 2.17.54l2.25-2.31 4.42 3.24a1.61 1.61 0 0 0 2.54-.93l2.3-13.55a1.59 1.59 0 0 0-.9-1.66ZM10.28 18.2l-.97-3.12 7.92-6.96a.38.38 0 0 0-.5-.57l-9.55 5.86-2.34-.83 14.5-5.9-1.96 11.58-3.99-2.93a1.27 1.27 0 0 0-1.64.12l-1.47 1.5Z" />
+    </svg>
+  );
+}
+
+function SoundCloudIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M10.88 8.83a5.28 5.28 0 0 1 7.92 4.58h.7a3.5 3.5 0 1 1 0 7H4.62a.62.62 0 0 1-.62-.62V10.1c0-.34.28-.62.62-.62s.62.28.62.62v9.06h.9V8.66c0-.34.28-.62.62-.62s.62.28.62.62v10.5h.9V7.87c0-.34.28-.62.62-.62s.62.28.62.62v11.29h.9V8.83Zm9.42 10.33a2.25 2.25 0 0 0-.8-4.35h-1.93v-1.4a4.03 4.03 0 0 0-6.04-3.49v9.24h8.77Z" />
+    </svg>
   );
 }
