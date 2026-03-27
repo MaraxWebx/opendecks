@@ -106,7 +106,7 @@ export async function Footer() {
           className="transition hover:text-white/80"
           target="_blank"
         >
-          by Marettax
+          ❤️ ☠️ 🧠by Marettax
         </Link>
       </div>
     </footer>

@@ -14,6 +14,7 @@ const navItems = [
   { href: "/eventi", label: "Eventi" },
 
   { href: "/archive", label: "Archivio" },
+  { href: "/contatti", label: "Contatti" },
   { href: "/prenota", label: "Prenota il tuo set", featured: true },
 ] satisfies Array<{ href: Route; label: string; featured?: boolean }>;
 
