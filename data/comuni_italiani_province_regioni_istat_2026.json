@@ -1,7 +1,7 @@
 ﻿[
   {
     "codice_comune_istat": "001001",
-    "comune": "AgliÃ¨",
+    "comune": "Agliè",
     "provincia": "Torino",
     "sigla_provincia": "TO",
     "regione": "Piemonte"
@@ -589,7 +589,7 @@
   },
   {
     "codice_comune_istat": "001086",
-    "comune": "CiriÃ¨",
+    "comune": "Ciriè",
     "provincia": "Torino",
     "sigla_provincia": "TO",
     "regione": "Piemonte"
@@ -673,7 +673,7 @@
   },
   {
     "codice_comune_istat": "001098",
-    "comune": "CuorgnÃ¨",
+    "comune": "Cuorgnè",
     "provincia": "Torino",
     "sigla_provincia": "TO",
     "regione": "Piemonte"
@@ -946,7 +946,7 @@
   },
   {
     "codice_comune_istat": "001137",
-    "comune": "LoranzÃ¨",
+    "comune": "Loranzè",
     "provincia": "Torino",
     "sigla_provincia": "TO",
     "regione": "Piemonte"
@@ -967,7 +967,7 @@
   },
   {
     "codice_comune_istat": "001141",
-    "comune": "LusigliÃ¨",
+    "comune": "Lusigliè",
     "provincia": "Torino",
     "sigla_provincia": "TO",
     "regione": "Piemonte"
@@ -1016,7 +1016,7 @@
   },
   {
     "codice_comune_istat": "001148",
-    "comune": "MazzÃ¨",
+    "comune": "Mazzè",
     "provincia": "Torino",
     "sigla_provincia": "TO",
     "regione": "Piemonte"
@@ -1548,7 +1548,7 @@
   },
   {
     "codice_comune_istat": "001226",
-    "comune": "RorÃ ",
+    "comune": "Rorà",
     "provincia": "Torino",
     "sigla_provincia": "TO",
     "regione": "Piemonte"
@@ -2024,14 +2024,14 @@
   },
   {
     "codice_comune_istat": "001295",
-    "comune": "VestignÃ¨",
+    "comune": "Vestignè",
     "provincia": "Torino",
     "sigla_provincia": "TO",
     "regione": "Piemonte"
   },
   {
     "codice_comune_istat": "001296",
-    "comune": "VialfrÃ¨",
+    "comune": "Vialfrè",
     "provincia": "Torino",
     "sigla_provincia": "TO",
     "regione": "Piemonte"
@@ -2143,7 +2143,7 @@
   },
   {
     "codice_comune_istat": "001313",
-    "comune": "ViÃ¹",
+    "comune": "Viù",
     "provincia": "Torino",
     "sigla_provincia": "TO",
     "regione": "Piemonte"
@@ -2234,7 +2234,7 @@
   },
   {
     "codice_comune_istat": "002011",
-    "comune": "BianzÃ¨",
+    "comune": "Bianzè",
     "provincia": "Vercelli",
     "sigla_provincia": "VC",
     "regione": "Piemonte"
@@ -2647,7 +2647,7 @@
   },
   {
     "codice_comune_istat": "002133",
-    "comune": "SanthiÃ ",
+    "comune": "Santhià",
     "provincia": "Vercelli",
     "sigla_provincia": "VC",
     "regione": "Piemonte"
@@ -3459,7 +3459,7 @@
   },
   {
     "codice_comune_istat": "004014",
-    "comune": "Bastia MondovÃ¬",
+    "comune": "Bastia Mondovì",
     "provincia": "Cuneo",
     "sigla_provincia": "CN",
     "regione": "Piemonte"
@@ -3648,14 +3648,14 @@
   },
   {
     "codice_comune_istat": "004042",
-    "comune": "CardÃ¨",
+    "comune": "Cardè",
     "provincia": "Cuneo",
     "sigla_provincia": "CN",
     "regione": "Piemonte"
   },
   {
     "codice_comune_istat": "004043",
-    "comune": "CarrÃ¹",
+    "comune": "Carrù",
     "provincia": "Cuneo",
     "sigla_provincia": "CN",
     "regione": "Piemonte"
@@ -3830,7 +3830,7 @@
   },
   {
     "codice_comune_istat": "004069",
-    "comune": "CigliÃ¨",
+    "comune": "Cigliè",
     "provincia": "Cuneo",
     "sigla_provincia": "CN",
     "regione": "Piemonte"
@@ -4257,7 +4257,7 @@
   },
   {
     "codice_comune_istat": "004130",
-    "comune": "MondovÃ¬",
+    "comune": "Mondovì",
     "provincia": "Cuneo",
     "sigla_provincia": "CN",
     "regione": "Piemonte"
@@ -4278,14 +4278,14 @@
   },
   {
     "codice_comune_istat": "004133",
-    "comune": "MontÃ ",
+    "comune": "Montà",
     "provincia": "Cuneo",
     "sigla_provincia": "CN",
     "regione": "Piemonte"
   },
   {
     "codice_comune_istat": "004134",
-    "comune": "Montaldo di MondovÃ¬",
+    "comune": "Montaldo di Mondovì",
     "provincia": "Cuneo",
     "sigla_provincia": "CN",
     "regione": "Piemonte"
@@ -4663,7 +4663,7 @@
   },
   {
     "codice_comune_istat": "004188",
-    "comune": "Rocca CigliÃ¨",
+    "comune": "Rocca Cigliè",
     "provincia": "Cuneo",
     "sigla_provincia": "CN",
     "regione": "Piemonte"
@@ -4677,7 +4677,7 @@
   },
   {
     "codice_comune_istat": "004190",
-    "comune": "Roccaforte MondovÃ¬",
+    "comune": "Roccaforte Mondovì",
     "provincia": "Cuneo",
     "sigla_provincia": "CN",
     "regione": "Piemonte"
@@ -4803,7 +4803,7 @@
   },
   {
     "codice_comune_istat": "004208",
-    "comune": "SanfrÃ¨",
+    "comune": "Sanfrè",
     "provincia": "Cuneo",
     "sigla_provincia": "CN",
     "regione": "Piemonte"
@@ -4817,7 +4817,7 @@
   },
   {
     "codice_comune_istat": "004210",
-    "comune": "San Michele MondovÃ¬",
+    "comune": "San Michele Mondovì",
     "provincia": "Cuneo",
     "sigla_provincia": "CN",
     "regione": "Piemonte"
@@ -4936,7 +4936,7 @@
   },
   {
     "codice_comune_istat": "004227",
-    "comune": "Torre MondovÃ¬",
+    "comune": "Torre Mondovì",
     "provincia": "Cuneo",
     "sigla_provincia": "CN",
     "regione": "Piemonte"
@@ -4971,7 +4971,7 @@
   },
   {
     "codice_comune_istat": "004232",
-    "comune": "TrinitÃ ",
+    "comune": "Trinità",
     "provincia": "Cuneo",
     "sigla_provincia": "CN",
     "regione": "Piemonte"
@@ -5055,7 +5055,7 @@
   },
   {
     "codice_comune_istat": "004245",
-    "comune": "Villanova MondovÃ¬",
+    "comune": "Villanova Mondovì",
     "provincia": "Cuneo",
     "sigla_provincia": "CN",
     "regione": "Piemonte"
@@ -5671,7 +5671,7 @@
   },
   {
     "codice_comune_istat": "005086",
-    "comune": "PiovÃ  Massaia",
+    "comune": "Piovà Massaia",
     "provincia": "Asti",
     "sigla_provincia": "AT",
     "regione": "Piemonte"
@@ -7226,520 +7226,520 @@
   {
     "codice_comune_istat": "007001",
     "comune": "Allein",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007002",
-    "comune": "Antey-Saint-AndrÃ©",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "comune": "Antey-Saint-André",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007003",
     "comune": "Aosta",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007004",
     "comune": "Arnad",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007005",
     "comune": "Arvier",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007006",
     "comune": "Avise",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007007",
     "comune": "Ayas",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007008",
     "comune": "Aymavilles",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007009",
     "comune": "Bard",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007010",
     "comune": "Bionaz",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007011",
     "comune": "Brissogne",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007012",
     "comune": "Brusson",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007013",
     "comune": "Challand-Saint-Anselme",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007014",
     "comune": "Challand-Saint-Victor",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007015",
     "comune": "Chambave",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007016",
     "comune": "Chamois",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007017",
     "comune": "Champdepraz",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007018",
     "comune": "Champorcher",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007019",
     "comune": "Charvensod",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007020",
-    "comune": "ChÃ¢tillon",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "comune": "Châtillon",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007021",
     "comune": "Cogne",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007022",
     "comune": "Courmayeur",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007023",
     "comune": "Donnas",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007024",
     "comune": "Doues",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007025",
-    "comune": "EmarÃ¨se",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "comune": "Emarèse",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007026",
     "comune": "Etroubles",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007027",
-    "comune": "FÃ©nis",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "comune": "Fénis",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007028",
     "comune": "Fontainemore",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007029",
     "comune": "Gaby",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007030",
     "comune": "Gignod",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007031",
     "comune": "Gressan",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007032",
-    "comune": "Gressoney-La-TrinitÃ©",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "comune": "Gressoney-La-Trinité",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007033",
     "comune": "Gressoney-Saint-Jean",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007034",
-    "comune": "HÃ´ne",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "comune": "Hône",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007035",
     "comune": "Introd",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007036",
     "comune": "Issime",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007037",
     "comune": "Issogne",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007038",
-    "comune": "JovenÃ§an",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "comune": "Jovençan",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007039",
     "comune": "La Magdeleine",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007040",
     "comune": "La Salle",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007041",
     "comune": "La Thuile",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007042",
     "comune": "Lillianes",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007043",
     "comune": "Montjovet",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007044",
     "comune": "Morgex",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007045",
     "comune": "Nus",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007046",
     "comune": "Ollomont",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007047",
     "comune": "Oyace",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007048",
     "comune": "Perloz",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007049",
     "comune": "Pollein",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007050",
     "comune": "Pontboset",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007051",
     "comune": "Pontey",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007052",
     "comune": "Pont-Saint-Martin",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007053",
-    "comune": "PrÃ©-Saint-Didier",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "comune": "Pré-Saint-Didier",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007054",
     "comune": "Quart",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007055",
-    "comune": "RhÃªmes-Notre-Dame",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "comune": "Rhêmes-Notre-Dame",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007056",
-    "comune": "RhÃªmes-Saint-Georges",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "comune": "Rhêmes-Saint-Georges",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007057",
     "comune": "Roisan",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007058",
     "comune": "Saint-Christophe",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007059",
     "comune": "Saint-Denis",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007060",
     "comune": "Saint-Marcel",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007061",
     "comune": "Saint-Nicolas",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007062",
     "comune": "Saint-Oyen",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007063",
     "comune": "Saint-Pierre",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007064",
-    "comune": "Saint-RhÃ©my-en-Bosses",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "comune": "Saint-Rhémy-en-Bosses",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007065",
     "comune": "Saint-Vincent",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007066",
     "comune": "Sarre",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007067",
     "comune": "Torgnon",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007068",
     "comune": "Valgrisenche",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007069",
     "comune": "Valpelline",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007070",
     "comune": "Valsavarenche",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007071",
     "comune": "Valtournenche",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007072",
     "comune": "Verrayes",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007073",
-    "comune": "VerrÃ¨s",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "comune": "Verrès",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "007074",
     "comune": "Villeneuve",
-    "provincia": "Valle d'Aosta/VallÃ©e d'Aoste",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
     "sigla_provincia": "AO",
-    "regione": "Valle d'Aosta/VallÃ©e d'Aoste"
+    "regione": "Valle d'Aosta/Vallée d'Aoste"
   },
   {
     "codice_comune_istat": "008001",
@@ -8051,7 +8051,7 @@
   },
   {
     "codice_comune_istat": "008047",
-    "comune": "PrelÃ ",
+    "comune": "Prelà",
     "provincia": "Imperia",
     "sigla_provincia": "IM",
     "regione": "Liguria"
@@ -9087,7 +9087,7 @@
   },
   {
     "codice_comune_istat": "010058",
-    "comune": "Serra RiccÃ²",
+    "comune": "Serra Riccò",
     "provincia": "Genova",
     "sigla_provincia": "GE",
     "regione": "Liguria"
@@ -9311,7 +9311,7 @@
   },
   {
     "codice_comune_istat": "011023",
-    "comune": "RiccÃ² del Golfo di Spezia",
+    "comune": "Riccò del Golfo di Spezia",
     "provincia": "La Spezia",
     "sigla_provincia": "SP",
     "regione": "Liguria"
@@ -10291,7 +10291,7 @@
   },
   {
     "codice_comune_istat": "012139",
-    "comune": "ViggiÃ¹",
+    "comune": "Viggiù",
     "provincia": "Varese",
     "sigla_provincia": "VA",
     "regione": "Lombardia"
@@ -10515,7 +10515,7 @@
   },
   {
     "codice_comune_istat": "013041",
-    "comune": "CantÃ¹",
+    "comune": "Cantù",
     "provincia": "Como",
     "sigla_provincia": "CO",
     "regione": "Lombardia"
@@ -10746,7 +10746,7 @@
   },
   {
     "codice_comune_istat": "013100",
-    "comune": "FenegrÃ²",
+    "comune": "Fenegrò",
     "provincia": "Como",
     "sigla_provincia": "CO",
     "regione": "Lombardia"
@@ -12860,7 +12860,7 @@
   },
   {
     "codice_comune_istat": "016005",
-    "comune": "AlmÃ¨",
+    "comune": "Almè",
     "provincia": "Bergamo",
     "sigla_provincia": "BG",
     "regione": "Lombardia"
@@ -14428,7 +14428,7 @@
   },
   {
     "codice_comune_istat": "016239",
-    "comune": "Villa d'AlmÃ¨",
+    "comune": "Villa d'Almè",
     "provincia": "Bergamo",
     "sigla_provincia": "BG",
     "regione": "Lombardia"
@@ -15667,7 +15667,7 @@
   },
   {
     "codice_comune_istat": "017164",
-    "comune": "RoÃ¨ Volciano",
+    "comune": "Roè Volciano",
     "provincia": "Brescia",
     "sigla_provincia": "BS",
     "regione": "Lombardia"
@@ -15709,7 +15709,7 @@
   },
   {
     "codice_comune_istat": "017170",
-    "comune": "SalÃ²",
+    "comune": "Salò",
     "provincia": "Brescia",
     "sigla_provincia": "BS",
     "regione": "Lombardia"
@@ -15807,7 +15807,7 @@
   },
   {
     "codice_comune_istat": "017184",
-    "comune": "TemÃ¹",
+    "comune": "Temù",
     "provincia": "Brescia",
     "sigla_provincia": "BS",
     "regione": "Lombardia"
@@ -16017,7 +16017,7 @@
   },
   {
     "codice_comune_istat": "018009",
-    "comune": "BascapÃ¨",
+    "comune": "Bascapè",
     "provincia": "Pavia",
     "sigla_provincia": "PV",
     "regione": "Lombardia"
@@ -16402,7 +16402,7 @@
   },
   {
     "codice_comune_istat": "018068",
-    "comune": "GambolÃ²",
+    "comune": "Gambolò",
     "provincia": "Pavia",
     "sigla_provincia": "PV",
     "regione": "Lombardia"
@@ -16612,7 +16612,7 @@
   },
   {
     "codice_comune_istat": "018100",
-    "comune": "MontÃ¹ Beccaria",
+    "comune": "Montù Beccaria",
     "provincia": "Pavia",
     "sigla_provincia": "PV",
     "regione": "Lombardia"
@@ -17039,7 +17039,7 @@
   },
   {
     "codice_comune_istat": "018162",
-    "comune": "TravacÃ² Siccomario",
+    "comune": "Travacò Siccomario",
     "provincia": "Pavia",
     "sigla_provincia": "PV",
     "regione": "Lombardia"
@@ -17221,7 +17221,7 @@
   },
   {
     "codice_comune_istat": "018189",
-    "comune": "ZerbolÃ²",
+    "comune": "Zerbolò",
     "provincia": "Pavia",
     "sigla_provincia": "PV",
     "regione": "Lombardia"
@@ -18498,1974 +18498,1974 @@
     "comune": "Aldino",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021002",
     "comune": "Andriano",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021003",
     "comune": "Anterivo",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021004",
     "comune": "Appiano sulla strada del vino",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021005",
     "comune": "Avelengo",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021006",
     "comune": "Badia",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021007",
     "comune": "Barbiano",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021008",
     "comune": "Bolzano",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021009",
     "comune": "Braies",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021010",
     "comune": "Brennero",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021011",
     "comune": "Bressanone",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021012",
     "comune": "Bronzolo",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021013",
     "comune": "Brunico",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021014",
     "comune": "Caines",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021015",
     "comune": "Caldaro sulla strada del vino",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021016",
     "comune": "Campo di Trens",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021017",
     "comune": "Campo Tures",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021018",
     "comune": "Castelbello-Ciardes",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021019",
     "comune": "Castelrotto",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021020",
     "comune": "Cermes",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021021",
     "comune": "Chienes",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021022",
     "comune": "Chiusa",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021023",
     "comune": "Cornedo all'Isarco",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021024",
     "comune": "Cortaccia sulla strada del vino",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021025",
     "comune": "Cortina sulla strada del vino",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021026",
     "comune": "Corvara in Badia",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021027",
     "comune": "Curon Venosta",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021028",
     "comune": "Dobbiaco",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021029",
     "comune": "Egna",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021030",
     "comune": "Falzes",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021031",
-    "comune": "FiÃ¨ allo Sciliar",
+    "comune": "Fiè allo Sciliar",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021032",
     "comune": "Fortezza",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021033",
     "comune": "Funes",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021034",
     "comune": "Gais",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021035",
     "comune": "Gargazzone",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021036",
     "comune": "Glorenza",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021037",
     "comune": "Laces",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021038",
     "comune": "Lagundo",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021039",
     "comune": "Laion",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021040",
     "comune": "Laives",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021041",
     "comune": "Lana",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021042",
     "comune": "Lasa",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021043",
     "comune": "Lauregno",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021044",
     "comune": "Luson",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021045",
-    "comune": "MagrÃ¨ sulla strada del vino",
+    "comune": "Magrè sulla strada del vino",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021046",
     "comune": "Malles Venosta",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021047",
     "comune": "Marebbe",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021048",
     "comune": "Marlengo",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021049",
     "comune": "Martello",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021050",
     "comune": "Meltina",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021051",
     "comune": "Merano",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021052",
     "comune": "Monguelfo-Tesido",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021053",
     "comune": "Montagna sulla strada del vino",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021054",
     "comune": "Moso in Passiria",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021055",
     "comune": "Nalles",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021056",
     "comune": "Naturno",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021057",
     "comune": "Naz-Sciaves",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021058",
     "comune": "Nova Levante",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021059",
     "comune": "Nova Ponente",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021060",
     "comune": "Ora",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021061",
     "comune": "Ortisei",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021062",
     "comune": "Parcines",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021063",
     "comune": "Perca",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021064",
     "comune": "Plaus",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021065",
     "comune": "Ponte Gardena",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021066",
     "comune": "Postal",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021067",
     "comune": "Prato allo Stelvio",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021068",
     "comune": "Predoi",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021069",
     "comune": "Proves",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021070",
     "comune": "Racines",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021071",
     "comune": "Rasun-Anterselva",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021072",
     "comune": "Renon",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021073",
     "comune": "Rifiano",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021074",
     "comune": "Rio di Pusteria",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021075",
     "comune": "Rodengo",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021076",
     "comune": "Salorno sulla strada del vino",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021077",
     "comune": "San Candido",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021079",
     "comune": "San Genesio Atesino",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021080",
     "comune": "San Leonardo in Passiria",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021081",
     "comune": "San Lorenzo di Sebato",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021082",
     "comune": "San Martino in Badia",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021083",
     "comune": "San Martino in Passiria",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021084",
     "comune": "San Pancrazio",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021085",
     "comune": "Santa Cristina Valgardena",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021086",
     "comune": "Sarentino",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021087",
     "comune": "Scena",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021088",
     "comune": "Selva dei Molini",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021089",
     "comune": "Selva di Val Gardena",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021091",
     "comune": "Senales",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021092",
     "comune": "Sesto",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021093",
     "comune": "Silandro",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021094",
     "comune": "Sluderno",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021095",
     "comune": "Stelvio",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021096",
     "comune": "Terento",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021097",
     "comune": "Terlano",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021098",
     "comune": "Termeno sulla strada del vino",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021099",
     "comune": "Tesimo",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021100",
     "comune": "Tires",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021101",
     "comune": "Tirolo",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021102",
     "comune": "Trodena nel parco naturale",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021103",
     "comune": "Tubre",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021104",
     "comune": "Ultimo",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021105",
     "comune": "Vadena",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021106",
     "comune": "Valdaora",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021107",
     "comune": "Val di Vizze",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021108",
     "comune": "Valle Aurina",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021109",
     "comune": "Valle di Casies",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021110",
     "comune": "Vandoies",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021111",
     "comune": "Varna",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021112",
     "comune": "Verano",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021113",
     "comune": "Villabassa",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021114",
     "comune": "Villandro",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021115",
     "comune": "Vipiteno",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021116",
     "comune": "Velturno",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021117",
     "comune": "La Valle",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "021118",
     "comune": "Senale-San Felice",
     "provincia": "Bolzano/Bozen",
     "sigla_provincia": "BZ",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022001",
     "comune": "Ala",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022002",
     "comune": "Albiano",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022003",
     "comune": "Aldeno",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022005",
     "comune": "Andalo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022006",
     "comune": "Arco",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022007",
     "comune": "Avio",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022009",
-    "comune": "Baselga di PinÃ¨",
+    "comune": "Baselga di Pinè",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022011",
     "comune": "Bedollo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022013",
     "comune": "Besenello",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022015",
     "comune": "Bieno",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022017",
     "comune": "Bleggio Superiore",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022018",
     "comune": "Bocenago",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022021",
     "comune": "Bondone",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022022",
     "comune": "Borgo Valsugana",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022025",
     "comune": "Brentonico",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022026",
     "comune": "Bresimo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022029",
     "comune": "Caderzone Terme",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022032",
     "comune": "Calceranica al Lago",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022033",
     "comune": "Caldes",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022034",
     "comune": "Caldonazzo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022035",
     "comune": "Calliano",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022036",
     "comune": "Campitello di Fassa",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022037",
     "comune": "Campodenno",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022038",
     "comune": "Canal San Bovo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022039",
     "comune": "Canazei",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022040",
     "comune": "Capriana",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022042",
     "comune": "Carisolo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022043",
     "comune": "Carzano",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022045",
     "comune": "Castel Condino",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022047",
     "comune": "Castello-Molina di Fiemme",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022048",
     "comune": "Castello Tesino",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022049",
     "comune": "Castelnuovo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022050",
     "comune": "Cavalese",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022051",
     "comune": "Cavareno",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022052",
     "comune": "Cavedago",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022053",
     "comune": "Cavedine",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022054",
     "comune": "Cavizzana",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022058",
     "comune": "Cimone",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022059",
     "comune": "Cinte Tesino",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022060",
     "comune": "Cis",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022061",
     "comune": "Civezzano",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022062",
     "comune": "Cles",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022064",
     "comune": "Commezzadura",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022068",
     "comune": "Croviana",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022071",
     "comune": "Dambel",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022074",
     "comune": "Denno",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022078",
     "comune": "Drena",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022079",
     "comune": "Dro",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022081",
     "comune": "Fai della Paganella",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022083",
-    "comune": "FiavÃ¨",
+    "comune": "Fiavè",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022085",
     "comune": "Fierozzo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022087",
     "comune": "Folgaria",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022089",
     "comune": "Fornace",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022090",
     "comune": "Frassilongo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022091",
     "comune": "Garniga Terme",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022092",
     "comune": "Giovo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022093",
     "comune": "Giustino",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022095",
     "comune": "Grigno",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022097",
     "comune": "Imer",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022098",
     "comune": "Isera",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022102",
     "comune": "Lavarone",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022103",
     "comune": "Lavis",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022104",
     "comune": "Levico Terme",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022106",
     "comune": "Livo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022108",
     "comune": "Lona-Lases",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022109",
     "comune": "Luserna",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022110",
-    "comune": "MalÃ©",
+    "comune": "Malé",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022112",
     "comune": "Massimeno",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022113",
     "comune": "Mazzin",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022114",
     "comune": "Mezzana",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022115",
     "comune": "Mezzano",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022116",
     "comune": "Mezzocorona",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022117",
     "comune": "Mezzolombardo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022118",
     "comune": "Moena",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022120",
     "comune": "Molveno",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022123",
     "comune": "Mori",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022124",
     "comune": "Nago-Torbole",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022127",
     "comune": "Nogaredo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022128",
     "comune": "Nomi",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022129",
     "comune": "Novaledo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022130",
     "comune": "Ospedaletto",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022131",
     "comune": "Ossana",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022133",
-    "comune": "PalÃ¹ del Fersina",
+    "comune": "Palù del Fersina",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022134",
-    "comune": "PanchiÃ ",
+    "comune": "Panchià",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022135",
     "comune": "Ronzo-Chienis",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022136",
     "comune": "Peio",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022137",
     "comune": "Pellizzano",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022138",
     "comune": "Pelugo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022139",
     "comune": "Pergine Valsugana",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022142",
     "comune": "Pieve Tesino",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022143",
     "comune": "Pinzolo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022144",
     "comune": "Pomarolo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022147",
     "comune": "Predazzo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022150",
     "comune": "Rabbi",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022153",
     "comune": "Riva del Garda",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022155",
     "comune": "Romeno",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022156",
     "comune": "Roncegno Terme",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022157",
     "comune": "Ronchi Valsugana",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022159",
     "comune": "Ronzone",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022160",
-    "comune": "RoverÃ¨ della Luna",
+    "comune": "Roverè della Luna",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022161",
     "comune": "Rovereto",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022162",
-    "comune": "RuffrÃ¨-Mendola",
+    "comune": "Ruffrè-Mendola",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022163",
     "comune": "Rumo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022164",
     "comune": "Sagron Mis",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022165",
     "comune": "Samone",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022167",
     "comune": "San Michele all'Adige",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022168",
     "comune": "Sant'Orsola Terme",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022169",
     "comune": "Sanzeno",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022170",
     "comune": "Sarnonico",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022171",
     "comune": "Scurelle",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022172",
     "comune": "Segonzano",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022173",
     "comune": "Sfruz",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022176",
     "comune": "Soraga di Fassa",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022177",
     "comune": "Sover",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022179",
     "comune": "Spiazzo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022180",
     "comune": "Spormaggiore",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022181",
     "comune": "Sporminore",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022182",
     "comune": "Stenico",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022183",
     "comune": "Storo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022184",
     "comune": "Strembo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022188",
     "comune": "Telve",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022189",
     "comune": "Telve di Sopra",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022190",
     "comune": "Tenna",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022191",
     "comune": "Tenno",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022193",
     "comune": "Terragnolo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022195",
     "comune": "Terzolas",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022196",
     "comune": "Tesero",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022199",
     "comune": "Tione di Trento",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022200",
     "comune": "Ton",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022202",
     "comune": "Torcegno",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022203",
     "comune": "Trambileno",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022205",
     "comune": "Trento",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022209",
     "comune": "Valfloriana",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022210",
     "comune": "Vallarsa",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022213",
     "comune": "Vermiglio",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022216",
     "comune": "Vignola-Falesina",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022222",
     "comune": "Villa Lagarina",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022224",
     "comune": "Volano",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022226",
     "comune": "Ziano di Fiemme",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022228",
     "comune": "Comano Terme",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022229",
     "comune": "Ledro",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022230",
     "comune": "Predaia",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022231",
     "comune": "San Lorenzo Dorsino",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022232",
     "comune": "Valdaone",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022233",
     "comune": "Dimaro Folgarida",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022234",
     "comune": "Pieve di Bono-Prezzo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022235",
     "comune": "Altavalle",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022236",
     "comune": "Altopiano della Vigolana",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022237",
     "comune": "Amblar-Don",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022238",
     "comune": "Borgo Chiese",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022239",
     "comune": "Borgo Lares",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022240",
     "comune": "Castel Ivano",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022241",
     "comune": "Cembra Lisignago",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022242",
-    "comune": "ContÃ ",
+    "comune": "Contà",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022243",
     "comune": "Madruzzo",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022244",
     "comune": "Porte di Rendena",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022245",
     "comune": "Primiero San Martino di Castrozza",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022246",
     "comune": "Sella Giudicarie",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022247",
     "comune": "Tre Ville",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022248",
     "comune": "Vallelaghi",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022249",
     "comune": "Ville d'Anaunia",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022250",
     "comune": "San Giovanni di Fassa",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022251",
     "comune": "Terre d'Adige",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022252",
     "comune": "Borgo d'Anaunia",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022253",
     "comune": "Novella",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "022254",
     "comune": "Ville di Fiemme",
     "provincia": "Trento",
     "sigla_provincia": "TN",
-    "regione": "Trentino-Alto Adige/SÃ¼dtirol"
+    "regione": "Trentino-Alto Adige/Südtirol"
   },
   {
     "codice_comune_istat": "023001",
@@ -20679,14 +20679,14 @@
   },
   {
     "codice_comune_istat": "023031",
-    "comune": "DolcÃ¨",
+    "comune": "Dolcè",
     "provincia": "Verona",
     "sigla_provincia": "VR",
     "regione": "Veneto"
   },
   {
     "codice_comune_istat": "023032",
-    "comune": "ErbÃ¨",
+    "comune": "Erbè",
     "provincia": "Verona",
     "sigla_provincia": "VR",
     "regione": "Veneto"
@@ -20854,7 +20854,7 @@
   },
   {
     "codice_comune_istat": "023056",
-    "comune": "PalÃ¹",
+    "comune": "Palù",
     "provincia": "Verona",
     "sigla_provincia": "VR",
     "regione": "Veneto"
@@ -20903,7 +20903,7 @@
   },
   {
     "codice_comune_istat": "023063",
-    "comune": "RoncÃ ",
+    "comune": "Roncà",
     "provincia": "Verona",
     "sigla_provincia": "VR",
     "regione": "Veneto"
@@ -20924,14 +20924,14 @@
   },
   {
     "codice_comune_istat": "023066",
-    "comune": "Roveredo di GuÃ ",
+    "comune": "Roveredo di Guà",
     "provincia": "Verona",
     "sigla_provincia": "VR",
     "regione": "Veneto"
   },
   {
     "codice_comune_istat": "023067",
-    "comune": "RoverÃ¨ Veronese",
+    "comune": "Roverè Veronese",
     "provincia": "Verona",
     "sigla_provincia": "VR",
     "regione": "Veneto"
@@ -21050,7 +21050,7 @@
   },
   {
     "codice_comune_istat": "023084",
-    "comune": "SorgÃ ",
+    "comune": "Sorgà",
     "provincia": "Verona",
     "sigla_provincia": "VR",
     "regione": "Veneto"
@@ -21302,7 +21302,7 @@
   },
   {
     "codice_comune_istat": "024024",
-    "comune": "CarrÃ¨",
+    "comune": "Carrè",
     "provincia": "Vicenza",
     "sigla_provincia": "VI",
     "regione": "Veneto"
@@ -21673,7 +21673,7 @@
   },
   {
     "codice_comune_istat": "024087",
-    "comune": "RosÃ ",
+    "comune": "Rosà",
     "provincia": "Vicenza",
     "sigla_provincia": "VI",
     "regione": "Veneto"
@@ -21862,7 +21862,7 @@
   },
   {
     "codice_comune_istat": "024119",
-    "comune": "ZanÃ¨",
+    "comune": "Zanè",
     "provincia": "Vicenza",
     "sigla_provincia": "VI",
     "regione": "Veneto"
@@ -21953,7 +21953,7 @@
   },
   {
     "codice_comune_istat": "025004",
-    "comune": "ArsiÃ¨",
+    "comune": "Arsiè",
     "provincia": "Belluno",
     "sigla_provincia": "BL",
     "regione": "Veneto"
@@ -22184,7 +22184,7 @@
   },
   {
     "codice_comune_istat": "025046",
-    "comune": "San NicolÃ² di Comelico",
+    "comune": "San Nicolò di Comelico",
     "provincia": "Belluno",
     "sigla_provincia": "BL",
     "regione": "Veneto"
@@ -22317,7 +22317,7 @@
   },
   {
     "codice_comune_istat": "025069",
-    "comune": "ZoppÃ¨ di Cadore",
+    "comune": "Zoppè di Cadore",
     "provincia": "Belluno",
     "sigla_provincia": "BL",
     "regione": "Veneto"
@@ -22485,7 +22485,7 @@
   },
   {
     "codice_comune_istat": "026019",
-    "comune": "CodognÃ¨",
+    "comune": "Codognè",
     "provincia": "Treviso",
     "sigla_provincia": "TV",
     "regione": "Veneto"
@@ -22604,7 +22604,7 @@
   },
   {
     "codice_comune_istat": "026037",
-    "comune": "MansuÃ¨",
+    "comune": "Mansuè",
     "provincia": "Treviso",
     "sigla_provincia": "TV",
     "regione": "Veneto"
@@ -22758,7 +22758,7 @@
   },
   {
     "codice_comune_istat": "026060",
-    "comune": "PortobuffolÃ¨",
+    "comune": "Portobuffolè",
     "provincia": "Treviso",
     "sigla_provincia": "TV",
     "regione": "Veneto"
@@ -23129,7 +23129,7 @@
   },
   {
     "codice_comune_istat": "027017",
-    "comune": "FossÃ²",
+    "comune": "Fossò",
     "provincia": "Venezia",
     "sigla_provincia": "VE",
     "regione": "Veneto"
@@ -23241,7 +23241,7 @@
   },
   {
     "codice_comune_istat": "027033",
-    "comune": "San DonÃ  di Piave",
+    "comune": "San Donà di Piave",
     "provincia": "Venezia",
     "sigla_provincia": "VE",
     "regione": "Veneto"
@@ -23269,7 +23269,7 @@
   },
   {
     "codice_comune_istat": "027037",
-    "comune": "ScorzÃ¨",
+    "comune": "Scorzè",
     "provincia": "Venezia",
     "sigla_provincia": "VE",
     "regione": "Veneto"
@@ -23353,7 +23353,7 @@
   },
   {
     "codice_comune_istat": "028005",
-    "comune": "ArquÃ  Petrarca",
+    "comune": "Arquà Petrarca",
     "provincia": "Padova",
     "sigla_provincia": "PD",
     "regione": "Veneto"
@@ -23633,7 +23633,7 @@
   },
   {
     "codice_comune_istat": "028048",
-    "comune": "MaserÃ  di Padova",
+    "comune": "Maserà di Padova",
     "provincia": "Padova",
     "sigla_provincia": "PD",
     "regione": "Veneto"
@@ -23773,7 +23773,7 @@
   },
   {
     "codice_comune_istat": "028069",
-    "comune": "Ponte San NicolÃ²",
+    "comune": "Ponte San Nicolò",
     "provincia": "Padova",
     "sigla_provincia": "PD",
     "regione": "Veneto"
@@ -24046,7 +24046,7 @@
   },
   {
     "codice_comune_istat": "029003",
-    "comune": "ArquÃ  Polesine",
+    "comune": "Arquà Polesine",
     "provincia": "Rovigo",
     "sigla_provincia": "RO",
     "regione": "Veneto"
@@ -25334,7 +25334,7 @@
   },
   {
     "codice_comune_istat": "031003",
-    "comune": "DoberdÃ² del Lago",
+    "comune": "Doberdò del Lago",
     "provincia": "Gorizia",
     "sigla_provincia": "GO",
     "regione": "Friuli-Venezia Giulia"
@@ -27449,210 +27449,210 @@
   {
     "codice_comune_istat": "040001",
     "comune": "Bagno di Romagna",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040003",
     "comune": "Bertinoro",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040004",
     "comune": "Borghi",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040005",
     "comune": "Castrocaro Terme e Terra del Sole",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040007",
     "comune": "Cesena",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040008",
     "comune": "Cesenatico",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040009",
     "comune": "Civitella di Romagna",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040011",
     "comune": "Dovadola",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040012",
-    "comune": "ForlÃ¬",
-    "provincia": "ForlÃ¬-Cesena",
+    "comune": "Forlì",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040013",
     "comune": "Forlimpopoli",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040014",
     "comune": "Galeata",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040015",
     "comune": "Gambettola",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040016",
     "comune": "Gatteo",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040018",
     "comune": "Longiano",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040019",
     "comune": "Meldola",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040020",
     "comune": "Mercato Saraceno",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040022",
     "comune": "Modigliana",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040028",
     "comune": "Montiano",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040031",
     "comune": "Portico e San Benedetto",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040032",
     "comune": "Predappio",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040033",
     "comune": "Premilcuore",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040036",
     "comune": "Rocca San Casciano",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040037",
     "comune": "Roncofreddo",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040041",
     "comune": "San Mauro Pascoli",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040043",
     "comune": "Santa Sofia",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040044",
     "comune": "Sarsina",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040045",
     "comune": "Savignano sul Rubicone",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040046",
     "comune": "Sogliano al Rubicone",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040049",
     "comune": "Tredozio",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
   {
     "codice_comune_istat": "040050",
     "comune": "Verghereto",
-    "provincia": "ForlÃ¬-Cesena",
+    "provincia": "Forlì-Cesena",
     "sigla_provincia": "FC",
     "regione": "Emilia-Romagna"
   },
@@ -30178,7 +30178,7 @@
   },
   {
     "codice_comune_istat": "051010",
-    "comune": "Castel San NiccolÃ²",
+    "comune": "Castel San Niccolò",
     "provincia": "Arezzo",
     "sigla_provincia": "AR",
     "regione": "Toscana"
@@ -30353,7 +30353,7 @@
   },
   {
     "codice_comune_istat": "051040",
-    "comune": "Castelfranco PiandiscÃ²",
+    "comune": "Castelfranco Piandiscò",
     "provincia": "Arezzo",
     "sigla_provincia": "AR",
     "regione": "Toscana"
@@ -30892,14 +30892,14 @@
   },
   {
     "codice_comune_istat": "054012",
-    "comune": "CittÃ  della Pieve",
+    "comune": "Città della Pieve",
     "provincia": "Perugia",
     "sigla_provincia": "PG",
     "regione": "Umbria"
   },
   {
     "codice_comune_istat": "054013",
-    "comune": "CittÃ  di Castello",
+    "comune": "Città di Castello",
     "provincia": "Perugia",
     "sigla_provincia": "PG",
     "regione": "Umbria"
@@ -36002,7 +36002,7 @@
   },
   {
     "codice_comune_istat": "063090",
-    "comune": "Santa Maria la CaritÃ ",
+    "comune": "Santa Maria la Carità",
     "provincia": "Napoli",
     "sigla_provincia": "NA",
     "regione": "Campania"
@@ -39117,7 +39117,7 @@
   },
   {
     "codice_comune_istat": "068012",
-    "comune": "CittÃ  Sant'Angelo",
+    "comune": "Città Sant'Angelo",
     "provincia": "Pescara",
     "sigla_provincia": "PE",
     "regione": "Abruzzo"
@@ -42085,7 +42085,7 @@
   },
   {
     "codice_comune_istat": "075052",
-    "comune": "NardÃ²",
+    "comune": "Nardò",
     "provincia": "Lecce",
     "sigla_provincia": "LE",
     "regione": "Puglia"
@@ -42141,7 +42141,7 @@
   },
   {
     "codice_comune_istat": "075060",
-    "comune": "PatÃ¹",
+    "comune": "Patù",
     "provincia": "Lecce",
     "sigla_provincia": "LE",
     "regione": "Puglia"
@@ -42232,7 +42232,7 @@
   },
   {
     "codice_comune_istat": "075074",
-    "comune": "SeclÃ¬",
+    "comune": "Seclì",
     "provincia": "Lecce",
     "sigla_provincia": "LE",
     "regione": "Puglia"
@@ -43800,7 +43800,7 @@
   },
   {
     "codice_comune_istat": "078071",
-    "comune": "MaierÃ ",
+    "comune": "Maierà",
     "provincia": "Cosenza",
     "sigla_provincia": "CS",
     "regione": "Calabria"
@@ -44724,7 +44724,7 @@
   },
   {
     "codice_comune_istat": "079095",
-    "comune": "PetronÃ ",
+    "comune": "Petronà",
     "provincia": "Catanzaro",
     "sigla_provincia": "CZ",
     "regione": "Calabria"
@@ -44885,7 +44885,7 @@
   },
   {
     "codice_comune_istat": "079143",
-    "comune": "StalettÃ¬",
+    "comune": "Stalettì",
     "provincia": "Catanzaro",
     "sigla_provincia": "CZ",
     "regione": "Calabria"
@@ -45109,7 +45109,7 @@
   },
   {
     "codice_comune_istat": "080026",
-    "comune": "CiminÃ ",
+    "comune": "Ciminà",
     "provincia": "Reggio Calabria",
     "sigla_provincia": "RC",
     "regione": "Calabria"
@@ -45263,7 +45263,7 @@
   },
   {
     "codice_comune_istat": "080048",
-    "comune": "MelicuccÃ ",
+    "comune": "Melicuccà",
     "provincia": "Reggio Calabria",
     "sigla_provincia": "RC",
     "regione": "Calabria"
@@ -45347,7 +45347,7 @@
   },
   {
     "codice_comune_istat": "080060",
-    "comune": "PlatÃ¬",
+    "comune": "Platì",
     "provincia": "Reggio Calabria",
     "sigla_provincia": "RC",
     "regione": "Calabria"
@@ -45452,7 +45452,7 @@
   },
   {
     "codice_comune_istat": "080075",
-    "comune": "San Pietro di CaridÃ ",
+    "comune": "San Pietro di Caridà",
     "provincia": "Reggio Calabria",
     "sigla_provincia": "RC",
     "regione": "Calabria"
@@ -45963,14 +45963,14 @@
   },
   {
     "codice_comune_istat": "082026",
-    "comune": "CefalÃ  Diana",
+    "comune": "Cefalà Diana",
     "provincia": "Palermo",
     "sigla_provincia": "PA",
     "regione": "Sicilia"
   },
   {
     "codice_comune_istat": "082027",
-    "comune": "CefalÃ¹",
+    "comune": "Cefalù",
     "provincia": "Palermo",
     "sigla_provincia": "PA",
     "regione": "Sicilia"
@@ -46369,14 +46369,14 @@
   },
   {
     "codice_comune_istat": "083002",
-    "comune": "AlÃ¬",
+    "comune": "Alì",
     "provincia": "Messina",
     "sigla_provincia": "ME",
     "regione": "Sicilia"
   },
   {
     "codice_comune_istat": "083003",
-    "comune": "AlÃ¬ Terme",
+    "comune": "Alì Terme",
     "provincia": "Messina",
     "sigla_provincia": "ME",
     "regione": "Sicilia"
@@ -46397,7 +46397,7 @@
   },
   {
     "codice_comune_istat": "083006",
-    "comune": "BasicÃ²",
+    "comune": "Basicò",
     "provincia": "Messina",
     "sigla_provincia": "ME",
     "regione": "Sicilia"
@@ -46474,14 +46474,14 @@
   },
   {
     "codice_comune_istat": "083017",
-    "comune": "CesarÃ²",
+    "comune": "Cesarò",
     "provincia": "Messina",
     "sigla_provincia": "ME",
     "regione": "Sicilia"
   },
   {
     "codice_comune_istat": "083018",
-    "comune": "CondrÃ²",
+    "comune": "Condrò",
     "provincia": "Messina",
     "sigla_provincia": "ME",
     "regione": "Sicilia"
@@ -46523,7 +46523,7 @@
   },
   {
     "codice_comune_istat": "083024",
-    "comune": "Forza d'AgrÃ²",
+    "comune": "Forza d'Agrò",
     "provincia": "Messina",
     "sigla_provincia": "ME",
     "regione": "Sicilia"
@@ -46537,7 +46537,7 @@
   },
   {
     "codice_comune_istat": "083026",
-    "comune": "FrazzanÃ²",
+    "comune": "Frazzanò",
     "provincia": "Messina",
     "sigla_provincia": "ME",
     "regione": "Sicilia"
@@ -46600,7 +46600,7 @@
   },
   {
     "codice_comune_istat": "083035",
-    "comune": "Gualtieri SicaminÃ²",
+    "comune": "Gualtieri Sicaminò",
     "provincia": "Messina",
     "sigla_provincia": "ME",
     "regione": "Sicilia"
@@ -46677,14 +46677,14 @@
   },
   {
     "codice_comune_istat": "083046",
-    "comune": "MazzarrÃ  Sant'Andrea",
+    "comune": "Mazzarrà Sant'Andrea",
     "provincia": "Messina",
     "sigla_provincia": "ME",
     "regione": "Sicilia"
   },
   {
     "codice_comune_istat": "083047",
-    "comune": "MerÃ¬",
+    "comune": "Merì",
     "provincia": "Messina",
     "sigla_provincia": "ME",
     "regione": "Sicilia"
@@ -46880,7 +46880,7 @@
   },
   {
     "codice_comune_istat": "083075",
-    "comune": "RodÃ¬ Milici",
+    "comune": "Rodì Milici",
     "provincia": "Messina",
     "sigla_provincia": "ME",
     "regione": "Sicilia"
@@ -47188,7 +47188,7 @@
   },
   {
     "codice_comune_istat": "084011",
-    "comune": "CanicattÃ¬",
+    "comune": "Canicattì",
     "provincia": "Agrigento",
     "sigla_provincia": "AG",
     "regione": "Sicilia"
@@ -47937,7 +47937,7 @@
   },
   {
     "codice_comune_istat": "087033",
-    "comune": "PaternÃ²",
+    "comune": "Paternò",
     "provincia": "Catania",
     "sigla_provincia": "CT",
     "regione": "Sicilia"
@@ -48833,7 +48833,7 @@
   },
   {
     "codice_comune_istat": "094020",
-    "comune": "ForlÃ¬ del Sannio",
+    "comune": "Forlì del Sannio",
     "provincia": "Isernia",
     "sigla_provincia": "IS",
     "regione": "Molise"
@@ -49162,7 +49162,7 @@
   },
   {
     "codice_comune_istat": "096016",
-    "comune": "CavagliÃ ",
+    "comune": "Cavaglià",
     "provincia": "Biella",
     "sigla_provincia": "BI",
     "regione": "Piemonte"
@@ -49617,7 +49617,7 @@
   },
   {
     "codice_comune_istat": "097006",
-    "comune": "BarzanÃ²",
+    "comune": "Barzanò",
     "provincia": "Lecco",
     "sigla_provincia": "LC",
     "regione": "Lombardia"
@@ -50072,7 +50072,7 @@
   },
   {
     "codice_comune_istat": "097074",
-    "comune": "Santa Maria HoÃ¨",
+    "comune": "Santa Maria Hoè",
     "provincia": "Lecco",
     "sigla_provincia": "LC",
     "regione": "Lombardia"
@@ -50142,7 +50142,7 @@
   },
   {
     "codice_comune_istat": "097090",
-    "comune": "ViganÃ²",
+    "comune": "Viganò",
     "provincia": "Lecco",
     "sigla_provincia": "LC",
     "regione": "Lombardia"
@@ -50870,14 +50870,14 @@
   },
   {
     "codice_comune_istat": "101007",
-    "comune": "CirÃ²",
+    "comune": "Cirò",
     "provincia": "Crotone",
     "sigla_provincia": "KR",
     "regione": "Calabria"
   },
   {
     "codice_comune_istat": "101008",
-    "comune": "CirÃ² Marina",
+    "comune": "Cirò Marina",
     "provincia": "Crotone",
     "sigla_provincia": "KR",
     "regione": "Calabria"
@@ -51059,7 +51059,7 @@
   },
   {
     "codice_comune_istat": "102007",
-    "comune": "DasÃ ",
+    "comune": "Dasà",
     "provincia": "Vibo Valentia",
     "sigla_provincia": "VV",
     "regione": "Calabria"
@@ -52116,7 +52116,7 @@
   },
   {
     "codice_comune_istat": "108034",
-    "comune": "MuggiÃ²",
+    "comune": "Muggiò",
     "provincia": "Monza e della Brianza",
     "sigla_provincia": "MB",
     "regione": "Lombardia"
@@ -52851,7 +52851,7 @@
   },
   {
     "codice_comune_istat": "112034",
-    "comune": "Nughedu San NicolÃ²",
+    "comune": "Nughedu San Nicolò",
     "provincia": "Sassari",
     "sigla_provincia": "SS",
     "regione": "Sardegna"
@@ -53096,7 +53096,7 @@
   },
   {
     "codice_comune_istat": "113003",
-    "comune": "AlÃ  dei Sardi",
+    "comune": "Alà dei Sardi",
     "provincia": "Gallura Nord-Est Sardegna",
     "sigla_provincia": "OT",
     "regione": "Sardegna"
@@ -53131,7 +53131,7 @@
   },
   {
     "codice_comune_istat": "113008",
-    "comune": "BuddusÃ²",
+    "comune": "Buddusò",
     "provincia": "Gallura Nord-Est Sardegna",
     "sigla_provincia": "OT",
     "regione": "Sardegna"
@@ -53257,7 +53257,7 @@
   },
   {
     "codice_comune_istat": "113026",
-    "comune": "TrinitÃ  d'Agultu e Vignola",
+    "comune": "Trinità d'Agultu e Vignola",
     "provincia": "Gallura Nord-Est Sardegna",
     "sigla_provincia": "OT",
     "regione": "Sardegna"
@@ -53285,7 +53285,7 @@
   },
   {
     "codice_comune_istat": "114004",
-    "comune": "BelvÃ¬",
+    "comune": "Belvì",
     "provincia": "Nuoro",
     "sigla_provincia": "NU",
     "regione": "Sardegna"
@@ -53362,7 +53362,7 @@
   },
   {
     "codice_comune_istat": "114015",
-    "comune": "GaltellÃ¬",
+    "comune": "Galtellì",
     "provincia": "Nuoro",
     "sigla_provincia": "NU",
     "regione": "Sardegna"
@@ -53397,7 +53397,7 @@
   },
   {
     "codice_comune_istat": "114020",
-    "comune": "LodÃ¨",
+    "comune": "Lodè",
     "provincia": "Nuoro",
     "sigla_provincia": "NU",
     "regione": "Sardegna"
@@ -53474,7 +53474,7 @@
   },
   {
     "codice_comune_istat": "114031",
-    "comune": "OnanÃ¬",
+    "comune": "Onanì",
     "provincia": "Nuoro",
     "sigla_provincia": "NU",
     "regione": "Sardegna"
@@ -53628,7 +53628,7 @@
   },
   {
     "codice_comune_istat": "114053",
-    "comune": "TorpÃ¨",
+    "comune": "Torpè",
     "provincia": "Nuoro",
     "sigla_provincia": "NU",
     "regione": "Sardegna"
@@ -53726,7 +53726,7 @@
   },
   {
     "codice_comune_istat": "115014",
-    "comune": "BidonÃ¬",
+    "comune": "Bidonì",
     "provincia": "Oristano",
     "sigla_provincia": "OR",
     "regione": "Sardegna"
@@ -53810,7 +53810,7 @@
   },
   {
     "codice_comune_istat": "115026",
-    "comune": "GonnosnÃ²",
+    "comune": "Gonnosnò",
     "provincia": "Oristano",
     "sigla_provincia": "OR",
     "regione": "Sardegna"
@@ -54006,7 +54006,7 @@
   },
   {
     "codice_comune_istat": "115054",
-    "comune": "San NicolÃ² d'Arcidano",
+    "comune": "San Nicolò d'Arcidano",
     "provincia": "Oristano",
     "sigla_provincia": "OR",
     "regione": "Sardegna"
@@ -54118,7 +54118,7 @@
   },
   {
     "codice_comune_istat": "115070",
-    "comune": "SoddÃ¬",
+    "comune": "Soddì",
     "provincia": "Oristano",
     "sigla_provincia": "OR",
     "regione": "Sardegna"
@@ -54181,7 +54181,7 @@
   },
   {
     "codice_comune_istat": "115079",
-    "comune": "UlÃ  Tirso",
+    "comune": "Ulà Tirso",
     "provincia": "Oristano",
     "sigla_provincia": "OR",
     "regione": "Sardegna"
@@ -54356,7 +54356,7 @@
   },
   {
     "codice_comune_istat": "116017",
-    "comune": "TortolÃ¬",
+    "comune": "Tortolì",
     "provincia": "Ogliastra",
     "sigla_provincia": "OG",
     "regione": "Sardegna"
@@ -54895,7 +54895,7 @@
   },
   {
     "codice_comune_istat": "118043",
-    "comune": "San NicolÃ² Gerrei",
+    "comune": "San Nicolò Gerrei",
     "provincia": "Cagliari",
     "sigla_provincia": "CA",
     "regione": "Sardegna"
@@ -54944,7 +54944,7 @@
   },
   {
     "codice_comune_istat": "118050",
-    "comune": "SenorbÃ¬",
+    "comune": "Senorbì",
     "provincia": "Cagliari",
     "sigla_provincia": "CA",
     "regione": "Sardegna"
@@ -55258,4 +55258,5 @@
     "regione": "Sardegna"
   }
 ]
+
 
