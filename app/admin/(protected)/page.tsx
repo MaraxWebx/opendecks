@@ -99,7 +99,7 @@ export default async function AdminPage() {
           </Link>
         </div>
 
-        <div className="grid gap-4">
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
           {newApplications.slice(0, 5).map((application) => (
             <article
               key={application.id}
