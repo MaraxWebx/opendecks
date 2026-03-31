@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createApplication, getApplications } from "@/lib/data";
+import { createApplication, getApplications, getEvents } from "@/lib/data";
+import {
+  sendApplicationConfirmationEmail,
+  sendApplicationNotificationEmail,
+} from "@/lib/email";
 import { getItalianProvince, italianProvinceCodes } from "@/lib/italian-provinces";
 
 export async function POST(request: NextRequest) {
@@ -24,7 +28,7 @@ export async function POST(request: NextRequest) {
   }
 
   const normalizedEmail = String(body.email).trim().toLowerCase();
-  const applications = await getApplications();
+  const [applications, events] = await Promise.all([getApplications(), getEvents()]);
   const existingApplication = applications.find(
     (application) => application.email.trim().toLowerCase() === normalizedEmail
   );
@@ -37,6 +41,7 @@ export async function POST(request: NextRequest) {
   }
 
   const province = getItalianProvince(body.province);
+  const relatedEvent = events.find((event) => event.id === body.eventId);
 
   const application = await createApplication({
     eventId: body.eventId,
@@ -52,6 +57,45 @@ export async function POST(request: NextRequest) {
     setLink: body.setLink,
     bio: body.bio || ""
   });
+
+  try {
+    await sendApplicationConfirmationEmail({
+      to: application.email,
+      applicantName: application.name,
+      eventTitle: application.eventTitle,
+      eventDate: relatedEvent?.date,
+      eventTime: relatedEvent?.time,
+      locationName: relatedEvent?.locationName,
+      locationAddress: relatedEvent?.locationAddress,
+      city: application.city,
+      province: application.province,
+      region: application.region,
+      submittedAt: application.submittedAt
+    });
+  } catch (error) {
+    console.error("Application confirmation email failed", error);
+  }
+
+  try {
+    await sendApplicationNotificationEmail({
+      applicantName: application.name,
+      applicantEmail: application.email,
+      phone: application.phone,
+      instagram: application.instagram,
+      setLink: application.setLink,
+      eventTitle: application.eventTitle,
+      eventDate: relatedEvent?.date,
+      eventTime: relatedEvent?.time,
+      locationName: relatedEvent?.locationName,
+      locationAddress: relatedEvent?.locationAddress,
+      city: application.city,
+      province: application.province,
+      region: application.region,
+      submittedAt: application.submittedAt
+    });
+  } catch (error) {
+    console.error("Application notification email failed", error);
+  }
 
   return NextResponse.json({ application }, { status: 201 });
 }

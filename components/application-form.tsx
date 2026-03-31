@@ -60,6 +60,7 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
   });
   const [cityQuery, setCityQuery] = useState("");
   const [cityOptions, setCityOptions] = useState<MunicipalityOption[]>([]);
+  const [cityMenuOpen, setCityMenuOpen] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [status, setStatus] = useState<{
     type: "idle" | "ok" | "error";
@@ -69,6 +70,58 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
     message: "",
   });
   const [loading, setLoading] = useState(false);
+
+  function applyMunicipalitySelection(municipality: MunicipalityOption | null) {
+    if (!municipality) {
+      setForm((current) => ({
+        ...current,
+        city: "",
+        province: "",
+        region: "",
+      }));
+      return;
+    }
+
+    setCityQuery(municipality.label);
+    setForm((current) => ({
+      ...current,
+      city: municipality.city,
+      province: municipality.provinceCode,
+      region: municipality.region,
+    }));
+  }
+
+  async function resolveMunicipalityFromQuery(label: string) {
+    const normalizedLabel = label.trim();
+
+    if (!normalizedLabel) {
+      applyMunicipalitySelection(null);
+      return null;
+    }
+
+    const localMatch =
+      cityOptions.find((municipality) => municipality.label === normalizedLabel) || null;
+
+    if (localMatch) {
+      applyMunicipalitySelection(localMatch);
+      return localMatch;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/municipalities?q=${encodeURIComponent(normalizedLabel)}&exact=1`,
+      );
+      const result = (await response.json()) as {
+        municipality?: MunicipalityOption | null;
+      };
+      const municipality = result.municipality || null;
+      applyMunicipalitySelection(municipality);
+      return municipality;
+    } catch {
+      applyMunicipalitySelection(null);
+      return null;
+    }
+  }
 
   useEffect(() => {
     const normalizedQuery = cityQuery.trim();
@@ -93,9 +146,11 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
         }
 
         setCityOptions(result.municipalities || []);
+        setCityMenuOpen(Boolean((result.municipalities || []).length));
       } catch {
         if (active) {
           setCityOptions([]);
+          setCityMenuOpen(false);
         }
       }
     }, 150);
@@ -143,7 +198,11 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
       }
 
       if (!form.province) {
-        throw new Error("Seleziona una citta valida dall'autocomplete.");
+        const resolvedMunicipality = await resolveMunicipalityFromQuery(cityQuery);
+
+        if (!resolvedMunicipality) {
+          throw new Error("Seleziona una citta valida dall'autocomplete.");
+        }
       }
 
       const photoUrl = await uploadPhoto(photoFile);
@@ -182,6 +241,7 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
         eventSlug: selectedEvent.slug,
       });
       setCityQuery("");
+      setCityMenuOpen(false);
       setPhotoFile(null);
       setStatus({ type: "ok", message: "Candidatura inviata correttamente." });
     } catch (error) {
@@ -352,47 +412,54 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
               >
                 Citta
               </label>
-              <input
-                id="city"
-                list="application-cities"
-                className={fieldClass}
-                value={cityQuery}
-                onChange={(event) => {
-                  const nextQuery = event.target.value;
-                  const matchedMunicipality = cityOptions.find(
-                    (municipality) => municipality.label === nextQuery,
-                  );
-
-                  setCityQuery(nextQuery);
-
-                  if (!matchedMunicipality) {
-                    setForm((current) => ({
-                      ...current,
-                      city: "",
-                      province: "",
-                      region: "",
-                    }));
-                    return;
-                  }
-
-                  setForm((current) => ({
-                    ...current,
-                    city: matchedMunicipality.city,
-                    province: matchedMunicipality.provinceCode,
-                    region: matchedMunicipality.region,
-                  }));
-                }}
-                placeholder="Scrivi e seleziona il comune, es. Roma (RM)"
-                required
-              />
-              <datalist id="application-cities">
-                {cityOptions.map((municipality) => (
-                  <option key={municipality.code} value={municipality.label} />
-                ))}
-              </datalist>
-              {/*   <span className="text-xs text-white/45">
-                Cerca il comune e selezionalo dall&apos;elenco. Provincia e regione vengono compilate automaticamente.
-              </span> */}
+              <div className="relative">
+                <input
+                  id="city"
+                  className={fieldClass}
+                  value={cityQuery}
+                  onChange={(event) => {
+                    const nextQuery = event.target.value;
+                    setCityQuery(nextQuery);
+                    setCityMenuOpen(true);
+                    void resolveMunicipalityFromQuery(nextQuery);
+                  }}
+                  onFocus={() => {
+                    if (cityOptions.length) {
+                      setCityMenuOpen(true);
+                    }
+                  }}
+                  onBlur={() => {
+                    window.setTimeout(() => {
+                      setCityMenuOpen(false);
+                      void resolveMunicipalityFromQuery(cityQuery);
+                    }, 120);
+                  }}
+                  placeholder="Scrivi e seleziona il comune, es. Roma - (RM)"
+                  autoComplete="off"
+                  required
+                />
+                {cityMenuOpen && cityOptions.length ? (
+                  <div className="absolute z-20 mt-2 max-h-64 w-full overflow-auto rounded-xl border border-[#E31F29]/20 bg-[#0b0b0c] p-2 shadow-[0_18px_50px_rgba(0,0,0,0.45)]">
+                    {cityOptions.map((municipality) => (
+                      <button
+                        key={municipality.code}
+                        type="button"
+                        className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-white/82 transition hover:bg-white/6"
+                        onMouseDown={(event) => {
+                          event.preventDefault();
+                          applyMunicipalitySelection(municipality);
+                          setCityMenuOpen(false);
+                        }}
+                      >
+                        <span>{municipality.label}</span>
+                        <span className="text-xs uppercase tracking-[0.14em] text-white/45">
+                          {municipality.region}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
             </div>
 
             <div className="grid gap-2">

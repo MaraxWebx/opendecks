@@ -58,6 +58,24 @@ export function searchItalianMunicipalities(query: string, limit = 12) {
     .slice(0, limit);
 }
 
+export function findItalianMunicipalityByLabel(label: string) {
+  const normalizedLabel = normalizeMunicipalityValue(label).replace(/\s*-\s*/g, " ");
+
+  if (!normalizedLabel) {
+    return null;
+  }
+
+  return (
+    italianMunicipalities.find((municipality) => {
+      const municipalityLabel = normalizeMunicipalityValue(municipality.label).replace(
+        /\s*-\s*/g,
+        " "
+      );
+      return municipalityLabel === normalizedLabel;
+    }) || null
+  );
+}
+
 function normalizeMunicipalityValue(value: string) {
   return value
     .normalize("NFD")
