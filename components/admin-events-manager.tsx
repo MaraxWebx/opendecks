@@ -4,42 +4,48 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 
 import { BodyScrollLock } from "@/components/body-scroll-lock";
-import { DjRosterRecord, EventRecord, TagRecord } from "@/lib/types";
+import { buildDjRosterProfiles, getEventLineupDjs } from "@/lib/dj-roster";
+import {
+  DjRosterRecord,
+  EventRecord,
+  LocationRecord,
+  TagRecord,
+} from "@/lib/types";
 import { ui } from "@/lib/ui";
 import { GlobalLoader } from "@/components/global-loader";
+import { DjMultiSelect } from "@/components/dj-multi-select";
 import { TagMultiSelect } from "@/components/tag-multi-select";
 
 type AdminEventsManagerProps = {
   initialEvents: EventRecord[];
   djRoster: DjRosterRecord[];
   availableTags: TagRecord[];
+  availableLocations: LocationRecord[];
 };
 
 type EventFormState = {
+  eventNumber: string;
   title: string;
-  city: string;
-  venue: string;
+  locationId: string;
   coverImage: string;
-  coverAlt: string;
   date: string;
   time: string;
-  excerpt: string;
   description: string;
   applicationsOpen: boolean;
+  lineupDjIds: string[];
   tagIds: string[];
 };
 
 const emptyForm: EventFormState = {
+  eventNumber: "",
   title: "",
-  city: "",
-  venue: "",
+  locationId: "",
   coverImage: "",
-  coverAlt: "",
   date: "",
   time: "",
-  excerpt: "",
   description: "",
   applicationsOpen: true,
+  lineupDjIds: [],
   tagIds: [],
 };
 
@@ -47,9 +53,11 @@ export function AdminEventsManager({
   initialEvents,
   djRoster,
   availableTags,
+  availableLocations,
 }: AdminEventsManagerProps) {
   const [events, setEvents] = useState(initialEvents);
   const [tags, setTags] = useState(availableTags);
+  const [locations] = useState(availableLocations);
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
@@ -62,13 +70,14 @@ export function AdminEventsManager({
   const [monthFilter, setMonthFilter] = useState("all");
   const [form, setForm] = useState<EventFormState>(emptyForm);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [eventNumberError, setEventNumberError] = useState("");
 
   const sortedEvents = useMemo(
-    () => [...events].sort((a, b) => a.date.localeCompare(b.date)),
+    () => [...events].sort((a, b) => b.date.localeCompare(a.date)),
     [events],
   );
   const cities = useMemo(
-    () => Array.from(new Set(events.map((event) => event.city))).sort(),
+    () => Array.from(new Set(events.map((event) => event.locationName))).sort(),
     [events],
   );
   const months = useMemo(
@@ -93,26 +102,30 @@ export function AdminEventsManager({
 
       const matchesQuery =
         !normalizedQuery ||
-        [event.title, event.city, event.venue, event.slug, event.excerpt]
+        [
+          event.eventNumber,
+          event.title,
+          event.locationName,
+          event.locationAddress,
+          event.slug,
+        ]
           .join(" ")
           .toLowerCase()
           .includes(normalizedQuery);
 
       const matchesStatus =
         statusFilter === "all" || event.status === statusFilter;
-      const matchesCity = cityFilter === "all" || event.city === cityFilter;
+      const matchesCity =
+        cityFilter === "all" || event.locationName === cityFilter;
       const matchesMonth = monthFilter === "all" || eventMonth === monthFilter;
 
       return matchesQuery && matchesStatus && matchesCity && matchesMonth;
     });
   }, [cityFilter, monthFilter, query, sortedEvents, statusFilter]);
-  const approvedRosterByEvent = useMemo(() => {
-    return djRoster.reduce<Record<string, DjRosterRecord[]>>((acc, record) => {
-      acc[record.eventId] ??= [];
-      acc[record.eventId].push(record);
-      return acc;
-    }, {});
-  }, [djRoster]);
+  const lineupOptions = useMemo(
+    () => buildDjRosterProfiles(djRoster),
+    [djRoster],
+  );
   const activeCalendarMonth = useMemo(() => {
     if (monthFilter !== "all") {
       return monthFilter;
@@ -140,11 +153,25 @@ export function AdminEventsManager({
     () => buildCalendarDays(activeCalendarMonth, calendarEvents),
     [activeCalendarMonth, calendarEvents],
   );
+  const suggestedEventNumber = useMemo(() => {
+    if (!form.locationId) {
+      return "";
+    }
+
+    const maxForLocation = events
+      .filter((event) => event.locationId === form.locationId)
+      .reduce((max, event) => Math.max(max, event.eventNumber || 0), 0);
+
+    return String(maxForLocation + 1);
+  }, [events, form.locationId]);
 
   function updateField<Key extends keyof EventFormState>(
     key: Key,
     value: EventFormState[Key],
   ) {
+    if (key === "eventNumber") {
+      setEventNumberError("");
+    }
     setForm((current) => ({ ...current, [key]: value }));
   }
 
@@ -166,6 +193,7 @@ export function AdminEventsManager({
     event.preventDefault();
     setSaving(true);
     setStatus("");
+    setEventNumberError("");
 
     try {
       let coverImage = form.coverImage;
@@ -197,13 +225,20 @@ export function AdminEventsManager({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
+          eventNumber: Number(form.eventNumber) || undefined,
           coverImage,
+          lineupDjIds: form.lineupDjIds,
           tagIds: form.tagIds,
         }),
       });
 
       if (!response.ok) {
-        throw new Error("Salvataggio evento non riuscito.");
+        const errorPayload = (await response.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        throw new Error(
+          errorPayload?.error || "Salvataggio evento non riuscito.",
+        );
       }
 
       const result = (await response.json()) as { event: EventRecord };
@@ -213,9 +248,14 @@ export function AdminEventsManager({
       setOpen(false);
       setStatus("Evento aggiunto correttamente.");
     } catch (error) {
-      setStatus(
-        error instanceof Error ? error.message : "Errore salvataggio evento.",
-      );
+      const message =
+        error instanceof Error ? error.message : "Errore salvataggio evento.";
+
+      if (message.toLowerCase().includes("numero evento")) {
+        setEventNumberError(message);
+      }
+
+      setStatus(message);
     } finally {
       setSaving(false);
     }
@@ -227,7 +267,10 @@ export function AdminEventsManager({
         <button
           type="button"
           className={ui.action.primary}
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setForm(emptyForm);
+            setOpen(true);
+          }}
         >
           Nuovo evento
         </button>
@@ -292,7 +335,7 @@ export function AdminEventsManager({
               className={ui.form.field}
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Titolo, citta, venue..."
+              placeholder="Titolo, location, indirizzo..."
             />
           </div>
           <div className="grid gap-2">
@@ -314,7 +357,7 @@ export function AdminEventsManager({
           </div>
           <div className="grid gap-2">
             <label htmlFor="events-city" className={ui.form.label}>
-              Citta
+              Location
             </label>
             <select
               id="events-city"
@@ -422,7 +465,7 @@ export function AdminEventsManager({
                           {event.title}
                         </p>
                         <p className="mt-1 text-[11px] leading-4 text-white/70">
-                          {event.time} / {event.city}
+                          {event.time} / {event.locationName}
                         </p>
                       </div>
                     ))}
@@ -455,17 +498,18 @@ export function AdminEventsManager({
 
                   <div>
                     <div className="mb-2 flex flex-wrap gap-2 text-sm text-white/58">
+                      <span>#{event.eventNumber}</span>
                       <span>
                         {new Date(event.date).toLocaleDateString("it-IT")}
                       </span>
-                      <span>{event.city}</span>
+                      <span>{event.locationName}</span>
                       <span>{event.status}</span>
                     </div>
                     <h3 className="mb-2 text-lg font-semibold text-[#f7f3ee]">
                       {event.title}
                     </h3>
                     <p className="text-sm leading-7 text-white/74">
-                      {event.venue} / {event.time}
+                      {event.locationAddress} / {event.time}
                     </p>
                     <div className="mt-3 flex flex-wrap gap-3">
                       <Link
@@ -476,10 +520,10 @@ export function AdminEventsManager({
                       </Link>
                     </div>
                     <div className="mt-3">
-                      <span className={ui.form.label}>DJ approvati</span>
+                      <span className={ui.form.label}>Line up</span>
                       <div className="mt-2 flex flex-wrap gap-2">
-                        {(approvedRosterByEvent[event.id] || []).length ? (
-                          approvedRosterByEvent[event.id].map((record) => (
+                        {getEventLineupDjs(event, djRoster).length ? (
+                          getEventLineupDjs(event, djRoster).map((record) => (
                             <span
                               key={record.id}
                               className="inline-flex rounded-md bg-emerald-500/15 px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-300"
@@ -489,7 +533,7 @@ export function AdminEventsManager({
                           ))
                         ) : (
                           <span className="text-sm text-white/45">
-                            Nessun DJ approvato.
+                            Nessun DJ in line up.
                           </span>
                         )}
                       </div>
@@ -537,7 +581,20 @@ export function AdminEventsManager({
             ) : (
               <form onSubmit={handleSubmit} className="grid gap-5">
                 <div className="rounded-xl border border-[color:var(--color-brand-14)] bg-[color:var(--color-brand-10)] px-4 py-3 text-sm text-white/72">
-                  Lo slug viene generato automaticamente dal titolo evento.
+                  {form.locationId ? undefined : "Seleziona prima la location"}
+                  {eventNumberError ? (
+                    <p className="text-sm text-red-200">{eventNumberError}</p>
+                  ) : form.locationId && suggestedEventNumber ? (
+                    <p className="text-sm text-white/55">
+                      Prossimo numero per questa location:{" "}
+                      {suggestedEventNumber}
+                    </p>
+                  ) : (
+                    <p className="text-sm text-white/45">
+                      Scegli una location per attivare la numerazione
+                      progressiva.
+                    </p>
+                  )}
                 </div>
                 <div className="grid gap-4 md:grid-cols-3">
                   <Field label="Titolo" htmlFor="event-title">
@@ -551,25 +608,50 @@ export function AdminEventsManager({
                       required
                     />
                   </Field>
-                  <Field label="Location" htmlFor="event-venue">
-                    <input
-                      id="event-venue"
-                      className={ui.form.field}
-                      value={form.venue}
-                      onChange={(event) =>
-                        updateField("venue", event.target.value)
-                      }
+                  <Field label="Location" htmlFor="event-location">
+                    <select
+                      id="event-location"
+                      className={ui.form.select}
+                      value={form.locationId}
+                      onChange={(event) => {
+                        const nextLocationId = event.target.value;
+                        const maxForLocation = events
+                          .filter((item) => item.locationId === nextLocationId)
+                          .reduce(
+                            (max, item) => Math.max(max, item.eventNumber || 0),
+                            0,
+                          );
+
+                        setEventNumberError("");
+                        setForm((current) => ({
+                          ...current,
+                          locationId: nextLocationId,
+                          eventNumber: nextLocationId
+                            ? String(maxForLocation + 1)
+                            : "",
+                        }));
+                      }}
                       required
-                    />
+                    >
+                      <option value="">Seleziona location</option>
+                      {locations.map((location) => (
+                        <option key={location.id} value={location.id}>
+                          {location.name} / {location.address}
+                        </option>
+                      ))}
+                    </select>
                   </Field>
-                  <Field label="Citta" htmlFor="event-city">
+                  <Field label="Numero evento" htmlFor="event-number">
                     <input
-                      id="event-city"
-                      className={ui.form.field}
-                      value={form.city}
+                      id="event-number"
+                      type="number"
+                      min={1}
+                      className={`${ui.form.field} ${!form.locationId ? "cursor-not-allowed opacity-60" : ""}`}
+                      value={form.eventNumber}
                       onChange={(event) =>
-                        updateField("city", event.target.value)
+                        updateField("eventNumber", event.target.value)
                       }
+                      disabled={!form.locationId}
                       required
                     />
                   </Field>
@@ -632,17 +714,6 @@ export function AdminEventsManager({
                         }
                       />
                     </Field>
-                    <Field label="Alt immagine" htmlFor="event-cover-alt">
-                      <input
-                        id="event-cover-alt"
-                        className={ui.form.field}
-                        value={form.coverAlt}
-                        onChange={(event) =>
-                          updateField("coverAlt", event.target.value)
-                        }
-                        required
-                      />
-                    </Field>
                   </div>
                   <div>
                     {imageFile || form.coverImage ? (
@@ -657,7 +728,11 @@ export function AdminEventsManager({
                                 ? URL.createObjectURL(imageFile)
                                 : form.coverImage
                             }
-                            alt={form.coverAlt || "Anteprima copertina evento"}
+                            alt={buildEventCoverAlt(
+                              form.title,
+                              form.locationId,
+                              locations,
+                            )}
                             className="w-full object-cover"
                           />
                         </div>
@@ -666,17 +741,6 @@ export function AdminEventsManager({
                   </div>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
-                  <Field label="Excerpt" htmlFor="event-excerpt" full>
-                    <textarea
-                      id="event-excerpt"
-                      className={`${ui.form.field} min-h-28 resize-y`}
-                      value={form.excerpt}
-                      onChange={(event) =>
-                        updateField("excerpt", event.target.value)
-                      }
-                      required
-                    />
-                  </Field>
                   <Field label="Descrizione" htmlFor="event-description" full>
                     <textarea
                       id="event-description"
@@ -685,8 +749,18 @@ export function AdminEventsManager({
                       onChange={(event) =>
                         updateField("description", event.target.value)
                       }
-                      required
                     />
+                  </Field>
+                  <Field label="Line up dal roster" htmlFor="event-lineup" full>
+                    <div id="event-lineup">
+                      <DjMultiSelect
+                        djs={lineupOptions}
+                        value={form.lineupDjIds}
+                        onChange={(nextValue) =>
+                          updateField("lineupDjIds", nextValue)
+                        }
+                      />
+                    </div>
                   </Field>
                   <Field label="Tag" htmlFor="event-tags" full>
                     <div id="event-tags">
@@ -771,4 +845,15 @@ function buildCalendarDays(month: string, events: EventRecord[]) {
       events: dayEvents,
     };
   });
+}
+
+function buildEventCoverAlt(
+  title: string,
+  locationId: string,
+  locations: LocationRecord[],
+) {
+  const location = locations.find((item) => item.id === locationId);
+  return (
+    [title, location?.name].filter(Boolean).join(" - ") || "Copertina evento"
+  );
 }

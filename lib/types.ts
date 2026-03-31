@@ -1,20 +1,31 @@
 export type EventRecord = {
   id: string;
+  eventNumber: number;
   slug: string;
   title: string;
-  city: string;
-  venue: string;
+  locationId: string;
+  locationName: string;
+  locationAddress: string;
   coverImage: string;
   coverAlt: string;
   date: string;
   time: string;
   status: "upcoming" | "past";
-  excerpt: string;
   description: string;
   capacity: number;
   applicationsOpen: boolean;
   lineupPublished: boolean;
+  lineupDjIds: string[];
   tagIds: string[];
+};
+
+export type LocationRecord = {
+  id: string;
+  name: string;
+  address: string;
+  socialLink: string;
+  phone: string;
+  description: string;
 };
 
 export type TagRecord = {
@@ -29,6 +40,8 @@ export type ApplicationRecord = {
   eventTitle: string;
   name: string;
   city: string;
+  province?: string;
+  region?: string;
   email: string;
   phone: string;
   photoUrl: string;
@@ -46,6 +59,8 @@ export type DjRosterRecord = {
   eventTitle: string;
   name: string;
   city: string;
+  province?: string;
+  region?: string;
   email: string;
   phone: string;
   photoUrl: string;

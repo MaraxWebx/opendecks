@@ -71,7 +71,7 @@ export default async function HomePage() {
                 {nextEvent.title}
               </h2>
               <p className="mt-3 max-w-2xl break-words text-sm leading-6 text-white/72 md:text-[0.96rem]">
-                {nextEvent.excerpt}
+                {nextEvent.description}
               </p>
 
               <div className="mt-5 grid gap-0">
@@ -88,7 +88,7 @@ export default async function HomePage() {
                     Luogo
                   </span>
                   <strong className="max-w-[11rem] break-words text-right text-white sm:max-w-none">
-                    {nextEvent.venue}, {nextEvent.city}
+                    {nextEvent.locationName}
                   </strong>
                 </div>
                 <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-4 border-b border-[#E31F29]/15 py-3">

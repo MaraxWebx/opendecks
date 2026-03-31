@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { updateApplication } from "@/lib/data";
+import { deleteApplication, updateApplication } from "@/lib/data";
 import { ApplicationRecord } from "@/lib/types";
 
 type RouteContext = {
@@ -22,4 +22,15 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
   }
 
   return NextResponse.json({ application });
+}
+
+export async function DELETE(_request: NextRequest, context: RouteContext) {
+  const { id } = await context.params;
+  const deleted = await deleteApplication(id);
+
+  if (!deleted) {
+    return NextResponse.json({ error: "Candidatura non trovata." }, { status: 404 });
+  }
+
+  return NextResponse.json({ success: true });
 }

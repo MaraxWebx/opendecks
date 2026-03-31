@@ -21,14 +21,37 @@ const initialState: FormState = {
 export function ContactForm() {
   const [form, setForm] = useState<FormState>(initialState);
   const [status, setStatus] = useState("");
+  const [sending, setSending] = useState(false);
 
   function updateField<Key extends keyof FormState>(key: Key, value: FormState[Key]) {
     setForm((current) => ({ ...current, [key]: value }));
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setStatus("Messaggio pronto. Collego l'invio backend quando vuoi.");
+    setSending(true);
+    setStatus("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form)
+      });
+
+      const result = (await response.json().catch(() => null)) as { error?: string } | null;
+
+      if (!response.ok) {
+        throw new Error(result?.error || "Invio messaggio non riuscito.");
+      }
+
+      setForm(initialState);
+      setStatus("Messaggio inviato correttamente.");
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Errore invio messaggio.");
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
@@ -89,8 +112,8 @@ export function ContactForm() {
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <button type="submit" className={ui.action.primary}>
-          Invia richiesta
+        <button type="submit" className={ui.action.primary} disabled={sending}>
+          {sending ? "Invio..." : "Invia richiesta"}
         </button>
         <span className="text-sm text-white/55">{status}</span>
       </div>

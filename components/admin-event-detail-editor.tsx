@@ -1,33 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { BodyScrollLock } from "@/components/body-scroll-lock";
-import { DjRosterRecord, EventRecord, TagRecord } from "@/lib/types";
+import { buildDjRosterProfiles, getEventLineupDjs } from "@/lib/dj-roster";
+import {
+  ApplicationRecord,
+  DjRosterRecord,
+  EventRecord,
+  LocationRecord,
+  TagRecord,
+} from "@/lib/types";
 import { ui } from "@/lib/ui";
+import { DjMultiSelect } from "@/components/dj-multi-select";
 import { TagMultiSelect } from "@/components/tag-multi-select";
 
 type AdminEventDetailEditorProps = {
   event: EventRecord;
-  approvedDjs: DjRosterRecord[];
+  djRoster: DjRosterRecord[];
+  relatedApplications: ApplicationRecord[];
   availableTags: TagRecord[];
+  availableLocations: LocationRecord[];
 };
 
 type EventFormState = {
+  eventNumber: string;
   title: string;
-  city: string;
-  venue: string;
+  locationId: string;
   coverImage: string;
-  coverAlt: string;
   date: string;
   time: string;
-  excerpt: string;
   description: string;
   applicationsOpen: boolean;
   lineupPublished: boolean;
+  lineupDjIds: string[];
   tagIds: string[];
-  status: EventRecord["status"];
 };
 
 type DeleteState = {
@@ -40,39 +48,69 @@ type DeleteState = {
 
 export function AdminEventDetailEditor({
   event,
-  approvedDjs,
-  availableTags
+  djRoster,
+  relatedApplications,
+  availableTags,
+  availableLocations,
 }: AdminEventDetailEditorProps) {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
   const [form, setForm] = useState<EventFormState>({
+    eventNumber: String(event.eventNumber),
     title: event.title,
-    city: event.city,
-    venue: event.venue,
+    locationId: event.locationId,
     coverImage: event.coverImage,
-    coverAlt: event.coverAlt,
     date: event.date,
     time: event.time,
-    excerpt: event.excerpt,
     description: event.description,
     applicationsOpen: event.applicationsOpen,
     lineupPublished: event.lineupPublished,
+    lineupDjIds: event.lineupDjIds || [],
     tagIds: event.tagIds || [],
-    status: event.status
   });
   const [tags, setTags] = useState(availableTags);
+  const [locations] = useState(availableLocations);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [status, setStatus] = useState("");
+  const [eventNumberError, setEventNumberError] = useState("");
   const [deleteState, setDeleteState] = useState<DeleteState>({
     open: false,
     requiresForce: false,
     linkedApplicationsCount: 0,
     linkedDjCount: 0,
-    message: "Confermi di voler eliminare questo evento?"
+    message: "Confermi di voler eliminare questo evento?",
   });
+  const lineupOptions = useMemo(
+    () => buildDjRosterProfiles(djRoster),
+    [djRoster],
+  );
+  const lineupDjs = useMemo(
+    () =>
+      getEventLineupDjs({ ...event, lineupDjIds: form.lineupDjIds }, djRoster),
+    [djRoster, event, form.lineupDjIds],
+  );
+  const applicationStats = useMemo(() => {
+    const counts = {
+      new: relatedApplications.filter((application) => application.status === "new").length,
+      reviewing: relatedApplications.filter((application) => application.status === "reviewing").length,
+      selected: relatedApplications.filter((application) => application.status === "selected").length,
+    };
 
-  function updateField<Key extends keyof EventFormState>(key: Key, value: EventFormState[Key]) {
+    return {
+      ...counts,
+      total: counts.new + counts.reviewing + counts.selected,
+    };
+  }, [relatedApplications]);
+
+  function updateField<Key extends keyof EventFormState>(
+    key: Key,
+    value: EventFormState[Key],
+  ) {
+    if (key === "eventNumber") {
+      setEventNumberError("");
+    }
     setForm((current) => ({ ...current, [key]: value }));
   }
 
@@ -80,6 +118,7 @@ export function AdminEventDetailEditor({
     eventSubmit.preventDefault();
     setSaving(true);
     setStatus("");
+    setEventNumberError("");
 
     try {
       let coverImage = form.coverImage;
@@ -90,14 +129,16 @@ export function AdminEventDetailEditor({
 
         const uploadResponse = await fetch("/api/uploads/event-image", {
           method: "POST",
-          body: uploadData
+          body: uploadData,
         });
 
         if (!uploadResponse.ok) {
-          const uploadResult = (await uploadResponse.json().catch(() => null)) as
-            | { error?: string }
-            | null;
-          throw new Error(uploadResult?.error || "Upload immagine non riuscito.");
+          const uploadResult = (await uploadResponse
+            .json()
+            .catch(() => null)) as { error?: string } | null;
+          throw new Error(
+            uploadResult?.error || "Upload immagine non riuscito.",
+          );
         }
 
         const uploadResult = (await uploadResponse.json()) as { url: string };
@@ -109,34 +150,46 @@ export function AdminEventDetailEditor({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
+          eventNumber: Number(form.eventNumber) || undefined,
           coverImage,
-        })
+        }),
       });
 
       if (!response.ok) {
-        throw new Error("Aggiornamento evento non riuscito.");
+        const errorPayload = (await response.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        throw new Error(
+          errorPayload?.error || "Aggiornamento evento non riuscito.",
+        );
       }
 
       const result = (await response.json()) as { event: EventRecord };
       setForm({
+        eventNumber: String(result.event.eventNumber),
         title: result.event.title,
-        city: result.event.city,
-        venue: result.event.venue,
+        locationId: result.event.locationId,
         coverImage: result.event.coverImage,
-        coverAlt: result.event.coverAlt,
         date: result.event.date,
         time: result.event.time,
-        excerpt: result.event.excerpt,
         description: result.event.description,
         applicationsOpen: result.event.applicationsOpen,
         lineupPublished: result.event.lineupPublished,
+        lineupDjIds: result.event.lineupDjIds || [],
         tagIds: result.event.tagIds || [],
-        status: result.event.status
       });
       setImageFile(null);
+      setOpen(false);
       setStatus("Evento aggiornato.");
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Errore aggiornamento evento.");
+      const message =
+        error instanceof Error ? error.message : "Errore aggiornamento evento.";
+
+      if (message.toLowerCase().includes("numero evento")) {
+        setEventNumberError(message);
+      }
+
+      setStatus(message);
     } finally {
       setSaving(false);
     }
@@ -148,7 +201,7 @@ export function AdminEventDetailEditor({
       requiresForce: false,
       linkedApplicationsCount: 0,
       linkedDjCount: 0,
-      message: "Confermi di voler eliminare questo evento?"
+      message: "Confermi di voler eliminare questo evento?",
     });
   }
 
@@ -159,7 +212,7 @@ export function AdminEventDetailEditor({
 
     setDeleteState((current) => ({
       ...current,
-      open: false
+      open: false,
     }));
   }
 
@@ -168,9 +221,12 @@ export function AdminEventDetailEditor({
     setStatus("");
 
     try {
-      const response = await fetch(`/api/events/${event.id}${force ? "?force=true" : ""}`, {
-        method: "DELETE"
-      });
+      const response = await fetch(
+        `/api/events/${event.id}${force ? "?force=true" : ""}`,
+        {
+          method: "DELETE",
+        },
+      );
 
       if (response.status === 409) {
         const warning = (await response.json()) as {
@@ -185,27 +241,31 @@ export function AdminEventDetailEditor({
           linkedDjCount: warning.linkedDjCount || 0,
           message:
             warning.error ||
-            "Questo evento ha dati collegati. Conferma di nuovo per eliminarli insieme all'evento."
+            "Questo evento ha dati collegati. Conferma di nuovo per eliminarli insieme all'evento.",
         });
         setDeleting(false);
         return;
       }
 
       if (!response.ok) {
-        const errorPayload = (await response.json().catch(() => null)) as
-          | { error?: string }
-          | null;
-        throw new Error(errorPayload?.error || "Eliminazione evento non riuscita.");
+        const errorPayload = (await response.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        throw new Error(
+          errorPayload?.error || "Eliminazione evento non riuscita.",
+        );
       }
 
       setDeleteState((current) => ({
         ...current,
-        open: false
+        open: false,
       }));
       router.push("/admin/eventi");
       router.refresh();
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Errore eliminazione evento.");
+      setStatus(
+        error instanceof Error ? error.message : "Errore eliminazione evento.",
+      );
       setDeleting(false);
     }
   }
@@ -218,92 +278,95 @@ export function AdminEventDetailEditor({
     <div className="grid gap-6">
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_360px]">
         <div className={ui.surface.panel}>
-          <form onSubmit={handleSubmit} className="grid gap-5">
+          <div className="grid gap-5">
             <div className="grid gap-2">
-              <span className={ui.text.eyebrow}>Modifica evento</span>
+              <span className={ui.text.eyebrow}>Scheda evento</span>
               <h2 className="text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
-                {event.title}
+                #{form.eventNumber} / {form.title}
               </h2>
+              <p className="text-sm leading-7 text-white/68">
+                Gestione evento, line up e andamento candidature in un'unica scheda.
+              </p>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <Field label="Titolo" htmlFor="detail-title">
-                <input id="detail-title" className={ui.form.field} value={form.title} onChange={(event) => updateField("title", event.target.value)} required />
-              </Field>
-              <Field label="Citta" htmlFor="detail-city">
-                <input id="detail-city" className={ui.form.field} value={form.city} onChange={(event) => updateField("city", event.target.value)} required />
-              </Field>
-              <Field label="Venue" htmlFor="detail-venue">
-                <input id="detail-venue" className={ui.form.field} value={form.venue} onChange={(event) => updateField("venue", event.target.value)} required />
-              </Field>
-              <Field label="Data" htmlFor="detail-date">
-                <input id="detail-date" type="date" className={ui.form.field} value={form.date} onChange={(event) => updateField("date", event.target.value)} required />
-              </Field>
-              <Field label="Orario" htmlFor="detail-time">
-                <input id="detail-time" type="time" className={ui.form.field} value={form.time} onChange={(event) => updateField("time", event.target.value)} required />
-              </Field>
-              <Field label="Stato evento" htmlFor="detail-status">
-                <select id="detail-status" className={ui.form.select} value={form.status} onChange={(event) => updateField("status", event.target.value as EventRecord["status"])}>
-                  <option value="upcoming">Prossimo</option>
-                  <option value="past">Passato</option>
-                </select>
-              </Field>
-              <Field label="Candidature aperte" htmlFor="detail-applications">
-                <select id="detail-applications" className={ui.form.select} value={form.applicationsOpen ? "yes" : "no"} onChange={(event) => updateField("applicationsOpen", event.target.value === "yes")}>
-                  <option value="yes">Si</option>
-                  <option value="no">No</option>
-                </select>
-              </Field>
-              <Field label="Line up pubblica" htmlFor="detail-lineup-public">
-                <select
-                  id="detail-lineup-public"
-                  className={ui.form.select}
-                  value={form.lineupPublished ? "yes" : "no"}
-                  onChange={(event) => updateField("lineupPublished", event.target.value === "yes")}
+              <DetailItem label="Location" value={locations.find((item) => item.id === form.locationId)?.name || "Non selezionata"} />
+              <DetailItem label="Indirizzo" value={locations.find((item) => item.id === form.locationId)?.address || "Non disponibile"} />
+              <DetailItem label="Data" value={`${new Date(form.date).toLocaleDateString("it-IT")} / ${form.time}`} />
+              <DetailItem label="Line up pubblica" value={form.lineupPublished ? "Si" : "No"} />
+              <DetailItem label="Candidature aperte" value={form.applicationsOpen ? "Si" : "No"} />
+              <DetailItem label="Tag" value={tags.filter((tag) => form.tagIds.includes(tag.id)).map((tag) => tag.label).join(" / ") || "Nessun tag"} />
+            </div>
+
+            <div className={ui.surface.card}>
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <div>
+                  <span className={ui.form.label}>Statistiche candidature</span>
+                  <p className="mt-2 text-sm text-white/62">
+                    Nuove, in review e approvate relative a questo evento.
+                  </p>
+                </div>
+                <span className="rounded-md bg-white/6 px-3 py-1.5 text-xs uppercase tracking-[0.14em] text-white/84">
+                  {applicationStats.total} totali
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-4 text-xs uppercase tracking-[0.14em] text-white/68">
+                <span className="inline-flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#E31F29]" />
+                  Nuove
+                </span>
+                <span className="inline-flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+                  In review
+                </span>
+                <span className="inline-flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                  Approvate
+                </span>
+              </div>
+              <div className="mt-4 h-4 overflow-hidden rounded-full bg-white/8">
+                <div
+                  className="flex h-full overflow-hidden rounded-full"
+                  style={{
+                    width: `${Math.max(applicationStats.total ? 100 : 0, applicationStats.total ? 8 : 0)}%`,
+                  }}
                 >
-                  <option value="no">No</option>
-                  <option value="yes">Si</option>
-                </select>
-              </Field>
-              <Field label="Carica immagine" htmlFor="detail-cover-file">
-                <input id="detail-cover-file" type="file" accept="image/png,image/jpeg,image/webp,image/avif" className={ui.form.field} onChange={(event) => setImageFile(event.target.files?.[0] || null)} />
-              </Field>
-              <Field label="Alt immagine" htmlFor="detail-cover-alt" full>
-                <input id="detail-cover-alt" className={ui.form.field} value={form.coverAlt} onChange={(event) => updateField("coverAlt", event.target.value)} required />
-              </Field>
-              <Field label="Excerpt" htmlFor="detail-excerpt" full>
-                <textarea id="detail-excerpt" className={`${ui.form.field} min-h-28 resize-y`} value={form.excerpt} onChange={(event) => updateField("excerpt", event.target.value)} required />
-              </Field>
-              <Field label="Descrizione" htmlFor="detail-description" full>
-                <textarea id="detail-description" className={`${ui.form.field} min-h-40 resize-y`} value={form.description} onChange={(event) => updateField("description", event.target.value)} required />
-              </Field>
-              <Field label="Tag" htmlFor="detail-tags" full>
-                <div id="detail-tags">
-                  <TagMultiSelect
-                    tags={tags}
-                    value={form.tagIds}
-                    onChange={(nextValue) => updateField("tagIds", nextValue)}
-                    onTagsChange={setTags}
+                  <div
+                    className="h-full shrink-0 bg-[linear-gradient(90deg,#ff676f_0%,#E31F29_100%)]"
+                    style={{ width: `${(applicationStats.new / Math.max(applicationStats.total, 1)) * 100}%` }}
+                  />
+                  <div
+                    className="h-full shrink-0 bg-[linear-gradient(90deg,#fcd34d_0%,#f59e0b_100%)]"
+                    style={{ width: `${(applicationStats.reviewing / Math.max(applicationStats.total, 1)) * 100}%` }}
+                  />
+                  <div
+                    className="h-full shrink-0 bg-[linear-gradient(90deg,#6ee7b7_0%,#10b981_100%)]"
+                    style={{ width: `${(applicationStats.selected / Math.max(applicationStats.total, 1)) * 100}%` }}
                   />
                 </div>
-              </Field>
+              </div>
+              <div className="mt-4 grid gap-2 text-sm text-white/70 md:grid-cols-3">
+                <p>Nuove: {applicationStats.new}</p>
+                <p>In review: {applicationStats.reviewing}</p>
+                <p>Approvate: {applicationStats.selected}</p>
+              </div>
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <button type="submit" className={ui.action.primary} disabled={saving}>
-                {saving ? "Salvataggio..." : "Salva modifiche"}
+              <button type="button" className={ui.action.primary} onClick={() => setOpen(true)}>
+                Modifica evento
               </button>
               <button
                 type="button"
                 className="inline-flex min-h-11 items-center justify-center rounded-xl border border-red-500/35 bg-red-500/12 px-5 py-3 text-sm font-medium text-red-200 transition hover:bg-red-500/18 disabled:cursor-not-allowed disabled:opacity-50"
                 onClick={openDeleteModal}
-                disabled={deleting || saving}
+                disabled={deleting}
               >
                 {deleting ? "Eliminazione..." : "Elimina evento"}
               </button>
               {status ? <p className="text-sm text-white/70">{status}</p> : null}
             </div>
-          </form>
+          </div>
         </div>
 
         <div className="grid gap-4">
@@ -311,46 +374,241 @@ export function AdminEventDetailEditor({
             <span className={ui.text.eyebrow}>Anteprima</span>
             <div className="mt-4 overflow-hidden rounded-xl border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)]">
               <img
-                src={imageFile ? URL.createObjectURL(imageFile) : form.coverImage}
-                alt={form.coverAlt}
+                src={
+                  imageFile ? URL.createObjectURL(imageFile) : form.coverImage
+                }
+                alt={buildEventCoverAlt(form.title, form.locationId, locations)}
                 className="aspect-[4/3] w-full object-cover"
               />
             </div>
             <div className="mt-4 grid gap-2 text-sm text-white/74">
               <p>
-                <strong className="text-white">Luogo:</strong> {form.venue}, {form.city}
+                <strong className="text-white">Numero:</strong> #
+                {form.eventNumber}
               </p>
               <p>
-                <strong className="text-white">Data:</strong> {new Date(form.date).toLocaleDateString("it-IT")} / {form.time}
+                <strong className="text-white">Location:</strong>{" "}
+                {locations.find((item) => item.id === form.locationId)?.name ||
+                  "Non selezionata"}
               </p>
               <p>
-                <strong className="text-white">Line up pubblica:</strong> {form.lineupPublished ? "Si" : "No"}
+                <strong className="text-white">Indirizzo:</strong>{" "}
+                {locations.find((item) => item.id === form.locationId)
+                  ?.address || "Non disponibile"}
               </p>
               <p>
-                <strong className="text-white">Slug:</strong> {createSlug(form.title)}
+                <strong className="text-white">Data:</strong>{" "}
+                {new Date(form.date).toLocaleDateString("it-IT")} / {form.time}
               </p>
-            </div>
-          </div>
+              <p>
+                <strong className="text-white">Line up pubblica:</strong>{" "}
+                {form.lineupPublished ? "Si" : "No"}
+              </p>
+              <p>
+                <strong className="text-white">Slug:</strong>{" "}
+                {createSlug(form.title)}
+              </p>
 
-          <div className={ui.surface.panel}>
-            <span className={ui.text.eyebrow}>Roster approvato</span>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {approvedDjs.length ? (
-                approvedDjs.map((record) => (
-                  <span
-                    key={record.id}
-                    className="inline-flex rounded-md bg-emerald-500/15 px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-300"
-                  >
-                    {record.name}
+              <span className={ui.text.eyebrow}>Line up evento</span>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {lineupDjs.length ? (
+                  lineupDjs.map((record) => (
+                    <span
+                      key={record.id}
+                      className="inline-flex rounded-md bg-emerald-500/15 px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-300"
+                    >
+                      {record.name}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-sm text-white/45">
+                    Nessun DJ in line up.
                   </span>
-                ))
-              ) : (
-                <span className="text-sm text-white/45">Nessun DJ approvato.</span>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {open ? (
+        <div className="fixed inset-0 z-50 grid place-items-center p-4">
+          <BodyScrollLock />
+          <div className="absolute inset-0 bg-black/72" onClick={() => setOpen(false)} />
+          <div className={`${ui.surface.modal} max-w-5xl`}>
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div className="grid gap-2">
+                <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
+                  Modifica evento
+                </span>
+                <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
+                  #{form.eventNumber} / {form.title}
+                </h3>
+              </div>
+              <button
+                type="button"
+                className={ui.action.secondary}
+                onClick={() => setOpen(false)}
+              >
+                Chiudi
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="grid gap-5">
+              <div className="grid gap-4 md:grid-cols-2">
+                <Field label="Titolo" htmlFor="detail-title">
+                  <input
+                    id="detail-title"
+                    className={ui.form.field}
+                    value={form.title}
+                    onChange={(event) => updateField("title", event.target.value)}
+                    required
+                  />
+                </Field>
+                <Field label="Location" htmlFor="detail-location">
+                  <select
+                    id="detail-location"
+                    className={ui.form.select}
+                    value={form.locationId}
+                    onChange={(event) =>
+                      updateField("locationId", event.target.value)
+                    }
+                    required
+                  >
+                    <option value="">Seleziona location</option>
+                    {locations.map((location) => (
+                      <option key={location.id} value={location.id}>
+                        {location.name} / {location.address}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                <Field label="Numero evento" htmlFor="detail-event-number">
+                  <input
+                    id="detail-event-number"
+                    type="number"
+                    min={1}
+                    className={ui.form.field}
+                    value={form.eventNumber}
+                    onChange={(event) =>
+                      updateField("eventNumber", event.target.value)
+                    }
+                    required
+                  />
+                  {eventNumberError ? (
+                    <p className="text-sm text-red-200">{eventNumberError}</p>
+                  ) : (
+                    <p className="text-sm text-white/55">
+                      Puoi correggere il numero evento qui e poi salvare le modifiche.
+                    </p>
+                  )}
+                </Field>
+                <Field label="Data" htmlFor="detail-date">
+                  <input
+                    id="detail-date"
+                    type="date"
+                    className={ui.form.field}
+                    value={form.date}
+                    onChange={(event) => updateField("date", event.target.value)}
+                    required
+                  />
+                </Field>
+                <Field label="Orario" htmlFor="detail-time">
+                  <input
+                    id="detail-time"
+                    type="time"
+                    className={ui.form.field}
+                    value={form.time}
+                    onChange={(event) => updateField("time", event.target.value)}
+                    required
+                  />
+                </Field>
+                <Field label="Candidature aperte" htmlFor="detail-applications">
+                  <select
+                    id="detail-applications"
+                    className={ui.form.select}
+                    value={form.applicationsOpen ? "yes" : "no"}
+                    onChange={(event) =>
+                      updateField(
+                        "applicationsOpen",
+                        event.target.value === "yes",
+                      )
+                    }
+                  >
+                    <option value="yes">Si</option>
+                    <option value="no">No</option>
+                  </select>
+                </Field>
+                <Field label="Line up pubblica" htmlFor="detail-lineup-public">
+                  <select
+                    id="detail-lineup-public"
+                    className={ui.form.select}
+                    value={form.lineupPublished ? "yes" : "no"}
+                    onChange={(event) =>
+                      updateField("lineupPublished", event.target.value === "yes")
+                    }
+                  >
+                    <option value="no">No</option>
+                    <option value="yes">Si</option>
+                  </select>
+                </Field>
+                <Field label="DJ in line up" htmlFor="detail-lineup-djs" full>
+                  <div id="detail-lineup-djs">
+                    <DjMultiSelect
+                      djs={lineupOptions}
+                      value={form.lineupDjIds}
+                      onChange={(nextValue) =>
+                        updateField("lineupDjIds", nextValue)
+                      }
+                    />
+                  </div>
+                </Field>
+                <Field label="Carica immagine" htmlFor="detail-cover-file">
+                  <input
+                    id="detail-cover-file"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/avif"
+                    className={ui.form.field}
+                    onChange={(event) =>
+                      setImageFile(event.target.files?.[0] || null)
+                    }
+                  />
+                </Field>
+                <Field label="Descrizione" htmlFor="detail-description" full>
+                  <textarea
+                    id="detail-description"
+                    className={`${ui.form.field} min-h-40 resize-y`}
+                    value={form.description}
+                    onChange={(event) =>
+                      updateField("description", event.target.value)
+                    }
+                  />
+                </Field>
+                <Field label="Tag" htmlFor="detail-tags" full>
+                  <div id="detail-tags">
+                    <TagMultiSelect
+                      tags={tags}
+                      value={form.tagIds}
+                      onChange={(nextValue) => updateField("tagIds", nextValue)}
+                      onTagsChange={setTags}
+                    />
+                  </div>
+                </Field>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="submit"
+                  className={ui.action.primary}
+                  disabled={saving}
+                >
+                  {saving ? "Salvataggio..." : "Salva modifiche"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : null}
 
       {deleteState.open ? (
         <div className="fixed inset-0 z-50 grid place-items-center p-4">
@@ -377,7 +635,9 @@ export function AdminEventDetailEditor({
 
               {deleteState.requiresForce ? (
                 <div className="rounded-xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-white/78">
-                  <p>Candidature collegate: {deleteState.linkedApplicationsCount}</p>
+                  <p>
+                    Candidature collegate: {deleteState.linkedApplicationsCount}
+                  </p>
                   <p>DJ collegati: {deleteState.linkedDjCount}</p>
                   <p className="mt-2 text-red-200">
                     Questa azione eliminerà anche i record collegati.
@@ -419,11 +679,20 @@ export function AdminEventDetailEditor({
   );
 }
 
+function DetailItem({ label, value }: { label: string; value: string }) {
+  return (
+    <div className={ui.surface.card}>
+      <span className={ui.form.label}>{label}</span>
+      <p className="mt-2 text-sm leading-7 text-[#f7f3ee]">{value}</p>
+    </div>
+  );
+}
+
 function Field({
   label,
   htmlFor,
   full = false,
-  children
+  children,
 }: {
   label: string;
   htmlFor: string;
@@ -448,4 +717,15 @@ function createSlug(value: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function buildEventCoverAlt(
+  title: string,
+  locationId: string,
+  locations: LocationRecord[],
+) {
+  const location = locations.find((item) => item.id === locationId);
+  return (
+    [title, location?.name].filter(Boolean).join(" - ") || "Copertina evento"
+  );
 }

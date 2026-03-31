@@ -31,8 +31,13 @@ SMTP_PORT=587
 SMTP_USER=
 SMTP_PASS=
 SMTP_FROM=
+CONTACT_EMAIL_TO=
 BLOB_READ_WRITE_TOKEN=
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=
 ```
+
+`SMTP_FROM` e opzionale: se manca, il progetto usa automaticamente `SMTP_USER` come mittente.
+`CONTACT_EMAIL_TO` e opzionale: se manca, i messaggi del form contatti arrivano a `SMTP_USER`.
 
 Se `MONGODB_URI` non e presente, il progetto usa dati demo in memoria.
 
@@ -50,7 +55,9 @@ SMTP_PORT=587
 SMTP_USER=
 SMTP_PASS=
 SMTP_FROM=
+CONTACT_EMAIL_TO=
 BLOB_READ_WRITE_TOKEN=
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=
 ```
 
 Note pratiche:

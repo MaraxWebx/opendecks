@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createEvent, getEvents } from "@/lib/data";
+import { createEvent, getEvents, getLocations } from "@/lib/data";
 
 export async function GET() {
   const events = await getEvents();
@@ -8,48 +8,76 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
+  try {
+    const body = await request.json();
 
-  const requiredFields = [
-    "title",
-    "city",
-    "venue",
-    "coverImage",
-    "coverAlt",
-    "date",
-    "time",
-    "excerpt",
-    "description"
-  ];
+    const requiredFields = [
+      "title",
+      "locationId",
+      "coverImage",
+      "date",
+      "time"
+    ];
 
-  const missingField = requiredFields.find((field) => !body?.[field] && body?.[field] !== 0);
+    const missingField = requiredFields.find((field) => !body?.[field] && body?.[field] !== 0);
 
-  if (missingField) {
+    if (missingField) {
+      return NextResponse.json(
+        { error: `Campo obbligatorio mancante: ${missingField}` },
+        { status: 400 }
+      );
+    }
+
+    const locations = await getLocations();
+    const selectedLocation = locations.find((location) => location.id === body.locationId);
+
+    if (!selectedLocation) {
+      return NextResponse.json({ error: "Location non valida." }, { status: 400 });
+    }
+
+    const requestedEventNumber = Number(body.eventNumber) || 0;
+
+    if (requestedEventNumber > 0) {
+      const events = await getEvents();
+      const duplicate = events.find(
+        (event) =>
+          event.locationId === selectedLocation.id && event.eventNumber === requestedEventNumber
+      );
+
+      if (duplicate) {
+        return NextResponse.json(
+          { error: "Numero evento gia assegnato a questa location." },
+          { status: 409 }
+        );
+      }
+    }
+
+    const event = await createEvent({
+      eventNumber: requestedEventNumber || undefined,
+      slug: createSlug(body.title),
+      title: body.title,
+      locationId: selectedLocation.id,
+      locationName: selectedLocation.name,
+      locationAddress: selectedLocation.address,
+      coverImage: body.coverImage,
+      coverAlt: buildEventCoverAlt(body.title, selectedLocation.name),
+      date: body.date,
+      time: body.time,
+      description: body.description || "",
+      capacity: Number(body.capacity) || 0,
+      applicationsOpen: Boolean(body.applicationsOpen),
+      lineupPublished: Boolean(body.lineupPublished),
+      lineupDjIds: Array.isArray(body.lineupDjIds) ? body.lineupDjIds : [],
+      tagIds: Array.isArray(body.tagIds) ? body.tagIds : []
+    });
+
+    return NextResponse.json({ event }, { status: 201 });
+  } catch (error) {
     return NextResponse.json(
-      { error: `Campo obbligatorio mancante: ${missingField}` },
-      { status: 400 }
+      { error: error instanceof Error ? error.message : "Salvataggio evento non riuscito." },
+      { status: 409 }
     );
   }
-
-  const event = await createEvent({
-    slug: createSlug(body.title),
-    title: body.title,
-    city: body.city,
-    venue: body.venue,
-    coverImage: body.coverImage,
-    coverAlt: body.coverAlt,
-    date: body.date,
-    time: body.time,
-    excerpt: body.excerpt,
-    description: body.description,
-    capacity: Number(body.capacity) || 0,
-    applicationsOpen: Boolean(body.applicationsOpen),
-    lineupPublished: Boolean(body.lineupPublished),
-    tagIds: Array.isArray(body.tagIds) ? body.tagIds : [],
-    status: body.status
-  });
-
-  return NextResponse.json({ event }, { status: 201 });
 }
 
 function createSlug(value: string) {
@@ -60,4 +88,8 @@ function createSlug(value: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function buildEventCoverAlt(title: string, locationName: string) {
+  return [title, locationName].filter(Boolean).join(" - ") || "Copertina evento";
 }

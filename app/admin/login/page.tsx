@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import type { Route } from "next";
 
 import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { ui } from "@/lib/ui";
@@ -14,7 +15,7 @@ export default async function AdminLoginPage({
   const { error } = await searchParams;
 
   if (authenticated) {
-    redirect("/admin");
+    redirect("/admin" as Route);
   }
 
   return (

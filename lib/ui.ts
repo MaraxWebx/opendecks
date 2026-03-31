@@ -50,6 +50,8 @@ export const ui = {
       "inline-flex min-h-11 items-center justify-center rounded-xl border border-[color:var(--color-brand)] bg-[color:var(--color-brand)] px-5 py-3 text-sm font-medium text-white transition hover:border-[color:var(--color-brand-hover)] hover:bg-[color:var(--color-brand-hover)]",
     secondary:
       "inline-flex min-h-11 items-center justify-center rounded-xl border border-[color:var(--color-brand-35)] px-4 py-3 text-sm font-medium text-[color:var(--color-text)] transition hover:bg-[color:var(--color-brand-10)]",
+    danger:
+      "inline-flex min-h-11 items-center justify-center rounded-xl border border-[#E31F29]/45 bg-[#E31F29]/12 px-4 py-3 text-sm font-medium text-[#f7f3ee] transition hover:bg-[#E31F29]/18 disabled:cursor-not-allowed disabled:opacity-60",
     navToggle:
       "inline-flex h-12 w-12 flex-col items-center justify-center gap-1.5 rounded-[0.55rem] border border-[color:var(--color-brand-25)] bg-[color:var(--color-brand-10)] text-white md:hidden"
   },

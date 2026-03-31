@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { AdminEventDetailEditor } from "@/components/admin-event-detail-editor";
 import { SectionHeading } from "@/components/section-heading";
-import { getDjRosterEntries, getEventBySlug, getTags } from "@/lib/data";
+import { getApplications, getDjRosterEntries, getEventBySlug, getLocations, getTags } from "@/lib/data";
 import { ui } from "@/lib/ui";
 
 type AdminEventDetailPageProps = {
@@ -14,17 +14,17 @@ export default async function AdminEventDetailPage({
   params
 }: AdminEventDetailPageProps) {
   const { slug } = await params;
-  const [event, djRoster, tags] = await Promise.all([
+  const [event, djRoster, tags, locations, applications] = await Promise.all([
     getEventBySlug(slug),
     getDjRosterEntries(),
-    getTags()
+    getTags(),
+    getLocations(),
+    getApplications()
   ]);
 
   if (!event) {
     notFound();
   }
-
-  const approvedDjs = djRoster.filter((record) => record.eventId === event.id);
 
   return (
     <section className={ui.layout.sectionCompact}>
@@ -41,7 +41,13 @@ export default async function AdminEventDetailPage({
         </Link>
       </div>
 
-      <AdminEventDetailEditor event={event} approvedDjs={approvedDjs} availableTags={tags} />
+      <AdminEventDetailEditor
+        event={event}
+        djRoster={djRoster}
+        relatedApplications={applications.filter((application) => application.eventId === event.id)}
+        availableTags={tags}
+        availableLocations={locations}
+      />
     </section>
   );
 }

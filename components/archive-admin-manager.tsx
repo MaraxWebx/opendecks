@@ -420,7 +420,7 @@ function GalleryModal({
                 <option value="">Nessun evento collegato</option>
                 {events.map((event) => (
                   <option key={event.id} value={event.id}>
-                    {event.title} / {event.city} /{" "}
+                    {event.title} / {event.locationName} /{" "}
                     {new Date(event.date).toLocaleDateString("it-IT")}
                   </option>
                 ))}

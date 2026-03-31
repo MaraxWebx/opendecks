@@ -2,11 +2,11 @@ import { ObjectId } from "mongodb";
 import { unstable_noStore as noStore } from "next/cache";
 
 import { canAttemptMongo, getDatabase, isMongoConfigured } from "@/lib/mongodb";
-import { mockApplications, mockArchive, mockDjRoster, mockEvents, mockTags } from "@/lib/mock-data";
-import { ApplicationRecord, ArchiveRecord, DjRosterRecord, EventRecord, TagRecord } from "@/lib/types";
+import { mockApplications, mockArchive, mockDjRoster, mockEvents, mockLocations, mockTags } from "@/lib/mock-data";
+import { ApplicationRecord, ArchiveRecord, DjRosterRecord, EventRecord, LocationRecord, TagRecord } from "@/lib/types";
 
 type NewApplication = Omit<ApplicationRecord, "id" | "submittedAt" | "status">;
-type NewEvent = Omit<EventRecord, "id" | "status"> & { status?: EventRecord["status"] };
+type NewEvent = Omit<EventRecord, "id" | "status" | "eventNumber"> & { eventNumber?: number };
 type UpdateEventInput = Partial<Omit<EventRecord, "id">>;
 type NewArchiveEntry = Omit<ArchiveRecord, "id">;
 type UpdateArchiveEntry = Partial<NewArchiveEntry>;
@@ -18,6 +18,8 @@ type UpdateDjRosterMembershipInput = {
   membershipCardEmailSentAt?: string;
 };
 type NewTag = Omit<TagRecord, "id">;
+type NewLocation = Omit<LocationRecord, "id">;
+type UpdateLocationInput = Partial<NewLocation>;
 
 function sortEvents(events: EventRecord[]) {
   return [...events].sort((a, b) => b.date.localeCompare(a.date));
@@ -169,6 +171,30 @@ export async function getTags() {
   );
 }
 
+export async function getLocations() {
+  noStore();
+
+  if (!isMongoConfigured()) {
+    return [...mockLocations].sort((a, b) => a.name.localeCompare(b.name, "it"));
+  }
+
+  return withMongoFallback(
+    async () => {
+      const db = await getDatabase();
+      const locations = await db.collection<LocationRecord>("locations").find({}).sort({ name: 1 }).toArray();
+      return locations.map(normalizeLocation);
+    },
+    () => [...mockLocations].sort((a, b) => a.name.localeCompare(b.name, "it"))
+  );
+}
+
+export async function getLocationById(id: string) {
+  noStore();
+
+  const locations = await getLocations();
+  return locations.find((location) => location.id === id) || null;
+}
+
 export async function createTag(input: NewTag) {
   if (!isMongoConfigured()) {
     return createTagMock(input);
@@ -192,6 +218,80 @@ export async function createTag(input: NewTag) {
       return record;
     },
     () => createTagMock(input)
+  );
+}
+
+export async function createLocation(input: NewLocation) {
+  if (!isMongoConfigured()) {
+    return createLocationMock(input);
+  }
+
+  return withMongoFallback(
+    async () => {
+      const db = await getDatabase();
+      const record: LocationRecord = {
+        id: new ObjectId().toHexString(),
+        ...input
+      };
+
+      await db.collection<LocationRecord>("locations").insertOne(record);
+      return record;
+    },
+    () => createLocationMock(input)
+  );
+}
+
+export async function updateLocation(id: string, input: UpdateLocationInput) {
+  if (!isMongoConfigured()) {
+    return updateLocationMock(id, input);
+  }
+
+  return withMongoFallback(
+    async () => {
+      const db = await getDatabase();
+      await db.collection<LocationRecord>("locations").updateOne({ id }, { $set: input });
+      const updated = await db.collection<LocationRecord>("locations").findOne({ id });
+
+      if (!updated) {
+        return null;
+      }
+
+      const normalizedLocation = normalizeLocation(updated);
+
+      await db.collection<EventRecord>("events").updateMany(
+        { locationId: id },
+        {
+          $set: {
+            locationName: normalizedLocation.name,
+            locationAddress: normalizedLocation.address
+          }
+        }
+      );
+
+      return normalizedLocation;
+    },
+    () => updateLocationMock(id, input)
+  );
+}
+
+export async function deleteLocation(id: string) {
+  if (!isMongoConfigured()) {
+    return deleteLocationMock(id);
+  }
+
+  return withMongoFallback(
+    async () => {
+      const db = await getDatabase();
+      const linkedEvents = await db.collection<EventRecord>("events").countDocuments({ locationId: id });
+
+      if (linkedEvents > 0) {
+        return { deleted: false, blocked: true };
+      }
+
+      const result = await db.collection<LocationRecord>("locations").deleteOne({ id });
+      return { deleted: Boolean(result.deletedCount), blocked: false };
+    },
+    () => deleteLocationMock(id)
   );
 }
 
@@ -263,14 +363,47 @@ export async function updateApplication(id: string, input: UpdateApplicationInpu
   );
 }
 
+export async function deleteApplication(id: string) {
+  if (!isMongoConfigured()) {
+    return deleteApplicationMock(id);
+  }
+
+  return withMongoFallback(
+    async () => {
+      const db = await getDatabase();
+      const result = await db.collection<ApplicationRecord>("applications").deleteOne({ id });
+
+      if (!result.deletedCount) {
+        return false;
+      }
+
+      await db.collection<DjRosterRecord>("dj_roster").deleteOne({ applicationId: id });
+      return true;
+    },
+    () => deleteApplicationMock(id)
+  );
+}
+
 export async function createEvent(input: NewEvent) {
-  const record: EventRecord = {
-    id: new ObjectId().toHexString(),
-    status: input.status || (input.date >= new Date().toISOString().slice(0, 10) ? "upcoming" : "past"),
-    ...input
-  };
+  const nextEventNumber = await getNextEventNumber(input.locationId);
+  const requestedEventNumber = input.eventNumber || nextEventNumber;
 
   if (!isMongoConfigured()) {
+    const existing = mockEvents.find(
+      (event) =>
+        event.locationId === input.locationId && event.eventNumber === requestedEventNumber
+    );
+
+    if (existing) {
+      throw new Error("Numero evento gia assegnato a questa location.");
+    }
+
+    const record: EventRecord = {
+      id: new ObjectId().toHexString(),
+      eventNumber: requestedEventNumber,
+      status: getEventStatusFromDate(input.date),
+      ...input
+    };
     mockEvents.push(record);
     return sortEvents(mockEvents).find((event) => event.id === record.id) || record;
   }
@@ -278,10 +411,39 @@ export async function createEvent(input: NewEvent) {
   return withMongoFallback(
     async () => {
       const db = await getDatabase();
+      const existing = await db
+        .collection<EventRecord>("events")
+        .findOne({ locationId: input.locationId, eventNumber: requestedEventNumber });
+
+      if (existing) {
+        throw new Error("Numero evento gia assegnato a questa location.");
+      }
+
+      const record: EventRecord = {
+        id: new ObjectId().toHexString(),
+        eventNumber: requestedEventNumber,
+        status: getEventStatusFromDate(input.date),
+        ...input
+      };
       await db.collection<EventRecord>("events").insertOne(record);
       return record;
     },
     () => {
+      const existing = mockEvents.find(
+        (event) =>
+          event.locationId === input.locationId && event.eventNumber === requestedEventNumber
+      );
+
+      if (existing) {
+        throw new Error("Numero evento gia assegnato a questa location.");
+      }
+
+      const record: EventRecord = {
+        id: new ObjectId().toHexString(),
+        eventNumber: requestedEventNumber,
+        status: getEventStatusFromDate(input.date),
+        ...input
+      };
       mockEvents.push(record);
       return sortEvents(mockEvents).find((event) => event.id === record.id) || record;
     }
@@ -296,7 +458,38 @@ export async function updateEvent(id: string, input: UpdateEventInput) {
   return withMongoFallback(
     async () => {
       const db = await getDatabase();
-      await db.collection<EventRecord>("events").updateOne({ id }, { $set: input });
+      const current = await db.collection<EventRecord>("events").findOne({ id });
+
+      if (!current) {
+        return null;
+      }
+
+      if (
+        typeof input.eventNumber === "number" &&
+        input.eventNumber > 0 &&
+        (input.eventNumber !== current.eventNumber ||
+          (input.locationId && input.locationId !== current.locationId))
+      ) {
+        const targetLocationId = input.locationId || current.locationId;
+        const existing = await db
+          .collection<EventRecord>("events")
+          .findOne({
+            locationId: targetLocationId,
+            eventNumber: input.eventNumber,
+            id: { $ne: id } as any
+          });
+
+        if (existing) {
+          throw new Error("Numero evento gia assegnato a questa location.");
+        }
+      }
+
+      const nextInput = {
+        ...input,
+        status: input.date ? getEventStatusFromDate(input.date) : current.status
+      };
+
+      await db.collection<EventRecord>("events").updateOne({ id }, { $set: nextInput });
       const updated = await db.collection<EventRecord>("events").findOne({ id });
       return updated ? normalizeEvent(updated) : null;
     },
@@ -325,6 +518,14 @@ export async function deleteEvent(id: string) {
     },
     () => deleteEventMock(id)
   );
+}
+
+async function getNextEventNumber(locationId: string) {
+  const events = await getEvents();
+  const maxEventNumber = events
+    .filter((event) => event.locationId === locationId)
+    .reduce((max, event) => Math.max(max, event.eventNumber || 0), 0);
+  return maxEventNumber + 1;
 }
 
 export async function createArchiveEntry(input: NewArchiveEntry) {
@@ -418,9 +619,23 @@ function updateEventMock(id: string, input: UpdateEventInput) {
     return null;
   }
 
+  if (
+    typeof input.eventNumber === "number" &&
+    input.eventNumber > 0 &&
+    mockEvents.some(
+      (item) =>
+        item.id !== id &&
+        item.locationId === (input.locationId || mockEvents[index].locationId) &&
+        item.eventNumber === input.eventNumber
+    )
+  ) {
+    throw new Error("Numero evento gia assegnato a questa location.");
+  }
+
   mockEvents[index] = {
     ...mockEvents[index],
-    ...input
+    ...input,
+    status: input.date ? getEventStatusFromDate(input.date) : mockEvents[index].status
   };
 
   return mockEvents[index];
@@ -440,6 +655,23 @@ function updateApplicationMock(id: string, input: UpdateApplicationInput) {
 
   syncDjRosterMock(mockApplications[index]);
   return mockApplications[index];
+}
+
+function deleteApplicationMock(id: string) {
+  const index = mockApplications.findIndex((item) => item.id === id);
+
+  if (index === -1) {
+    return false;
+  }
+
+  mockApplications.splice(index, 1);
+
+  const rosterIndex = mockDjRoster.findIndex((item) => item.applicationId === id);
+  if (rosterIndex !== -1) {
+    mockDjRoster.splice(rosterIndex, 1);
+  }
+
+  return true;
 }
 
 function deleteEventMock(id: string) {
@@ -498,15 +730,78 @@ function createTagMock(input: NewTag) {
   return record;
 }
 
+function createLocationMock(input: NewLocation) {
+  const record: LocationRecord = {
+    id: new ObjectId().toHexString(),
+    ...input
+  };
+
+  mockLocations.push(record);
+  mockLocations.sort((a, b) => a.name.localeCompare(b.name, "it"));
+  return record;
+}
+
+function updateLocationMock(id: string, input: UpdateLocationInput) {
+  const index = mockLocations.findIndex((item) => item.id === id);
+
+  if (index === -1) {
+    return null;
+  }
+
+  mockLocations[index] = normalizeLocation({
+    ...mockLocations[index],
+    ...input
+  });
+
+  mockEvents.forEach((event, eventIndex) => {
+    if (event.locationId !== id) {
+      return;
+    }
+
+    mockEvents[eventIndex] = {
+      ...event,
+      locationName: mockLocations[index].name,
+      locationAddress: mockLocations[index].address
+    };
+  });
+
+  mockLocations.sort((a, b) => a.name.localeCompare(b.name, "it"));
+
+  return mockLocations.find((item) => item.id === id) || null;
+}
+
+function deleteLocationMock(id: string) {
+  const linkedEvents = mockEvents.filter((event) => event.locationId === id).length;
+
+  if (linkedEvents > 0) {
+    return { deleted: false, blocked: true };
+  }
+
+  const index = mockLocations.findIndex((item) => item.id === id);
+
+  if (index === -1) {
+    return { deleted: false, blocked: false };
+  }
+
+  mockLocations.splice(index, 1);
+  return { deleted: true, blocked: false };
+}
+
 function normalizeEvent(record: EventRecord & { _id?: ObjectId }) {
   const { _id, ...event } = record;
 
   return {
     ...event,
+    eventNumber: Number(event.eventNumber) || 1,
     lineupPublished: Boolean(event.lineupPublished),
+    lineupDjIds: event.lineupDjIds || [],
     tagIds: event.tagIds || [],
     id: event.id || _id?.toHexString() || new ObjectId().toHexString()
   };
+}
+
+function getEventStatusFromDate(date: string): EventRecord["status"] {
+  return date >= new Date().toISOString().slice(0, 10) ? "upcoming" : "past";
 }
 
 function normalizeApplication(record: ApplicationRecord & { _id?: ObjectId }) {
@@ -514,6 +809,8 @@ function normalizeApplication(record: ApplicationRecord & { _id?: ObjectId }) {
 
   return {
     ...application,
+    province: application.province || "",
+    region: application.region || "",
     email: application.email || "",
     phone: application.phone || "",
     photoUrl: application.photoUrl || "",
@@ -535,6 +832,8 @@ function normalizeDjRoster(record: DjRosterRecord & { _id?: ObjectId }) {
 
   return {
     ...roster,
+    province: roster.province || "",
+    region: roster.region || "",
     email: roster.email || "",
     phone: roster.phone || "",
     photoUrl: roster.photoUrl || "",
@@ -549,6 +848,18 @@ function normalizeTag(record: TagRecord & { _id?: ObjectId }) {
   return {
     ...tag,
     id: tag.id || _id?.toHexString() || new ObjectId().toHexString()
+  };
+}
+
+function normalizeLocation(record: LocationRecord & { _id?: ObjectId }) {
+  const { _id, ...location } = record;
+
+  return {
+    ...location,
+    socialLink: location.socialLink || "",
+    phone: location.phone || "",
+    description: location.description || "",
+    id: location.id || _id?.toHexString() || new ObjectId().toHexString()
   };
 }
 
@@ -582,6 +893,8 @@ async function syncDjRosterForApplication(
       eventTitle: application.eventTitle,
       name: application.name,
       city: application.city,
+      province: application.province || "",
+      region: application.region || "",
       email: application.email,
       phone: application.phone,
       photoUrl: application.photoUrl,
@@ -612,6 +925,8 @@ function syncDjRosterMock(application: ApplicationRecord) {
       eventTitle: application.eventTitle,
       name: application.name,
       city: application.city,
+      province: application.province || "",
+      region: application.region || "",
       email: application.email,
       phone: application.phone,
       photoUrl: application.photoUrl,

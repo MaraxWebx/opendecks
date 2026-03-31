@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import { EventRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
@@ -15,6 +17,8 @@ type FormState = {
   eventSlug: string;
   name: string;
   city: string;
+  province: string;
+  region: string;
   email: string;
   phone: string;
   photoUrl: string;
@@ -23,10 +27,21 @@ type FormState = {
   bio: string;
 };
 
+type MunicipalityOption = {
+  code: string;
+  city: string;
+  province: string;
+  provinceCode: string;
+  region: string;
+  label: string;
+};
+
 const initialState: FormState = {
   eventSlug: "",
   name: "",
   city: "",
+  province: "",
+  region: "",
   email: "",
   phone: "",
   photoUrl: "",
@@ -43,6 +58,8 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
     ...initialState,
     eventSlug: initialSlug || events[0]?.slug || "",
   });
+  const [cityQuery, setCityQuery] = useState("");
+  const [cityOptions, setCityOptions] = useState<MunicipalityOption[]>([]);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [status, setStatus] = useState<{
     type: "idle" | "ok" | "error";
@@ -52,6 +69,42 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
     message: "",
   });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const normalizedQuery = cityQuery.trim();
+
+    if (normalizedQuery.length < 2) {
+      setCityOptions([]);
+      return;
+    }
+
+    let active = true;
+    const timeoutId = window.setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `/api/municipalities?q=${encodeURIComponent(normalizedQuery)}`,
+        );
+        const result = (await response.json()) as {
+          municipalities?: MunicipalityOption[];
+        };
+
+        if (!active) {
+          return;
+        }
+
+        setCityOptions(result.municipalities || []);
+      } catch {
+        if (active) {
+          setCityOptions([]);
+        }
+      }
+    }, 150);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timeoutId);
+    };
+  }, [cityQuery]);
 
   async function uploadPhoto(file: File | null) {
     if (!file) {
@@ -89,6 +142,10 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
         throw new Error("Seleziona un evento valido.");
       }
 
+      if (!form.province) {
+        throw new Error("Seleziona una citta valida dall'autocomplete.");
+      }
+
       const photoUrl = await uploadPhoto(photoFile);
 
       const response = await fetch("/api/applications", {
@@ -101,6 +158,8 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
           eventTitle: selectedEvent.title,
           name: form.name,
           city: form.city,
+          province: form.province,
+          region: form.region,
           email: form.email,
           phone: form.phone,
           photoUrl,
@@ -110,14 +169,19 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
         }),
       });
 
+      const result = (await response.json().catch(() => null)) as {
+        error?: string;
+      } | null;
+
       if (!response.ok) {
-        throw new Error("Invio non riuscito.");
+        throw new Error(result?.error || "Invio non riuscito.");
       }
 
       setForm({
         ...initialState,
         eventSlug: selectedEvent.slug,
       });
+      setCityQuery("");
       setPhotoFile(null);
       setStatus({ type: "ok", message: "Candidatura inviata correttamente." });
     } catch (error) {
@@ -150,6 +214,81 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
           title="Stiamo facendo girare il vinile"
           description="La tua candidatura viene salvata e collegata all'evento selezionato."
         />
+      ) : status.type === "error" ? (
+        <div className="grid gap-6 rounded-[1.75rem] border border-[#E31F29]/24 bg-[linear-gradient(180deg,rgba(227,31,41,0.1)_0%,rgba(255,255,255,0.03)_100%)] p-6 md:p-8">
+          <div className="flex flex-col items-start gap-5">
+            <div className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3">
+              <Image
+                src="/img/loghi/LOGO-OPEN-DECKS_bianco.png"
+                alt="OpenDecks"
+                width={180}
+                height={42}
+                className="h-auto w-[140px] md:w-[180px]"
+              />
+            </div>
+            <div className="grid gap-3">
+              <span className="text-xs uppercase tracking-[0.24em] text-[#ff8b92]">
+                Invio non completato
+              </span>
+              <h2 className="text-[clamp(1.9rem,4vw,3rem)] font-semibold leading-none tracking-[-0.03em] text-[#f7f3ee]">
+                Non siamo riusciti a registrare la candidatura.
+              </h2>
+              <p className="max-w-[42rem] text-base leading-7 text-white/76">
+                {status.message}
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              className={ui.action.secondary}
+              onClick={() => setStatus({ type: "idle", message: "" })}
+            >
+              Invia un'altra candidatura
+            </button>
+            <Link href="/contatti" className={ui.action.secondary}>
+              Hai bisogno di supporto? Contattaci
+            </Link>
+          </div>
+        </div>
+      ) : status.type === "ok" ? (
+        <div className="grid gap-6 rounded-[1.75rem] border border-emerald-500/22 bg-[linear-gradient(180deg,rgba(16,185,129,0.08)_0%,rgba(255,255,255,0.03)_100%)] p-6 md:p-8">
+          <div className="flex flex-col items-start gap-5">
+            <div className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3">
+              <Image
+                src="/img/loghi/LOGO-OPEN-DECKS_bianco.png"
+                alt="OpenDecks"
+                width={180}
+                height={42}
+                className="h-auto w-[140px] md:w-[180px]"
+              />
+            </div>
+            <div className="grid gap-3">
+              <span className="text-xs uppercase tracking-[0.24em] text-emerald-300">
+                Invio completato
+              </span>
+              <h2 className="text-[clamp(1.9rem,4vw,3rem)] font-semibold leading-none tracking-[-0.03em] text-[#f7f3ee]">
+                Candidatura inviata con successo.
+              </h2>
+              <p className="max-w-[42rem] text-base leading-7 text-white/76">
+                Verrai ricontattato per la selezione. Controlla la tua casella
+                email nei prossimi giorni.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              className={ui.action.secondary}
+              onClick={() => setStatus({ type: "idle", message: "" })}
+            >
+              Invia un'altra candidatura
+            </button>
+            <Link href="/contatti" className={ui.action.secondary}>
+              Hai bisogno di supporto? Contattaci
+            </Link>
+          </div>
+        </div>
       ) : (
         <form onSubmit={handleSubmit} className="grid gap-6">
           <div className="grid gap-3">
@@ -183,7 +322,7 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
               >
                 {events.map((item) => (
                   <option key={item.id} value={item.slug}>
-                    {item.title} / {item.city} /{" "}
+                    {item.title} / {item.locationName} /{" "}
                     {new Date(item.date).toLocaleDateString("it-IT")}
                   </option>
                 ))}
@@ -215,11 +354,45 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
               </label>
               <input
                 id="city"
+                list="application-cities"
                 className={fieldClass}
-                value={form.city}
-                onChange={(event) => updateField("city", event.target.value)}
+                value={cityQuery}
+                onChange={(event) => {
+                  const nextQuery = event.target.value;
+                  const matchedMunicipality = cityOptions.find(
+                    (municipality) => municipality.label === nextQuery,
+                  );
+
+                  setCityQuery(nextQuery);
+
+                  if (!matchedMunicipality) {
+                    setForm((current) => ({
+                      ...current,
+                      city: "",
+                      province: "",
+                      region: "",
+                    }));
+                    return;
+                  }
+
+                  setForm((current) => ({
+                    ...current,
+                    city: matchedMunicipality.city,
+                    province: matchedMunicipality.provinceCode,
+                    region: matchedMunicipality.region,
+                  }));
+                }}
+                placeholder="Scrivi e seleziona il comune, es. Roma (RM)"
                 required
               />
+              <datalist id="application-cities">
+                {cityOptions.map((municipality) => (
+                  <option key={municipality.code} value={municipality.label} />
+                ))}
+              </datalist>
+              {/*   <span className="text-xs text-white/45">
+                Cerca il comune e selezionalo dall&apos;elenco. Provincia e regione vengono compilate automaticamente.
+              </span> */}
             </div>
 
             <div className="grid gap-2">
@@ -335,7 +508,6 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
                 className={`${fieldClass} min-h-32 resize-y`}
                 value={form.bio}
                 onChange={(event) => updateField("bio", event.target.value)}
-                required
               />
             </div>
           </div>
@@ -349,22 +521,9 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
               Invia candidatura
             </button>
             <span className="text-sm text-white/60">
-              Campi richiesti: nome, citta, email, telefono, foto, IG, set, bio.
+              Campi richiesti: nome, citta, email, telefono, foto, IG, set.
             </span>
           </div>
-
-          <p
-            className={`min-h-6 text-sm ${
-              status.type === "ok"
-                ? "text-emerald-400"
-                : status.type === "error"
-                  ? "text-red-300"
-                  : "text-white/60"
-            }`}
-            aria-live="polite"
-          >
-            {status.message}
-          </p>
         </form>
       )}
     </div>

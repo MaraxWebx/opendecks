@@ -138,6 +138,54 @@
     background: var(--color-bg-elevated);
     color: var(--color-text);
   }
+
+  .pac-container {
+    z-index: 9999 !important;
+    margin-top: 0.35rem;
+    overflow: hidden;
+    border: 1px solid var(--color-border) !important;
+    border-radius: 1rem;
+    background: var(--color-bg-elevated) !important;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.42);
+  }
+
+  .pac-item {
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+    padding: 0.8rem 1rem;
+    color: var(--color-text) !important;
+    background: transparent !important;
+    font-family: inherit !important;
+    line-height: 1.45;
+  }
+
+  .pac-item:first-child {
+    border-top: 0 !important;
+  }
+
+  .pac-item:hover,
+  .pac-item-selected {
+    background: var(--color-brand-10) !important;
+  }
+
+  .pac-item-query,
+  .pac-item-query span,
+  .pac-item > span,
+  .pac-item .pac-matched,
+  .pac-item div,
+  .pac-item div span,
+  .pac-item span {
+    color: var(--color-text) !important;
+  }
+
+  .pac-icon {
+    filter: grayscale(1) brightness(1.7);
+    opacity: 0.8;
+  }
+
+  .pac-item span:last-child,
+  .pac-item div:last-child {
+    color: var(--color-text-muted) !important;
+  }
 }
 
 @keyframes menuOverlayIn {

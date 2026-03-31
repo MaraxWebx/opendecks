@@ -10,8 +10,9 @@ import Image from "next/image";
 import type { Route } from "next";
 
 const sidebarItems = [
-  { key: "dashboard", label: "Dashboard", href: "/admin" },
+  { key: "dashboard", label: "Dashboard", href: "/admin" as Route },
   { key: "eventi", label: "Eventi", href: "/admin/eventi" },
+  { key: "locations", label: "Locations", href: "/admin/locations" },
   { key: "candidature", label: "Candidature", href: "/admin/candidature" },
   { key: "dj", label: "DJ roster", href: "/admin/dj" },
   { key: "contenuti", label: "Gallery", href: "/admin/contenuti" },
@@ -115,7 +116,7 @@ export default function ProtectedAdminLayout({
             {sidebarItems.map((item) => (
               <Link
                 key={item.key}
-                href={item.href}
+                href={item.href as Route}
                 className={`inline-flex min-h-11 items-center rounded-[0.55rem] border px-4 py-3 text-sm transition ${
                   pathname === item.href
                     ? ui.nav.sidebarActive

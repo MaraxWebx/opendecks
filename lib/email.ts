@@ -7,32 +7,20 @@ type MembershipEmailInput = {
   pdfBuffer: Buffer;
 };
 
+type ContactEmailInput = {
+  name: string;
+  email: string;
+  phone?: string;
+  message: string;
+};
+
 export async function sendMembershipCardEmail(input: MembershipEmailInput) {
-  const host = process.env.SMTP_HOST;
-  const port = process.env.SMTP_PORT;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
-  const from = process.env.SMTP_FROM;
-
-  if (!host || !port || !user || !pass || !from) {
-    throw new Error(
-      "Configura SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS e SMTP_FROM per inviare la membership."
-    );
-  }
-
-  const transporter = nodemailer.createTransport({
-    host,
-    port: Number(port),
-    secure: Number(port) === 465,
-    auth: {
-      user,
-      pass
-    }
-  });
+  const { transporter, from, user } = getMailClient();
 
   await transporter.sendMail({
     from,
     to: input.to,
+    replyTo: user,
     subject: `OpenDecks Membership Card ${input.membershipCardId}`,
     html: `
       <div style="font-family:Arial,sans-serif;background:#050505;color:#f7f3ee;padding:24px">
@@ -54,6 +42,57 @@ export async function sendMembershipCardEmail(input: MembershipEmailInput) {
       }
     ]
   });
+}
+
+export async function sendContactEmail(input: ContactEmailInput) {
+  const { transporter, from, user } = getMailClient();
+  const contactRecipient = process.env.CONTACT_EMAIL_TO || user;
+
+  await transporter.sendMail({
+    from,
+    to: contactRecipient,
+    replyTo: input.email,
+    subject: `Nuovo messaggio contatti da ${input.name}`,
+    html: `
+      <div style="font-family:Arial,sans-serif;background:#050505;color:#f7f3ee;padding:24px">
+        <h1 style="margin:0 0 16px;font-size:24px">OpenDecks Italia</h1>
+        <p style="margin:0 0 12px"><strong>Nome:</strong> ${escapeHtml(input.name)}</p>
+        <p style="margin:0 0 12px"><strong>Email:</strong> ${escapeHtml(input.email)}</p>
+        <p style="margin:0 0 12px"><strong>Telefono:</strong> ${escapeHtml(input.phone || "-")}</p>
+        <p style="margin:0 0 8px"><strong>Messaggio:</strong></p>
+        <p style="margin:0;white-space:pre-wrap">${escapeHtml(input.message)}</p>
+      </div>
+    `,
+    text: `OpenDecks Italia\n\nNome: ${input.name}\nEmail: ${input.email}\nTelefono: ${input.phone || "-"}\n\nMessaggio:\n${input.message}`
+  });
+}
+
+function getMailClient() {
+  const host = process.env.SMTP_HOST;
+  const port = process.env.SMTP_PORT;
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  const from = process.env.SMTP_FROM || user;
+
+  if (!host || !port || !user || !pass) {
+    throw new Error(
+      "Configura SMTP_HOST, SMTP_PORT, SMTP_USER e SMTP_PASS per inviare email."
+    );
+  }
+
+  return {
+    transporter: nodemailer.createTransport({
+      host,
+      port: Number(port),
+      secure: Number(port) === 465,
+      auth: {
+        user,
+        pass
+      }
+    }),
+    from,
+    user
+  };
 }
 
 function escapeHtml(value: string) {

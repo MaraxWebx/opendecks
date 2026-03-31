@@ -24,9 +24,13 @@ export function AdminApplicationsManager({
   const [selectedApplication, setSelectedApplication] =
     useState<ApplicationRecord | null>(null);
   const [savingStatus, setSavingStatus] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState("");
   const [draftStatus, setDraftStatus] =
     useState<ApplicationRecord["status"]>("new");
+  const [deleteTarget, setDeleteTarget] = useState<ApplicationRecord | null>(
+    null,
+  );
 
   useEffect(() => {
     if (!initialSelectedId) {
@@ -60,7 +64,8 @@ export function AdminApplicationsManager({
         !normalizedQuery ||
         [
           application.name,
-          application.city,
+          formatCityProvince(application.city, application.province),
+          application.region || "",
           application.email,
           application.phone,
           application.instagram,
@@ -118,6 +123,35 @@ export function AdminApplicationsManager({
       );
     } finally {
       setSavingStatus(false);
+    }
+  }
+
+  async function handleDeleteApplication(application: ApplicationRecord) {
+    setDeletingId(application.id);
+    setStatusMessage("");
+
+    try {
+      const response = await fetch(`/api/applications/${application.id}`, {
+        method: "DELETE",
+      });
+      const result = (await response.json().catch(() => null)) as { error?: string } | null;
+
+      if (!response.ok) {
+        throw new Error(result?.error || "Eliminazione candidatura non riuscita.");
+      }
+
+      setApplications((current) => current.filter((item) => item.id !== application.id));
+      setSelectedApplication((current) =>
+        current?.id === application.id ? null : current
+      );
+      setDeleteTarget(null);
+      setStatusMessage("Candidatura eliminata.");
+    } catch (error) {
+      setStatusMessage(
+        error instanceof Error ? error.message : "Errore eliminazione candidatura."
+      );
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -196,7 +230,7 @@ export function AdminApplicationsManager({
                         : "bg-[color:var(--color-brand-12)] text-white"
                   }`}
                 >
-                  {application.status}
+                  {formatApplicationStatus(application.status)}
                 </span>
               </div>
 
@@ -215,7 +249,7 @@ export function AdminApplicationsManager({
                     {application.name}
                   </h3>
                   <p className={ui.text.body}>
-                    {application.city} / {application.instagram}
+                    {formatCityProvince(application.city, application.province)} / {application.instagram}
                   </p>
                   <p className="text-sm text-white/55">{application.email}</p>
                   <p className="text-sm text-white/55">{application.phone}</p>
@@ -235,6 +269,14 @@ export function AdminApplicationsManager({
                     }}
                   >
                     Dettagli
+                  </button>
+                  <button
+                    type="button"
+                    className={ui.action.danger}
+                    disabled={deletingId === application.id}
+                    onClick={() => setDeleteTarget(application)}
+                  >
+                    {deletingId === application.id ? "Eliminazione..." : "Elimina"}
                   </button>
                 </div>
               </div>
@@ -273,11 +315,26 @@ export function AdminApplicationsManager({
                   {selectedApplication.photoUrl ? (
                     <>
                       <span className={ui.form.label}>Foto personale</span>
-                      <img
-                        src={selectedApplication.photoUrl}
-                        alt={selectedApplication.name}
-                        className="mt-3 h-64 w-full rounded-xl object-cover lg:h-72"
-                      />
+                      <div className="relative mt-3">
+                        <img
+                          src={selectedApplication.photoUrl}
+                          alt={selectedApplication.name}
+                          className="h-64 w-full rounded-xl object-cover lg:h-72"
+                        />
+                        <div className="absolute bottom-3 right-3">
+                          <span
+                            className={`inline-flex rounded-md px-3 py-1.5 text-xs uppercase tracking-[0.12em] ${
+                              selectedApplication.status === "selected"
+                                ? "bg-emerald-500/15 text-emerald-300"
+                                : selectedApplication.status === "reviewing"
+                                  ? "bg-amber-500/15 text-amber-200"
+                                  : "bg-[color:var(--color-brand-12)] text-white"
+                            }`}
+                          >
+                            {formatApplicationStatus(selectedApplication.status)}
+                          </span>
+                        </div>
+                      </div>
                     </>
                   ) : null}
 
@@ -287,7 +344,15 @@ export function AdminApplicationsManager({
                       <InfoRow
                         icon={<PinIcon />}
                         label="Citta"
-                        value={selectedApplication.city}
+                        value={formatCityProvince(
+                          selectedApplication.city,
+                          selectedApplication.province,
+                        )}
+                      />
+                      <InfoRow
+                        icon={<PinIcon />}
+                        label="Regione"
+                        value={selectedApplication.region || "Non definita"}
                       />
                       <InfoRow
                         icon={<MailIcon />}
@@ -362,6 +427,16 @@ export function AdminApplicationsManager({
                           {savingStatus ? "Salvataggio..." : "Salva stato"}
                         </button>
                       </div>
+                      <div className="mt-3">
+                        <button
+                          type="button"
+                          className={ui.action.danger}
+                          disabled={deletingId === selectedApplication.id}
+                          onClick={() => setDeleteTarget(selectedApplication)}
+                        >
+                          {deletingId === selectedApplication.id ? "Eliminazione..." : "Elimina candidatura"}
+                        </button>
+                      </div>
                       {statusMessage ? (
                         <p className="mt-3 text-sm text-white/70">
                           {statusMessage}
@@ -388,6 +463,62 @@ export function AdminApplicationsManager({
                 <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-white/74">
                   {selectedApplication.bio}
                 </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {deleteTarget ? (
+        <div className="fixed inset-0 z-[60] grid place-items-center p-4">
+          <BodyScrollLock />
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/78"
+            onClick={() => (deletingId ? null : setDeleteTarget(null))}
+            aria-label="Chiudi conferma eliminazione candidatura"
+          />
+          <div className={`${ui.surface.modal} max-w-xl`}>
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <span className="text-xs uppercase tracking-[0.24em] text-red-300">
+                  Conferma eliminazione
+                </span>
+                <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
+                  Elimina candidatura
+                </h3>
+                <p className="text-sm leading-7 text-white/70">
+                  Stai per eliminare definitivamente la candidatura di{" "}
+                  <strong className="text-[#f7f3ee]">{deleteTarget.name}</strong>.
+                  Se la candidatura e stata approvata, verra rimosso anche il record
+                  collegato dal DJ roster.
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-white/78">
+                <p>Evento: {deleteTarget.eventTitle}</p>
+                <p>Email: {deleteTarget.email}</p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  className={ui.action.danger}
+                  onClick={() => void handleDeleteApplication(deleteTarget)}
+                  disabled={deletingId === deleteTarget.id}
+                >
+                  {deletingId === deleteTarget.id
+                    ? "Eliminazione..."
+                    : "Conferma eliminazione"}
+                </button>
+                <button
+                  type="button"
+                  className={ui.action.secondary}
+                  onClick={() => setDeleteTarget(null)}
+                  disabled={deletingId === deleteTarget.id}
+                >
+                  Annulla
+                </button>
               </div>
             </div>
           </div>
@@ -534,4 +665,8 @@ function formatApplicationStatus(status: ApplicationRecord["status"]) {
   }
 
   return "Approvata";
+}
+
+function formatCityProvince(city: string, province?: string) {
+  return province ? `${city} (${province})` : city;
 }

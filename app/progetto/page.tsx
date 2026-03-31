@@ -1,19 +1,45 @@
 import { SectionHeading } from "@/components/section-heading";
 import { getEvents } from "@/lib/data";
 
-const cityPinMap: Record<string, { top: string; left: string }> = {
-  milano: { top: "24%", left: "39%" },
-  torino: { top: "22%", left: "30%" },
-  bologna: { top: "34%", left: "43%" },
-  firenze: { top: "40%", left: "46%" },
-  roma: { top: "52%", left: "50%" },
-  napoli: { top: "63%", left: "55%" },
-  caserta: { top: "60%", left: "53%" },
-  salerno: { top: "68%", left: "58%" },
-  bari: { top: "60%", left: "69%" },
-  palermo: { top: "84%", left: "38%" },
-  catania: { top: "86%", left: "49%" }
-};
+const provincePositions: Array<{
+  label: string;
+  displayName: string;
+  keywords: string[];
+  top: string;
+  left: string;
+}> = [
+  { label: "TO", displayName: "Torino", keywords: [" torino ", " to "], top: "23%", left: "29%" },
+  { label: "MI", displayName: "Milano", keywords: [" milano ", " mi "], top: "20%", left: "34%" },
+  { label: "BG", displayName: "Bergamo", keywords: [" bergamo ", " bg "], top: "22%", left: "37%" },
+  { label: "BS", displayName: "Brescia", keywords: [" brescia ", " bs "], top: "22%", left: "39%" },
+  { label: "VR", displayName: "Verona", keywords: [" verona ", " vr "], top: "23%", left: "42%" },
+  { label: "PD", displayName: "Padova", keywords: [" padova ", " pd "], top: "23%", left: "45%" },
+  { label: "VE", displayName: "Venezia", keywords: [" venezia ", " ve "], top: "22%", left: "48%" },
+  { label: "BO", displayName: "Bologna", keywords: [" bologna ", " bo "], top: "31%", left: "40%" },
+  { label: "FI", displayName: "Firenze", keywords: [" firenze ", " fi "], top: "39%", left: "39%" },
+  { label: "GE", displayName: "Genova", keywords: [" genova ", " ge "], top: "29%", left: "30%" },
+  { label: "AN", displayName: "Ancona", keywords: [" ancona ", " an "], top: "38%", left: "49%" },
+  { label: "PG", displayName: "Perugia", keywords: [" perugia ", " pg "], top: "44%", left: "45%" },
+  { label: "RM", displayName: "Roma", keywords: [" roma ", " rm "], top: "50%", left: "46%" },
+  { label: "NA", displayName: "Napoli", keywords: [" napoli ", " napli ", " na "], top: "65%", left: "50%" },
+  { label: "BA", displayName: "Bari", keywords: [" bari ", " ba "], top: "64%", left: "64%" },
+  { label: "LE", displayName: "Lecce", keywords: [" lecce ", " le "], top: "79%", left: "61%" },
+  { label: "CZ", displayName: "Catanzaro", keywords: [" catanzaro ", " cz "], top: "81%", left: "54%" },
+  { label: "RC", displayName: "Reggio Calabria", keywords: [" reggio calabria ", " rc "], top: "86%", left: "53%" },
+  { label: "PA", displayName: "Palermo", keywords: [" palermo ", " pa "], top: "90%", left: "38%" },
+  { label: "CT", displayName: "Catania", keywords: [" catania ", " ct "], top: "88%", left: "47%" },
+  { label: "CA", displayName: "Cagliari", keywords: [" cagliari ", " ca "], top: "74%", left: "26%" }
+];
+
+const fallbackPositions = [
+  { top: "24%", left: "39%" },
+  { top: "34%", left: "43%" },
+  { top: "40%", left: "46%" },
+  { top: "52%", left: "50%" },
+  { top: "63%", left: "55%" },
+  { top: "60%", left: "69%" },
+  { top: "84%", left: "38%" }
+];
 
 const manifestoParagraphs = [
   "OpenDecks Italia nasce per creare uno spazio accessibile dove artisti emergenti, collezionisti e appassionati possano esibirsi, incontrarsi e costruire una scena reale attorno alla musica.",
@@ -90,7 +116,7 @@ export default async function ProjectPage() {
 
               {places.map((place) => (
                 <div
-                  key={place.city}
+                  key={place.name}
                   className="absolute -translate-x-1/2 -translate-y-1/2"
                   style={{ top: place.top, left: place.left }}
                 >
@@ -101,7 +127,7 @@ export default async function ProjectPage() {
                       <div className="flex items-center gap-2">
                         <span className="inline-flex h-2.5 w-2.5 rounded-full bg-[#E31F29] shadow-[0_0_12px_rgba(227,31,41,0.95)]" />
                         <span className="text-[0.72rem] font-medium uppercase tracking-[0.18em] text-white">
-                          {place.city}
+                          {place.name}
                         </span>
                       </div>
                       <p className="mt-1 text-[0.7rem] text-white/68">
@@ -125,11 +151,11 @@ export default async function ProjectPage() {
               <div className="mt-4 grid gap-3">
                 {places.map((place) => (
                   <div
-                    key={place.city}
+                    key={place.name}
                     className="rounded-xl border border-[#E31F29]/14 bg-black/30 p-4"
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <h3 className="text-base font-medium text-[#f7f3ee]">{place.city}</h3>
+                      <h3 className="text-base font-medium text-[#f7f3ee]">{place.name}</h3>
                       <span className="rounded-md border border-[#E31F29]/25 bg-[#E31F29]/10 px-2 py-1 text-[0.68rem] uppercase tracking-[0.18em] text-white/84">
                         {place.count}
                       </span>
@@ -151,16 +177,12 @@ export default async function ProjectPage() {
 function buildPlaces(events: Awaited<ReturnType<typeof getEvents>>) {
   const grouped = new Map<
     string,
-    { city: string; count: number; titles: string[]; top: string; left: string }
+    { name: string; count: number; titles: string[]; top: string; left: string }
   >();
 
   for (const event of events) {
-    const key = normalizeCity(event.city);
-    const pin = cityPinMap[key];
-
-    if (!pin) {
-      continue;
-    }
+    const province = resolveProvince(event.locationName, event.locationAddress);
+    const key = province.label;
 
     const current = grouped.get(key);
 
@@ -170,22 +192,46 @@ function buildPlaces(events: Awaited<ReturnType<typeof getEvents>>) {
       continue;
     }
 
+    const position = province.position || fallbackPositions[grouped.size % fallbackPositions.length];
+
     grouped.set(key, {
-      city: event.city,
+      name: province.displayName,
       count: 1,
       titles: [event.title],
-      top: pin.top,
-      left: pin.left
+      top: position.top,
+      left: position.left
     });
   }
 
-  return [...grouped.values()].sort((a, b) => a.city.localeCompare(b.city, "it"));
+  return [...grouped.values()].sort((a, b) => a.name.localeCompare(b.name, "it"));
 }
 
-function normalizeCity(city: string) {
-  return city
+function resolveProvince(name: string, address: string) {
+  const haystack = ` ${normalizeLocationName(`${name} ${address}`)} `;
+  const matchedProvince = provincePositions.find((province) =>
+    province.keywords.some((keyword) => haystack.includes(keyword))
+  );
+
+  if (matchedProvince) {
+    return {
+      label: matchedProvince.label,
+      displayName: matchedProvince.displayName,
+      position: matchedProvince
+    };
+  }
+
+  return {
+    label: "ND",
+    displayName: "Non definita",
+    position: null
+  };
+}
+
+function normalizeLocationName(name: string) {
+  return name
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]+/g, " ")
     .trim()
     .toLowerCase();
 }

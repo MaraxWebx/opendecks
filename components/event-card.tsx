@@ -22,13 +22,11 @@ export function EventCard({ event, tags }: EventCardProps) {
       <div className="p-5">
         <div className="mb-3 flex flex-wrap gap-2 text-sm text-white/55">
           <span>{new Date(event.date).toLocaleDateString("it-IT")}</span>
-          <span>{event.city}</span>
-          <span>{event.venue}</span>
+          <span>{event.locationName}</span>
         </div>
         <h3 className="mb-3 text-xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
           {event.title}
         </h3>
-        <p className="text-sm leading-7 text-white/74">{event.excerpt}</p>
         <div className="mt-4 flex flex-wrap gap-2">
           {eventTags.map((tag) => (
             <span

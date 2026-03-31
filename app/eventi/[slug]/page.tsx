@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { SectionHeading } from "@/components/section-heading";
 import { getDjRosterEntries, getEventBySlug, getTags } from "@/lib/data";
+import { getEventLineupDjs } from "@/lib/dj-roster";
 
 export const dynamic = "force-dynamic";
 
@@ -24,16 +25,14 @@ export default async function EventDetailPage({
     notFound();
   }
 
-  const approvedRoster = djRoster.filter(
-    (record) => record.eventId === event.id,
-  );
+  const approvedRoster = getEventLineupDjs(event, djRoster);
   const eventTags = tags.filter((tag) => event.tagIds.includes(tag.id));
 
   return (
     <div className="mx-auto w-full max-w-[1240px] px-4 md:px-6">
       <section className="py-10 md:py-12">
         <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
-          {event.city}
+          {event.locationName}
         </span>
         <h1 className="mt-2 text-[clamp(1.9rem,4vw,2.8rem)] font-semibold leading-none tracking-[-0.04em] text-[#f7f3ee]">
           {event.title}
@@ -80,8 +79,16 @@ export default async function EventDetailPage({
                   Dove
                 </h3>
                 <p className="text-sm leading-7 text-white/74">
-                  {event.venue}, {event.city}
+                  {event.locationName}
                 </p>
+                <a
+                  href={buildGoogleMapsDirectionsLink(event.locationAddress)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm leading-7 text-white/55 underline decoration-[#E31F29]/55 underline-offset-4 transition hover:text-white/78"
+                >
+                  {event.locationAddress}
+                </a>
               </div>
 
               {event.lineupPublished ? (
@@ -144,4 +151,8 @@ export default async function EventDetailPage({
       </section>
     </div>
   );
+}
+
+function buildGoogleMapsDirectionsLink(address: string) {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 }

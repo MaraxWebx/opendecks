@@ -1,39 +1,72 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { deleteEvent, getApplications, getDjRosterEntries, updateEvent } from "@/lib/data";
+import { deleteEvent, getApplications, getDjRosterEntries, getEvents, getLocations, updateEvent } from "@/lib/data";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
 export async function PATCH(request: NextRequest, context: RouteContext) {
-  const { id } = await context.params;
-  const body = await request.json();
+  try {
+    const { id } = await context.params;
+    const body = await request.json();
+    const locations = await getLocations();
+    const selectedLocation = locations.find((location) => location.id === body.locationId);
 
-  const event = await updateEvent(id, {
-    slug: body.title ? createSlug(body.title) : undefined,
-    title: body.title,
-    city: body.city,
-    venue: body.venue,
-    coverImage: body.coverImage,
-    coverAlt: body.coverAlt,
-    date: body.date,
-    time: body.time,
-    excerpt: body.excerpt,
-    description: body.description,
-    applicationsOpen:
-      body.applicationsOpen !== undefined ? Boolean(body.applicationsOpen) : undefined,
-    lineupPublished:
-      body.lineupPublished !== undefined ? Boolean(body.lineupPublished) : undefined,
-    tagIds: Array.isArray(body.tagIds) ? body.tagIds : undefined,
-    status: body.status
-  });
+    if (!selectedLocation) {
+      return NextResponse.json({ error: "Location non valida." }, { status: 400 });
+    }
 
-  if (!event) {
-    return NextResponse.json({ error: "Evento non trovato." }, { status: 404 });
+    const requestedEventNumber = Number(body.eventNumber) || 0;
+
+    if (requestedEventNumber > 0) {
+      const events = await getEvents();
+      const duplicate = events.find(
+        (event) =>
+          event.id !== id &&
+          event.locationId === selectedLocation.id &&
+          event.eventNumber === requestedEventNumber
+      );
+
+      if (duplicate) {
+        return NextResponse.json(
+          { error: "Numero evento gia assegnato a questa location." },
+          { status: 409 }
+        );
+      }
+    }
+
+    const event = await updateEvent(id, {
+      eventNumber: requestedEventNumber || undefined,
+      slug: body.title ? createSlug(body.title) : undefined,
+      title: body.title,
+      locationId: selectedLocation.id,
+      locationName: selectedLocation.name,
+      locationAddress: selectedLocation.address,
+      coverImage: body.coverImage,
+      coverAlt: buildEventCoverAlt(body.title, selectedLocation.name),
+      date: body.date,
+      time: body.time,
+      description: body.description,
+      applicationsOpen:
+        body.applicationsOpen !== undefined ? Boolean(body.applicationsOpen) : undefined,
+      lineupPublished:
+        body.lineupPublished !== undefined ? Boolean(body.lineupPublished) : undefined,
+      lineupDjIds: Array.isArray(body.lineupDjIds) ? body.lineupDjIds : undefined,
+      tagIds: Array.isArray(body.tagIds) ? body.tagIds : undefined
+    });
+
+    if (!event) {
+      return NextResponse.json({ error: "Evento non trovato." }, { status: 404 });
+    }
+
+    return NextResponse.json({ event });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Aggiornamento evento non riuscito." },
+      { status: 409 }
+    );
   }
-
-  return NextResponse.json({ event });
 }
 
 export async function DELETE(request: NextRequest, context: RouteContext) {
@@ -84,4 +117,8 @@ function createSlug(value: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function buildEventCoverAlt(title: string, locationName: string) {
+  return [title, locationName].filter(Boolean).join(" - ") || "Copertina evento";
 }

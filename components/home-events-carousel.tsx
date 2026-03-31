@@ -115,7 +115,7 @@ export function HomeEventsCarousel({ events }: HomeEventsCarouselProps) {
             />
             {/*    <div className="absolute inset-x-0 bottom-0 grid gap-2 bg-gradient-to-t from-black/80 to-transparent p-5">
               <span className="text-xs uppercase tracking-[0.18em] text-white/72">
-                {event.venue}, {event.city}
+                {event.locationName}
               </span>
               <h3 className="text-2xl font-semibold tracking-[-0.03em] text-white">
                 {event.title}
