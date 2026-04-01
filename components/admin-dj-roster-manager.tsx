@@ -100,7 +100,7 @@ export function AdminDjRosterManager({
 
   return (
     <div className="grid gap-4">
-      <div className={ui.surface.panel}>
+      <div className="px-6">
         <div className="grid gap-2">
           <label htmlFor="dj-roster-query" className={ui.form.label}>
             Cerca DJ
@@ -132,7 +132,9 @@ export function AdminDjRosterManager({
                 <div className="grid gap-2">
                   <div className="flex flex-wrap items-center gap-2 text-sm text-white/58">
                     {/* <span>{entry.eventTitle}</span> */}
-                    <span>{formatCityProvince(entry.city, entry.province)}</span>
+                    <span>
+                      {formatCityProvince(entry.city, entry.province)}
+                    </span>
                     <span>
                       {new Date(entry.approvedAt).toLocaleDateString("it-IT")}
                     </span>

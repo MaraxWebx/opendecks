@@ -310,15 +310,19 @@ export function AdminEventsManager({
               type="button"
               className={`${ui.action.secondary} ${viewMode === "list" ? ui.nav.sidebarActive : ""}`}
               onClick={() => setViewMode("list")}
+              aria-label="Vista lista"
+              title="Vista lista"
             >
-              Lista
+              <ListViewIcon />
             </button>
             <button
               type="button"
               className={`${ui.action.secondary} ${viewMode === "calendar" ? ui.nav.sidebarActive : ""}`}
               onClick={() => setViewMode("calendar")}
+              aria-label="Vista calendario"
+              title="Vista calendario"
             >
-              Calendario
+              <CalendarViewIcon />
             </button>
           </div>
           {viewMode === "calendar" ? (
@@ -328,8 +332,10 @@ export function AdminEventsManager({
                 className={ui.action.secondary}
                 onClick={() => shiftCalendarMonth(-1)}
                 disabled={!months.length || activeCalendarMonth === months[0]}
+                aria-label="Mese precedente"
+                title="Mese precedente"
               >
-                Indietro
+                <ArrowLeftIcon />
               </button>
               <span className="min-w-36 text-center text-sm text-white/80">
                 {formatMonth(activeCalendarMonth)}
@@ -342,8 +348,10 @@ export function AdminEventsManager({
                   !months.length ||
                   activeCalendarMonth === months[months.length - 1]
                 }
+                aria-label="Mese successivo"
+                title="Mese successivo"
               >
-                Avanti
+                <ArrowRightIcon />
               </button>
             </div>
           ) : null}
@@ -862,5 +870,95 @@ function buildEventCoverAlt(
   const location = locations.find((item) => item.id === locationId);
   return (
     [title, location?.name].filter(Boolean).join(" - ") || "Copertina evento"
+  );
+}
+
+function ListViewIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M9 6h10M9 12h10M9 18h10"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+      <circle cx="5" cy="6" r="1.5" fill="currentColor" />
+      <circle cx="5" cy="12" r="1.5" fill="currentColor" />
+      <circle cx="5" cy="18" r="1.5" fill="currentColor" />
+    </svg>
+  );
+}
+
+function CalendarViewIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <rect
+        x="3.75"
+        y="5.75"
+        width="16.5"
+        height="14.5"
+        rx="2.25"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M7.5 3.75v4M16.5 3.75v4M3.75 9.25h16.5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function ArrowLeftIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M14.5 5.5 8 12l6.5 6.5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function ArrowRightIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="m9.5 5.5 6.5 6.5-6.5 6.5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }

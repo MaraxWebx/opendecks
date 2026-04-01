@@ -93,9 +93,15 @@ export function AdminEventDetailEditor({
   );
   const applicationStats = useMemo(() => {
     const counts = {
-      new: relatedApplications.filter((application) => application.status === "new").length,
-      reviewing: relatedApplications.filter((application) => application.status === "reviewing").length,
-      selected: relatedApplications.filter((application) => application.status === "selected").length,
+      new: relatedApplications.filter(
+        (application) => application.status === "new",
+      ).length,
+      reviewing: relatedApplications.filter(
+        (application) => application.status === "reviewing",
+      ).length,
+      selected: relatedApplications.filter(
+        (application) => application.status === "selected",
+      ).length,
     };
 
     return {
@@ -285,17 +291,47 @@ export function AdminEventDetailEditor({
                 #{form.eventNumber} / {form.title}
               </h2>
               <p className="text-sm leading-7 text-white/68">
-                Gestione evento, line up e andamento candidature in un'unica scheda.
+                Gestione evento, line up e andamento candidature in un'unica
+                scheda.
               </p>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <DetailItem label="Location" value={locations.find((item) => item.id === form.locationId)?.name || "Non selezionata"} />
-              <DetailItem label="Indirizzo" value={locations.find((item) => item.id === form.locationId)?.address || "Non disponibile"} />
-              <DetailItem label="Data" value={`${new Date(form.date).toLocaleDateString("it-IT")} / ${form.time}`} />
-              <DetailItem label="Line up pubblica" value={form.lineupPublished ? "Si" : "No"} />
-              <DetailItem label="Candidature aperte" value={form.applicationsOpen ? "Si" : "No"} />
-              <DetailItem label="Tag" value={tags.filter((tag) => form.tagIds.includes(tag.id)).map((tag) => tag.label).join(" / ") || "Nessun tag"} />
+              <DetailItem
+                label="Location"
+                value={
+                  locations.find((item) => item.id === form.locationId)?.name ||
+                  "Non selezionata"
+                }
+              />
+              <DetailItem
+                label="Indirizzo"
+                value={
+                  locations.find((item) => item.id === form.locationId)
+                    ?.address || "Non disponibile"
+                }
+              />
+              <DetailItem
+                label="Data"
+                value={`${new Date(form.date).toLocaleDateString("it-IT")} / ${form.time}`}
+              />
+              <DetailItem
+                label="Line up pubblica"
+                value={form.lineupPublished ? "Si" : "No"}
+              />
+              <DetailItem
+                label="Candidature aperte"
+                value={form.applicationsOpen ? "Si" : "No"}
+              />
+              <DetailItem
+                label="Tag"
+                value={
+                  tags
+                    .filter((tag) => form.tagIds.includes(tag.id))
+                    .map((tag) => tag.label)
+                    .join(" / ") || "Nessun tag"
+                }
+              />
             </div>
 
             <div className={ui.surface.card}>
@@ -333,15 +369,21 @@ export function AdminEventDetailEditor({
                 >
                   <div
                     className="h-full shrink-0 bg-[linear-gradient(90deg,#ff676f_0%,#E31F29_100%)]"
-                    style={{ width: `${(applicationStats.new / Math.max(applicationStats.total, 1)) * 100}%` }}
+                    style={{
+                      width: `${(applicationStats.new / Math.max(applicationStats.total, 1)) * 100}%`,
+                    }}
                   />
                   <div
                     className="h-full shrink-0 bg-[linear-gradient(90deg,#fcd34d_0%,#f59e0b_100%)]"
-                    style={{ width: `${(applicationStats.reviewing / Math.max(applicationStats.total, 1)) * 100}%` }}
+                    style={{
+                      width: `${(applicationStats.reviewing / Math.max(applicationStats.total, 1)) * 100}%`,
+                    }}
                   />
                   <div
                     className="h-full shrink-0 bg-[linear-gradient(90deg,#6ee7b7_0%,#10b981_100%)]"
-                    style={{ width: `${(applicationStats.selected / Math.max(applicationStats.total, 1)) * 100}%` }}
+                    style={{
+                      width: `${(applicationStats.selected / Math.max(applicationStats.total, 1)) * 100}%`,
+                    }}
                   />
                 </div>
               </div>
@@ -353,7 +395,11 @@ export function AdminEventDetailEditor({
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <button type="button" className={ui.action.primary} onClick={() => setOpen(true)}>
+              <button
+                type="button"
+                className={ui.action.primary}
+                onClick={() => setOpen(true)}
+              >
                 Modifica evento
               </button>
               <button
@@ -364,7 +410,9 @@ export function AdminEventDetailEditor({
               >
                 {deleting ? "Eliminazione..." : "Elimina evento"}
               </button>
-              {status ? <p className="text-sm text-white/70">{status}</p> : null}
+              {status ? (
+                <p className="text-sm text-white/70">{status}</p>
+              ) : null}
             </div>
           </div>
         </div>
@@ -378,7 +426,7 @@ export function AdminEventDetailEditor({
                   imageFile ? URL.createObjectURL(imageFile) : form.coverImage
                 }
                 alt={buildEventCoverAlt(form.title, form.locationId, locations)}
-                className="aspect-[4/3] w-full object-cover"
+                className="w-full object-cover"
               />
             </div>
             <div className="mt-4 grid gap-2 text-sm text-white/74">
@@ -434,7 +482,10 @@ export function AdminEventDetailEditor({
       {open ? (
         <div className="fixed inset-0 z-50 grid place-items-center p-4">
           <BodyScrollLock />
-          <div className="absolute inset-0 bg-black/72" onClick={() => setOpen(false)} />
+          <div
+            className="absolute inset-0 bg-black/72"
+            onClick={() => setOpen(false)}
+          />
           <div className={`${ui.surface.modal} max-w-5xl`}>
             <div className="mb-5 flex items-start justify-between gap-4">
               <div className="grid gap-2">
@@ -461,7 +512,9 @@ export function AdminEventDetailEditor({
                     id="detail-title"
                     className={ui.form.field}
                     value={form.title}
-                    onChange={(event) => updateField("title", event.target.value)}
+                    onChange={(event) =>
+                      updateField("title", event.target.value)
+                    }
                     required
                   />
                 </Field>
@@ -499,7 +552,8 @@ export function AdminEventDetailEditor({
                     <p className="text-sm text-red-200">{eventNumberError}</p>
                   ) : (
                     <p className="text-sm text-white/55">
-                      Puoi correggere il numero evento qui e poi salvare le modifiche.
+                      Puoi correggere il numero evento qui e poi salvare le
+                      modifiche.
                     </p>
                   )}
                 </Field>
@@ -509,7 +563,9 @@ export function AdminEventDetailEditor({
                     type="date"
                     className={ui.form.field}
                     value={form.date}
-                    onChange={(event) => updateField("date", event.target.value)}
+                    onChange={(event) =>
+                      updateField("date", event.target.value)
+                    }
                     required
                   />
                 </Field>
@@ -519,7 +575,9 @@ export function AdminEventDetailEditor({
                     type="time"
                     className={ui.form.field}
                     value={form.time}
-                    onChange={(event) => updateField("time", event.target.value)}
+                    onChange={(event) =>
+                      updateField("time", event.target.value)
+                    }
                     required
                   />
                 </Field>
@@ -545,7 +603,10 @@ export function AdminEventDetailEditor({
                     className={ui.form.select}
                     value={form.lineupPublished ? "yes" : "no"}
                     onChange={(event) =>
-                      updateField("lineupPublished", event.target.value === "yes")
+                      updateField(
+                        "lineupPublished",
+                        event.target.value === "yes",
+                      )
                     }
                   >
                     <option value="no">No</option>

@@ -134,21 +134,29 @@ export function AdminApplicationsManager({
       const response = await fetch(`/api/applications/${application.id}`, {
         method: "DELETE",
       });
-      const result = (await response.json().catch(() => null)) as { error?: string } | null;
+      const result = (await response.json().catch(() => null)) as {
+        error?: string;
+      } | null;
 
       if (!response.ok) {
-        throw new Error(result?.error || "Eliminazione candidatura non riuscita.");
+        throw new Error(
+          result?.error || "Eliminazione candidatura non riuscita.",
+        );
       }
 
-      setApplications((current) => current.filter((item) => item.id !== application.id));
+      setApplications((current) =>
+        current.filter((item) => item.id !== application.id),
+      );
       setSelectedApplication((current) =>
-        current?.id === application.id ? null : current
+        current?.id === application.id ? null : current,
       );
       setDeleteTarget(null);
       setStatusMessage("Candidatura eliminata.");
     } catch (error) {
       setStatusMessage(
-        error instanceof Error ? error.message : "Errore eliminazione candidatura."
+        error instanceof Error
+          ? error.message
+          : "Errore eliminazione candidatura.",
       );
     } finally {
       setDeletingId(null);
@@ -157,7 +165,7 @@ export function AdminApplicationsManager({
 
   return (
     <div className="grid gap-4">
-      <div className={ui.surface.panel}>
+      <div className="px-6">
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_repeat(2,minmax(0,0.7fr))]">
           <div className="grid gap-2">
             <label htmlFor="applications-query" className={ui.form.label}>
@@ -249,7 +257,8 @@ export function AdminApplicationsManager({
                     {application.name}
                   </h3>
                   <p className={ui.text.body}>
-                    {formatCityProvince(application.city, application.province)} / {application.instagram}
+                    {formatCityProvince(application.city, application.province)}{" "}
+                    / {application.instagram}
                   </p>
                   <p className="text-sm text-white/55">{application.email}</p>
                   <p className="text-sm text-white/55">{application.phone}</p>
@@ -276,7 +285,9 @@ export function AdminApplicationsManager({
                     disabled={deletingId === application.id}
                     onClick={() => setDeleteTarget(application)}
                   >
-                    {deletingId === application.id ? "Eliminazione..." : "Elimina"}
+                    {deletingId === application.id
+                      ? "Eliminazione..."
+                      : "Elimina"}
                   </button>
                 </div>
               </div>
@@ -331,7 +342,9 @@ export function AdminApplicationsManager({
                                   : "bg-[color:var(--color-brand-12)] text-white"
                             }`}
                           >
-                            {formatApplicationStatus(selectedApplication.status)}
+                            {formatApplicationStatus(
+                              selectedApplication.status,
+                            )}
                           </span>
                         </div>
                       </div>
@@ -434,7 +447,9 @@ export function AdminApplicationsManager({
                           disabled={deletingId === selectedApplication.id}
                           onClick={() => setDeleteTarget(selectedApplication)}
                         >
-                          {deletingId === selectedApplication.id ? "Eliminazione..." : "Elimina candidatura"}
+                          {deletingId === selectedApplication.id
+                            ? "Eliminazione..."
+                            : "Elimina candidatura"}
                         </button>
                       </div>
                       {statusMessage ? (
@@ -489,9 +504,11 @@ export function AdminApplicationsManager({
                 </h3>
                 <p className="text-sm leading-7 text-white/70">
                   Stai per eliminare definitivamente la candidatura di{" "}
-                  <strong className="text-[#f7f3ee]">{deleteTarget.name}</strong>.
-                  Se la candidatura e stata approvata, verra rimosso anche il record
-                  collegato dal DJ roster.
+                  <strong className="text-[#f7f3ee]">
+                    {deleteTarget.name}
+                  </strong>
+                  . Se la candidatura e stata approvata, verra rimosso anche il
+                  record collegato dal DJ roster.
                 </p>
               </div>
 
