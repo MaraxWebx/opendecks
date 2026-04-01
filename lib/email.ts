@@ -2,6 +2,8 @@ import path from "node:path";
 
 import nodemailer from "nodemailer";
 
+import { emailCopy } from "@/content/site-copy";
+
 type MembershipEmailInput = {
   to: string;
   djName: string;
@@ -47,6 +49,16 @@ type ApplicationNotificationEmailInput = {
   submittedAt: string;
 };
 
+type ApplicationApprovedEmailInput = {
+  to: string;
+  applicantName: string;
+  eventTitle: string;
+  eventDate?: string;
+  eventTime?: string;
+  locationName?: string;
+  locationAddress?: string;
+};
+
 export async function sendMembershipCardEmail(input: MembershipEmailInput) {
   const { transporter, from, user } = getMailClient();
 
@@ -59,7 +71,7 @@ export async function sendMembershipCardEmail(input: MembershipEmailInput) {
       title: "Membership Card OpenDecks",
       body: `
         <p style="margin:0 0 12px">Ciao ${escapeHtml(input.djName)},</p>
-        <p style="margin:0 0 12px">in allegato trovi la tua membership card ufficiale.</p>
+        <p style="margin:0 0 12px">In allegato trovi la tua membership card ufficiale.</p>
         <p style="margin:0 0 12px"><strong>ID card:</strong> ${escapeHtml(input.membershipCardId)}</p>
         <p style="margin:0">Conservala come riferimento per il roster OpenDecks.</p>
       `,
@@ -101,14 +113,20 @@ export async function sendContactEmail(input: ContactEmailInput) {
 }
 
 export async function sendApplicationConfirmationEmail(
-  input: ApplicationConfirmationEmailInput
+  input: ApplicationConfirmationEmailInput,
 ) {
   const { transporter, from, user } = getMailClient();
-  const locationLabel = [input.city, input.province ? `(${input.province})` : "", input.region]
+  const locationLabel = [
+    input.city,
+    input.province ? `(${input.province})` : "",
+    input.region,
+  ]
     .filter(Boolean)
     .join(" ");
   const eventDetails = [
-    input.eventDate ? `Data evento: ${new Date(input.eventDate).toLocaleDateString("it-IT")}` : "",
+    input.eventDate
+      ? `Data evento: ${new Date(input.eventDate).toLocaleDateString("it-IT")}`
+      : "",
     input.eventTime ? `Orario: ${input.eventTime}` : "",
     input.locationName ? `Location: ${input.locationName}` : "",
     input.locationAddress ? `Indirizzo: ${input.locationAddress}` : "",
@@ -116,7 +134,7 @@ export async function sendApplicationConfirmationEmail(
   const attachmentText = [
     "OpenDecks Italia",
     "",
-    "Conferma candidatura ricevuta",
+    "Candidatura ricevuta",
     "",
     `Nome: ${input.applicantName}`,
     `Evento: ${input.eventTitle}`,
@@ -125,32 +143,30 @@ export async function sendApplicationConfirmationEmail(
     `Data invio: ${new Date(input.submittedAt).toLocaleString("it-IT")}`,
     "",
     "La candidatura e stata registrata correttamente.",
-    "Controlla la tua email: verrai ricontattato per la selezione.",
+    "Ora entra nella fase di selezione del progetto OpenDecks.",
+    "Controlla la tua email: verrai ricontattato per i prossimi step.",
   ].join("\n");
 
   await transporter.sendMail({
     from,
     to: input.to,
     replyTo: user,
-    subject: `Conferma candidatura OpenDecks - ${input.eventTitle}`,
+    subject: `Candidatura ricevuta - ${input.eventTitle}`,
     html: buildEmailTemplate({
-      title: "Conferma candidatura OpenDecks",
+      title: emailCopy.applicationConfirmationTitle,
       body: `
         <p style="margin:0 0 12px">Ciao ${escapeHtml(input.applicantName)},</p>
-        <p style="margin:0 0 12px">
-          abbiamo ricevuto correttamente la tua candidatura per <strong>${escapeHtml(input.eventTitle)}</strong>.
-        </p>
+        <p style="margin:0 0 12px">${escapeHtml(emailCopy.applicationConfirmationIntro)}</p>
         <div style="margin:0 0 16px;border:1px solid rgba(227,31,41,0.18);border-radius:16px;padding:16px;background:rgba(255,255,255,0.03)">
           <p style="margin:0 0 10px"><strong>Evento:</strong> ${escapeHtml(input.eventTitle)}</p>
           ${input.eventDate ? `<p style="margin:0 0 10px"><strong>Data:</strong> ${escapeHtml(new Date(input.eventDate).toLocaleDateString("it-IT"))}</p>` : ""}
           ${input.eventTime ? `<p style="margin:0 0 10px"><strong>Orario:</strong> ${escapeHtml(input.eventTime)}</p>` : ""}
           ${input.locationName ? `<p style="margin:0 0 10px"><strong>Location:</strong> ${escapeHtml(input.locationName)}</p>` : ""}
           ${input.locationAddress ? `<p style="margin:0 0 10px"><strong>Indirizzo:</strong> ${escapeHtml(input.locationAddress)}</p>` : ""}
-          <p style="margin:0"><strong>Località candidatura:</strong> ${escapeHtml(locationLabel || "-")}</p>
+          <p style="margin:0"><strong>Localita candidatura:</strong> ${escapeHtml(locationLabel || "-")}</p>
         </div>
-        <p style="margin:0 0 12px">
-          Verrai ricontattato per la selezione. Controlla la tua casella email nei prossimi giorni.
-        </p>
+        <p style="margin:0 0 12px">${escapeHtml(emailCopy.applicationConfirmationOutro)}</p>
+        <p style="margin:0 0 12px">${escapeHtml(emailCopy.applicationConfirmationReminder)}</p>
         <p style="margin:0">In allegato trovi un riepilogo rapido della candidatura.</p>
       `,
     }),
@@ -167,12 +183,16 @@ export async function sendApplicationConfirmationEmail(
 }
 
 export async function sendApplicationNotificationEmail(
-  input: ApplicationNotificationEmailInput
+  input: ApplicationNotificationEmailInput,
 ) {
   const { transporter, from } = getMailClient();
   const notificationRecipient =
     process.env.APPLICATION_EMAIL_TO || "info@opendecksitalia.it";
-  const locationLabel = [input.city, input.province ? `(${input.province})` : "", input.region]
+  const locationLabel = [
+    input.city,
+    input.province ? `(${input.province})` : "",
+    input.region,
+  ]
     .filter(Boolean)
     .join(" ");
 
@@ -182,9 +202,9 @@ export async function sendApplicationNotificationEmail(
     replyTo: input.applicantEmail,
     subject: `Nuova candidatura OpenDecks - ${input.applicantName}`,
     html: buildEmailTemplate({
-      title: "Contatti OpenDecks",
+      title: emailCopy.applicationNotificationTitle,
       body: `
-        <p style="margin:0 0 12px">È arrivata una nuova candidatura.</p>
+        <p style="margin:0 0 12px">${escapeHtml(emailCopy.applicationNotificationIntro)}</p>
         <p style="margin:0 0 12px"><strong>Nome:</strong> ${escapeHtml(input.applicantName)}</p>
         <p style="margin:0 0 12px"><strong>Email:</strong> ${escapeHtml(input.applicantEmail)}</p>
         <p style="margin:0 0 12px"><strong>Telefono:</strong> ${escapeHtml(input.phone)}</p>
@@ -194,7 +214,7 @@ export async function sendApplicationNotificationEmail(
         ${input.eventTime ? `<p style="margin:0 0 12px"><strong>Orario:</strong> ${escapeHtml(input.eventTime)}</p>` : ""}
         ${input.locationName ? `<p style="margin:0 0 12px"><strong>Location:</strong> ${escapeHtml(input.locationName)}</p>` : ""}
         ${input.locationAddress ? `<p style="margin:0 0 12px"><strong>Indirizzo:</strong> ${escapeHtml(input.locationAddress)}</p>` : ""}
-        <p style="margin:0 0 12px"><strong>Località:</strong> ${escapeHtml(locationLabel || "-")}</p>
+        <p style="margin:0 0 12px"><strong>Localita:</strong> ${escapeHtml(locationLabel || "-")}</p>
         <p style="margin:0 0 12px"><strong>Set:</strong> ${escapeHtml(input.setLink)}</p>
         <p style="margin:0">Invio: ${escapeHtml(new Date(input.submittedAt).toLocaleString("it-IT"))}</p>
       `,
@@ -209,13 +229,66 @@ export async function sendApplicationNotificationEmail(
       `Telefono: ${input.phone}`,
       `Instagram: ${input.instagram}`,
       `Evento: ${input.eventTitle}`,
-      ...(input.eventDate ? [`Data evento: ${new Date(input.eventDate).toLocaleDateString("it-IT")}`] : []),
+      ...(input.eventDate
+        ? [`Data evento: ${new Date(input.eventDate).toLocaleDateString("it-IT")}`]
+        : []),
       ...(input.eventTime ? [`Orario: ${input.eventTime}`] : []),
       ...(input.locationName ? [`Location: ${input.locationName}`] : []),
       ...(input.locationAddress ? [`Indirizzo: ${input.locationAddress}`] : []),
       `Localita: ${locationLabel || "-"}`,
       `Set: ${input.setLink}`,
       `Invio: ${new Date(input.submittedAt).toLocaleString("it-IT")}`,
+    ].join("\n"),
+    attachments: [buildLogoAttachment()],
+  });
+}
+
+export async function sendApplicationApprovedEmail(
+  input: ApplicationApprovedEmailInput,
+) {
+  const { transporter, from, user } = getMailClient();
+  const eventDetails = [
+    input.eventDate
+      ? `Data evento: ${new Date(input.eventDate).toLocaleDateString("it-IT")}`
+      : "",
+    input.eventTime ? `Orario: ${input.eventTime}` : "",
+    input.locationName ? `Location: ${input.locationName}` : "",
+    input.locationAddress ? `Indirizzo: ${input.locationAddress}` : "",
+  ].filter(Boolean);
+
+  await transporter.sendMail({
+    from,
+    to: input.to,
+    replyTo: user,
+    subject: `Candidatura approvata - ${input.eventTitle}`,
+    html: buildEmailTemplate({
+      title: emailCopy.applicationApprovedTitle,
+      body: `
+        <p style="margin:0 0 12px">Ciao ${escapeHtml(input.applicantName)},</p>
+        <p style="margin:0 0 12px">${escapeHtml(emailCopy.applicationApprovedIntro)}</p>
+        <div style="margin:0 0 16px;border:1px solid rgba(227,31,41,0.18);border-radius:16px;padding:16px;background:rgba(255,255,255,0.03)">
+          <p style="margin:0 0 10px"><strong>Evento:</strong> ${escapeHtml(input.eventTitle)}</p>
+          ${input.eventDate ? `<p style="margin:0 0 10px"><strong>Data:</strong> ${escapeHtml(new Date(input.eventDate).toLocaleDateString("it-IT"))}</p>` : ""}
+          ${input.eventTime ? `<p style="margin:0 0 10px"><strong>Orario:</strong> ${escapeHtml(input.eventTime)}</p>` : ""}
+          ${input.locationName ? `<p style="margin:0 0 10px"><strong>Location:</strong> ${escapeHtml(input.locationName)}</p>` : ""}
+          ${input.locationAddress ? `<p style="margin:0"><strong>Indirizzo:</strong> ${escapeHtml(input.locationAddress)}</p>` : ""}
+        </div>
+        <p style="margin:0 0 12px">${escapeHtml(emailCopy.applicationApprovedOutro)}</p>
+        <p style="margin:0">${escapeHtml(emailCopy.applicationApprovedReminder)}</p>
+      `,
+    }),
+    text: [
+      "OpenDecks Italia",
+      "",
+      "Candidatura approvata",
+      "",
+      `Ciao ${input.applicantName},`,
+      "",
+      "La tua candidatura e stata approvata.",
+      `Evento: ${input.eventTitle}`,
+      ...eventDetails,
+      "",
+      "Controlla la tua casella email per i prossimi aggiornamenti.",
     ].join("\n"),
     attachments: [buildLogoAttachment()],
   });
@@ -230,7 +303,7 @@ function getMailClient() {
 
   if (!host || !port || !user || !pass) {
     throw new Error(
-      "Configura SMTP_HOST, SMTP_PORT, SMTP_USER e SMTP_PASS per inviare email."
+      "Configura SMTP_HOST, SMTP_PORT, SMTP_USER e SMTP_PASS per inviare email.",
     );
   }
 
@@ -260,8 +333,8 @@ function buildEmailTemplate({
     <div style="margin:0;padding:0;background:#050505;background-image:radial-gradient(circle at top,#1a1a1a 0%,#050505 58%);font-family:Arial,sans-serif;color:#f7f3ee">
       <div style="max-width:680px;margin:0 auto;padding:32px 20px">
         <div style="margin:0 0 14px;padding:0 4px">
-          <p style="margin:0 0 10px;font-size:11px;letter-spacing:0.32em;text-transform:uppercase;color:#E31F29">OpenDecks Italia</p>
-          <p style="margin:0;font-size:13px;line-height:1.7;color:rgba(247,243,238,0.74)">La scena non si aspetta. Si costruisce. Porta la tua musica.</p>
+          <p style="margin:0 0 10px;font-size:11px;letter-spacing:0.32em;text-transform:uppercase;color:#E31F29">${escapeHtml(emailCopy.brandEyebrow)}</p>
+          <p style="margin:0;font-size:13px;line-height:1.7;color:rgba(247,243,238,0.74)">${escapeHtml(emailCopy.brandTagline)}</p>
         </div>
         <div style="overflow:hidden;border-radius:24px;border:1px solid rgba(227,31,41,0.22);background:#101010;box-shadow:0 18px 52px rgba(0,0,0,0.34)">
           <div style="background:#E31F29;padding:20px 24px">
@@ -276,7 +349,7 @@ function buildEmailTemplate({
               <p style="margin:0;font-size:14px;color:#f7f3ee">Instagram: @opendecks.italia</p>
             </div>
             <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);font-size:12px;line-height:1.7;color:rgba(247,243,238,0.58)">
-              Ricevi questa email perché hai interagito con OpenDecks Italia.
+              ${escapeHtml(emailCopy.footerNote)}
             </div>
           </div>
         </div>
@@ -293,7 +366,7 @@ function buildLogoAttachment() {
       "public",
       "img",
       "loghi",
-      "LOGO-OPEN-DECKS_bianco.png"
+      "LOGO-OPEN-DECKS_bianco.png",
     ),
     cid: "opendecks-logo",
   };

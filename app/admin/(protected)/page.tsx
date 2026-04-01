@@ -131,7 +131,8 @@ export default async function AdminPage() {
                   {application.name}
                 </h3>
                 <p className="text-sm text-white/70">
-                  {formatCityProvince(application.city, application.province)} / {application.instagram}
+                  {formatCityProvince(application.city, application.province)} /{" "}
+                  {application.instagram}
                 </p>
                 <p className="text-sm text-white/55">{application.email}</p>
               </div>
@@ -164,6 +165,7 @@ export default async function AdminPage() {
             Performance eventi
           </h2>
         </div>
+
         <div className="gap-4 flex flex-col">
           <div className="grid gap-4 xl:grid-cols-2">
             <DualStatsChart
@@ -171,39 +173,35 @@ export default async function AdminPage() {
               subtitle={`Eventi nell'ultimo mese disponibile: ${recentPerformance.rangeLabel}.`}
               items={recentPerformance.events}
             />
+            <div className="grid gap-4 xl:grid-cols-2">
+              <StatsChart
+                title="Eventi per locale"
+                subtitle="Quanti eventi sono stati caricati per ogni location."
+                items={eventsByLocation}
+              />
+              <StatsChart
+                title="Eventi per provincia"
+                subtitle="Distribuzione geografica allineata alla lettura usata in Il progetto."
+                items={eventsByProvince}
+              />
+            </div>
           </div>
 
-          <div className="grid gap-4 xl:grid-cols-2">
-            <StatsChart
-              title="Eventi per locale"
-              subtitle="Quanti eventi sono stati caricati per ogni location."
-              items={eventsByLocation}
-            />
-            <StatsChart
-              title="Eventi per provincia"
-              subtitle="Distribuzione geografica allineata alla lettura usata in Il progetto."
-              items={eventsByProvince}
-            />
-          </div>
-
-          <div className="grid gap-4 xl:grid-cols-2">
+          <div className="grid gap-4 xl:grid-cols-4">
             <StatsChart
               title="Candidature per provincia"
               subtitle="Quante candidature hai raccolto per provincia."
               items={applicationsByProvince}
             />
             <StatsChart
-              title="Candidature per regione"
-              subtitle="Quante candidature hai raccolto per regione."
-              items={applicationsByRegion}
-            />
-          </div>
-
-          <div className="grid gap-4 xl:grid-cols-2">
-            <StatsChart
               title="DJ roster per provincia"
               subtitle="Quanti DJ approvati hai per provincia."
               items={djByProvince}
+            />
+            <StatsChart
+              title="Candidature per regione"
+              subtitle="Quante candidature hai raccolto per regione."
+              items={applicationsByRegion}
             />
             <StatsChart
               title="DJ roster per regione"
@@ -289,7 +287,7 @@ function DualStatsChart({
   );
 
   return (
-    <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-5 xl:col-span-2">
+    <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-5 ">
       <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
         Ultimo Mese
       </span>

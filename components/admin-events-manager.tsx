@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
 import { BodyScrollLock } from "@/components/body-scroll-lock";
@@ -21,6 +21,8 @@ type AdminEventsManagerProps = {
   djRoster: DjRosterRecord[];
   availableTags: TagRecord[];
   availableLocations: LocationRecord[];
+  createSignal?: number;
+  showCreateButton?: boolean;
 };
 
 type EventFormState = {
@@ -54,6 +56,8 @@ export function AdminEventsManager({
   djRoster,
   availableTags,
   availableLocations,
+  createSignal = 0,
+  showCreateButton = true,
 }: AdminEventsManagerProps) {
   const [events, setEvents] = useState(initialEvents);
   const [tags, setTags] = useState(availableTags);
@@ -63,21 +67,27 @@ export function AdminEventsManager({
   const [status, setStatus] = useState("");
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<
-    "all" | EventRecord["status"]
-  >("all");
-  const [cityFilter, setCityFilter] = useState("all");
+  const [locationFilter, setLocationFilter] = useState("all");
   const [monthFilter, setMonthFilter] = useState("all");
   const [form, setForm] = useState<EventFormState>(emptyForm);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [eventNumberError, setEventNumberError] = useState("");
+  const previousCreateSignal = useRef(createSignal);
 
   const sortedEvents = useMemo(
     () => [...events].sort((a, b) => b.date.localeCompare(a.date)),
     [events],
   );
-  const cities = useMemo(
-    () => Array.from(new Set(events.map((event) => event.locationName))).sort(),
+  const locationsByFilter = useMemo(
+    () =>
+      Array.from(
+        new Map(
+          events.map((event) => [
+            event.locationId,
+            { id: event.locationId, name: event.locationName },
+          ]),
+      ).values(),
+      ).sort((a, b) => a.name.localeCompare(b.name, "it")),
     [events],
   );
   const months = useMemo(
@@ -96,8 +106,9 @@ export function AdminEventsManager({
     const normalizedQuery = query.trim().toLowerCase();
 
     return sortedEvents.filter((event) => {
-      const eventMonth = `${new Date(event.date).getFullYear()}-${String(
-        new Date(event.date).getMonth() + 1,
+      const eventDate = new Date(event.date);
+      const eventMonth = `${eventDate.getFullYear()}-${String(
+        eventDate.getMonth() + 1,
       ).padStart(2, "0")}`;
 
       const matchesQuery =
@@ -112,16 +123,13 @@ export function AdminEventsManager({
           .join(" ")
           .toLowerCase()
           .includes(normalizedQuery);
-
-      const matchesStatus =
-        statusFilter === "all" || event.status === statusFilter;
-      const matchesCity =
-        cityFilter === "all" || event.locationName === cityFilter;
+      const matchesLocation =
+        locationFilter === "all" || event.locationId === locationFilter;
       const matchesMonth = monthFilter === "all" || eventMonth === monthFilter;
 
-      return matchesQuery && matchesStatus && matchesCity && matchesMonth;
+      return matchesQuery && matchesLocation && matchesMonth;
     });
-  }, [cityFilter, monthFilter, query, sortedEvents, statusFilter]);
+  }, [locationFilter, monthFilter, query, sortedEvents]);
   const lineupOptions = useMemo(
     () => buildDjRosterProfiles(djRoster),
     [djRoster],
@@ -164,6 +172,16 @@ export function AdminEventsManager({
 
     return String(maxForLocation + 1);
   }, [events, form.locationId]);
+
+  useEffect(() => {
+    if (createSignal !== previousCreateSignal.current) {
+      previousCreateSignal.current = createSignal;
+      setForm(emptyForm);
+      setImageFile(null);
+      setEventNumberError("");
+      setOpen(true);
+    }
+  }, [createSignal]);
 
   function updateField<Key extends keyof EventFormState>(
     key: Key,
@@ -263,21 +281,27 @@ export function AdminEventsManager({
 
   return (
     <div className="grid gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <button
-          type="button"
-          className={ui.action.primary}
-          onClick={() => {
-            setForm(emptyForm);
-            setOpen(true);
-          }}
-        >
-          Nuovo evento
-        </button>
+      {showCreateButton ? (
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <button
+            type="button"
+            className={ui.action.primary}
+            onClick={() => {
+              setForm(emptyForm);
+              setOpen(true);
+            }}
+          >
+            Nuovo evento
+          </button>
+          <p className="min-h-6 text-sm text-white/65" aria-live="polite">
+            {status}
+          </p>
+        </div>
+      ) : status ? (
         <p className="min-h-6 text-sm text-white/65" aria-live="polite">
           {status}
         </p>
-      </div>
+      ) : null}
 
       <div className={ui.surface.panel}>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -325,7 +349,7 @@ export function AdminEventsManager({
           ) : null}
         </div>
 
-        <div className="mb-4 grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_repeat(3,minmax(0,0.7fr))]">
+        <div className="mb-4 grid gap-4 md:grid-cols-[minmax(0,1.4fr)_repeat(2,minmax(0,0.8fr))]">
           <div className="grid gap-2">
             <label htmlFor="events-query" className={ui.form.label}>
               Cerca
@@ -339,36 +363,19 @@ export function AdminEventsManager({
             />
           </div>
           <div className="grid gap-2">
-            <label htmlFor="events-status" className={ui.form.label}>
-              Stato
-            </label>
-            <select
-              id="events-status"
-              className={ui.form.select}
-              value={statusFilter}
-              onChange={(event) =>
-                setStatusFilter(event.target.value as typeof statusFilter)
-              }
-            >
-              <option value="all">Tutti</option>
-              <option value="upcoming">Prossimi</option>
-              <option value="past">Passati</option>
-            </select>
-          </div>
-          <div className="grid gap-2">
-            <label htmlFor="events-city" className={ui.form.label}>
+            <label htmlFor="events-location" className={ui.form.label}>
               Location
             </label>
             <select
-              id="events-city"
+              id="events-location"
               className={ui.form.select}
-              value={cityFilter}
-              onChange={(event) => setCityFilter(event.target.value)}
+              value={locationFilter}
+              onChange={(event) => setLocationFilter(event.target.value)}
             >
-              <option value="all">Tutte</option>
-              {cities.map((city) => (
-                <option key={city} value={city}>
-                  {city}
+              <option value="all">Tutti</option>
+              {locationsByFilter.map((location) => (
+                <option key={location.id} value={location.id}>
+                  {location.name}
                 </option>
               ))}
             </select>

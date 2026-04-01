@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { deleteApplication, updateApplication } from "@/lib/data";
+import { deleteApplication, getApplications, getEvents, updateApplication } from "@/lib/data";
+import { sendApplicationApprovedEmail } from "@/lib/email";
 import { ApplicationRecord } from "@/lib/types";
 
 type RouteContext = {
@@ -15,10 +16,36 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     return NextResponse.json({ error: "Stato candidatura non valido." }, { status: 400 });
   }
 
+  const applications = await getApplications();
+  const currentApplication = applications.find((application) => application.id === id);
+
+  if (!currentApplication) {
+    return NextResponse.json({ error: "Candidatura non trovata." }, { status: 404 });
+  }
+
   const application = await updateApplication(id, { status: body.status });
 
   if (!application) {
     return NextResponse.json({ error: "Candidatura non trovata." }, { status: 404 });
+  }
+
+  if (currentApplication.status !== "selected" && application.status === "selected") {
+    const events = await getEvents();
+    const linkedEvent = events.find((event) => event.id === application.eventId) || null;
+
+    try {
+      await sendApplicationApprovedEmail({
+        to: application.email,
+        applicantName: application.name,
+        eventTitle: application.eventTitle,
+        eventDate: linkedEvent?.date,
+        eventTime: linkedEvent?.time,
+        locationName: linkedEvent?.locationName,
+        locationAddress: linkedEvent?.locationAddress,
+      });
+    } catch (error) {
+      console.error("Application approval email failed:", error);
+    }
   }
 
   return NextResponse.json({ application });

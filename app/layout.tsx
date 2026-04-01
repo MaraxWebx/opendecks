@@ -3,6 +3,7 @@ import { Space_Grotesk } from "next/font/google";
 
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
+import { buildMetadata } from "@/lib/seo";
 
 import "./globals.css";
 
@@ -11,10 +12,9 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap"
 });
 
-export const metadata: Metadata = {
-  title: "OpenDecks Italia",
-  description: "Piattaforma culturale e network per eventi, archive e candidature DJ."
-};
+export const metadata: Metadata = buildMetadata({
+  path: "/",
+});
 
 export const viewport: Viewport = {
   width: "device-width",

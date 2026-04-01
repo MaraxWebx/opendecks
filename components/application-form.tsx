@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { applicationFormCopy } from "@/content/site-copy";
 import { EventRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
 import { GlobalLoader } from "@/components/global-loader";
@@ -270,9 +271,9 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
       {loading ? (
         <GlobalLoader
           compact
-          eyebrow="Invio candidatura"
-          title="Stiamo facendo girare il vinile"
-          description="La tua candidatura viene salvata e collegata all'evento selezionato."
+          eyebrow={applicationFormCopy.loaderEyebrow}
+          title={applicationFormCopy.loaderTitle}
+          description={applicationFormCopy.loaderDescription}
         />
       ) : status.type === "error" ? (
         <div className="grid gap-6 rounded-[1.75rem] border border-[#E31F29]/24 bg-[linear-gradient(180deg,rgba(227,31,41,0.1)_0%,rgba(255,255,255,0.03)_100%)] p-6 md:p-8">
@@ -288,10 +289,10 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
             </div>
             <div className="grid gap-3">
               <span className="text-xs uppercase tracking-[0.24em] text-[#ff8b92]">
-                Invio non completato
+                {applicationFormCopy.errorEyebrow}
               </span>
               <h2 className="text-[clamp(1.9rem,4vw,3rem)] font-semibold leading-none tracking-[-0.03em] text-[#f7f3ee]">
-                Non siamo riusciti a registrare la candidatura.
+                {applicationFormCopy.errorTitle}
               </h2>
               <p className="max-w-[42rem] text-base leading-7 text-white/76">
                 {status.message}
@@ -304,10 +305,10 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
               className={ui.action.secondary}
               onClick={() => setStatus({ type: "idle", message: "" })}
             >
-              Invia un'altra candidatura
+              {applicationFormCopy.retryCta}
             </button>
             <Link href="/contatti" className={ui.action.secondary}>
-              Hai bisogno di supporto? Contattaci
+              {applicationFormCopy.supportCta}
             </Link>
           </div>
         </div>
@@ -325,14 +326,13 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
             </div>
             <div className="grid gap-3">
               <span className="text-xs uppercase tracking-[0.24em] text-emerald-300">
-                Invio completato
+                {applicationFormCopy.successEyebrow}
               </span>
               <h2 className="text-[clamp(1.9rem,4vw,3rem)] font-semibold leading-none tracking-[-0.03em] text-[#f7f3ee]">
-                Candidatura inviata con successo.
+                {applicationFormCopy.successTitle}
               </h2>
               <p className="max-w-[42rem] text-base leading-7 text-white/76">
-                Verrai ricontattato per la selezione. Controlla la tua casella
-                email nei prossimi giorni.
+                {applicationFormCopy.successDescription}
               </p>
             </div>
           </div>
@@ -342,10 +342,10 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
               className={ui.action.secondary}
               onClick={() => setStatus({ type: "idle", message: "" })}
             >
-              Invia un'altra candidatura
+              {applicationFormCopy.retryCta}
             </button>
             <Link href="/contatti" className={ui.action.secondary}>
-              Hai bisogno di supporto? Contattaci
+              {applicationFormCopy.supportCta}
             </Link>
           </div>
         </div>
@@ -353,14 +353,13 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
         <form onSubmit={handleSubmit} className="grid gap-6">
           <div className="grid gap-3">
             <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
-              Candidatura DJ
+              {applicationFormCopy.eyebrow}
             </span>
             <h2 className="text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
-              Invia il tuo set
+              {applicationFormCopy.title}
             </h2>
             <p className="max-w-3xl text-sm leading-7 text-white/70">
-              Form base gia collegato agli eventi. Quando sara attivo MongoDB, i
-              dati verranno salvati sul database senza cambiare la UI.
+              {applicationFormCopy.description}
             </p>
           </div>
 
@@ -585,10 +584,10 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
               type="submit"
               disabled={loading}
             >
-              Invia candidatura
+              {applicationFormCopy.submitCta}
             </button>
             <span className="text-sm text-white/60">
-              Campi richiesti: nome, citta, email, telefono, foto, IG, set.
+              {applicationFormCopy.requiredFields}
             </span>
           </div>
         </form>

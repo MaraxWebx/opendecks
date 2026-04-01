@@ -10,6 +10,8 @@ import { ui } from "@/lib/ui";
 
 type AdminLocationsManagerProps = {
   initialLocations: LocationRecord[];
+  createSignal?: number;
+  showCreateButton?: boolean;
 };
 
 type LocationFormState = {
@@ -35,7 +37,11 @@ declare global {
   }
 }
 
-export function AdminLocationsManager({ initialLocations }: AdminLocationsManagerProps) {
+export function AdminLocationsManager({
+  initialLocations,
+  createSignal = 0,
+  showCreateButton = true,
+}: AdminLocationsManagerProps) {
   const [locations, setLocations] = useState(initialLocations);
   const [form, setForm] = useState<LocationFormState>(emptyForm);
   const [query, setQuery] = useState("");
@@ -46,6 +52,7 @@ export function AdminLocationsManager({ initialLocations }: AdminLocationsManage
   const [autocompleteMessage, setAutocompleteMessage] = useState("");
   const addressInputRef = useRef<HTMLInputElement | null>(null);
   const autocompleteRef = useRef<any>(null);
+  const previousCreateSignal = useRef(createSignal);
 
   const filteredLocations = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -65,6 +72,16 @@ export function AdminLocationsManager({ initialLocations }: AdminLocationsManage
   function updateField<Key extends keyof LocationFormState>(key: Key, value: LocationFormState[Key]) {
     setForm((current) => ({ ...current, [key]: value }));
   }
+
+  useEffect(() => {
+    if (createSignal !== previousCreateSignal.current) {
+      previousCreateSignal.current = createSignal;
+      setForm(emptyForm);
+      setAutocompleteMessage("");
+      setMessage("");
+      setOpen(true);
+    }
+  }, [createSignal]);
 
   useEffect(() => {
     if (!open) {
@@ -175,23 +192,29 @@ export function AdminLocationsManager({ initialLocations }: AdminLocationsManage
 
   return (
     <div className="grid gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <button
-          type="button"
-          className={ui.action.primary}
-          onClick={() => {
-            setForm(emptyForm);
-            setAutocompleteMessage("");
-            setMessage("");
-            setOpen(true);
-          }}
-        >
-          Nuova location
-        </button>
+      {showCreateButton ? (
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <button
+            type="button"
+            className={ui.action.primary}
+            onClick={() => {
+              setForm(emptyForm);
+              setAutocompleteMessage("");
+              setMessage("");
+              setOpen(true);
+            }}
+          >
+            Nuova location
+          </button>
+          <p className="min-h-6 text-sm text-white/70" aria-live="polite">
+            {message}
+          </p>
+        </div>
+      ) : message ? (
         <p className="min-h-6 text-sm text-white/70" aria-live="polite">
           {message}
         </p>
-      </div>
+      ) : null}
 
       <div className={ui.surface.panel}>
         <div className="mb-4 grid gap-2">

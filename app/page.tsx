@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
+import { brandClaim, homeCopy } from "@/content/site-copy";
 import { HomeEventsCarousel } from "@/components/home-events-carousel";
 import { HomeHeroVideo } from "@/components/home-hero-video";
 import { getEvents, getUpcomingEvent } from "@/lib/data";
+import { buildMetadata } from "@/lib/seo";
 
 const homeShots = [
   "/img/home/shots/shot-1.jpeg",
@@ -10,6 +13,12 @@ const homeShots = [
   "/img/home/shots/shot-3.jpg",
   "/img/home/shots/shot-4.jpg",
 ];
+
+export const metadata: Metadata = buildMetadata({
+  title: homeCopy.seoTitle,
+  description: homeCopy.seoDescription,
+  path: "/",
+});
 
 export default async function HomePage() {
   const [nextEvent, events] = await Promise.all([
@@ -28,17 +37,26 @@ export default async function HomePage() {
           <div className="absolute inset-0 grid place-items-center px-6 text-center">
             <div className="grid justify-items-center gap-5">
               <span className="text-sm uppercase tracking-[0.32em] text-[#E31F29]">
-                La scena non si aspetta. Si costruisce. Porta la tua musica
+                {brandClaim.compact}
               </span>
               <h1 className="text-[clamp(2.8rem,8vw,5.6rem)] font-semibold uppercase leading-none tracking-[-0.06em] text-[#f7f2e8]">
-                OpenDecks Italia
+                {homeCopy.title}
               </h1>
+              <p className="max-w-3xl text-sm leading-7 text-white/76 md:text-base">
+                {homeCopy.description}
+              </p>
               <div className="flex flex-wrap justify-center gap-3">
                 <Link
                   href="/eventi"
                   className="inline-flex min-h-12 w-full max-w-[20rem] items-center justify-center rounded-xl border border-[#E31F29] bg-[#E31F29] px-6 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-white transition hover:border-[#c91922] hover:bg-[#c91922] sm:w-auto sm:min-w-72"
                 >
-                  Scopri gli eventi
+                  {homeCopy.primaryCta}
+                </Link>
+                <Link
+                  href="/progetto"
+                  className="inline-flex min-h-12 w-full max-w-[20rem] items-center justify-center rounded-xl border border-[#E31F29]/35 px-6 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-[#E31F29]/10 sm:w-auto sm:min-w-72"
+                >
+                  {homeCopy.secondaryCta}
                 </Link>
               </div>
             </div>
@@ -122,17 +140,16 @@ export default async function HomePage() {
 
       <section className="px-4 py-4 md:px-6">
         <div className="mx-auto grid min-w-0 max-w-[1240px] gap-5">
-          <div className="grid gap-4  p-4 md:grid-cols-[minmax(0,1fr)_minmax(0,520px)] md:items-center md:gap-8 md:p-6">
+          <div className="grid gap-4 p-4 md:grid-cols-[minmax(0,1fr)_minmax(0,520px)] md:items-center md:gap-8 md:p-6">
             <div className="order-2 grid gap-4 md:order-1">
               <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
                 Ultima sessione
               </span>
               <h2 className="text-[clamp(1.5rem,2.8vw,2.3rem)] font-semibold leading-none tracking-[-0.04em] text-[#f7f2e8]">
-                Ascolta l&apos;ultimo set della community.
+                {homeCopy.latestSetTitle}
               </h2>
               <p className="max-w-2xl text-sm leading-7 text-white/72 md:text-base">
-                Riascolta la sessione più recente di OpenDecks e resta dentro il
-                flusso degli ultimi DJ passati dalla console.
+                {homeCopy.latestSetDescription}
               </p>
               <div className="flex flex-wrap gap-3">
                 <a
@@ -164,11 +181,10 @@ export default async function HomePage() {
                 Ultimi scatti
               </span>
               <h2 className="text-[clamp(1.5rem,2.8vw,2.3rem)] font-semibold leading-none tracking-[-0.04em] text-[#f7f2e8]">
-                Vedi gli scatti dell&apos;ultimo evento.
+                {homeCopy.latestShotsTitle}
               </h2>
               <p className="max-w-2xl text-sm leading-7 text-white/72 md:text-base">
-                Una selezione rapida dei frame più forti della serata, tra
-                pubblico, consolle e momenti catturati live.
+                {homeCopy.latestShotsDescription}
               </p>
               <div className="flex flex-wrap gap-3">
                 <a
@@ -209,7 +225,7 @@ function ShotsStack() {
         return (
           <div
             key={src}
-            className={`absolute h-[88%] w-[74%] overflow-hidden rounded-[1.8rem]  bg-[#111] shadow-[0_18px_50px_rgba(0,0,0,0.28)] ${offsets[index]}`}
+            className={`absolute h-[88%] w-[74%] overflow-hidden rounded-[1.8rem] bg-[#111] shadow-[0_18px_50px_rgba(0,0,0,0.28)] ${offsets[index]}`}
           >
             <img
               src={src}

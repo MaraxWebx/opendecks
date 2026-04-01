@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
+
+import {
+  hubPillars,
+  manifestoParagraphs,
+  projectPageCopy,
+} from "@/content/project-copy";
 import { SectionHeading } from "@/components/section-heading";
 import { getEvents } from "@/lib/data";
+import { buildMetadata } from "@/lib/seo";
 
 const provincePositions: Array<{
   label: string;
@@ -28,7 +36,7 @@ const provincePositions: Array<{
   { label: "RC", displayName: "Reggio Calabria", keywords: [" reggio calabria ", " rc "], top: "86%", left: "53%" },
   { label: "PA", displayName: "Palermo", keywords: [" palermo ", " pa "], top: "90%", left: "38%" },
   { label: "CT", displayName: "Catania", keywords: [" catania ", " ct "], top: "88%", left: "47%" },
-  { label: "CA", displayName: "Cagliari", keywords: [" cagliari ", " ca "], top: "74%", left: "26%" }
+  { label: "CA", displayName: "Cagliari", keywords: [" cagliari ", " ca "], top: "74%", left: "26%" },
 ];
 
 const fallbackPositions = [
@@ -38,13 +46,14 @@ const fallbackPositions = [
   { top: "52%", left: "50%" },
   { top: "63%", left: "55%" },
   { top: "60%", left: "69%" },
-  { top: "84%", left: "38%" }
+  { top: "84%", left: "38%" },
 ];
 
-const manifestoParagraphs = [
-  "OpenDecks Italia nasce per creare uno spazio accessibile dove artisti emergenti, collezionisti e appassionati possano esibirsi, incontrarsi e costruire una scena reale attorno alla musica.",
-  "L'obiettivo non è solo organizzare serate, ma far crescere una rete nazionale fatta di eventi, call aperte, documentazione editoriale e connessioni tra città diverse."
-];
+export const metadata: Metadata = buildMetadata({
+  title: projectPageCopy.seoTitle,
+  description: projectPageCopy.seoDescription,
+  path: "/progetto",
+});
 
 export default async function ProjectPage() {
   const events = await getEvents();
@@ -54,28 +63,26 @@ export default async function ProjectPage() {
     <div className="mx-auto w-full max-w-[1240px] px-4 md:px-6">
       <section className="py-16 md:py-20">
         <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
-          Il progetto
+          {projectPageCopy.eyebrow}
         </span>
         <h1 className="mt-3 text-[clamp(1.9rem,4vw,3.1rem)] font-semibold leading-none tracking-[-0.03em] text-[#f7f3ee]">
-          Una piattaforma per dare continuità alla scena.
+          {projectPageCopy.title}
         </h1>
         <p className="mt-4 max-w-[42rem] text-lg leading-8 text-white/76">
-          OpenDecks Italia nasce per ampliare il valore dell&apos;evento: non solo serate, ma
-          una rete nazionale che raccoglie talenti, documenta contenuti e costruisce un
-          linguaggio riconoscibile.
+          {projectPageCopy.description}
         </p>
       </section>
 
       <section className="pb-14 md:pb-16">
         <SectionHeading
-          eyebrow="Identità"
-          title="Manifesto essenziale"
-          description="Una base culturale e operativa che mette al centro accessibilità, call aperte, scena locale e costruzione di una rete editoriale attorno alla musica."
+          eyebrow="Manifesto"
+          title="Non solo una serata. Una rete."
+          description="La visione e semplice: selezionare, documentare, connettere. OpenDecks non deve produrre solo intrattenimento, ma movimento culturale reale."
         />
         <div className="grid gap-6 md:grid-cols-2">
-          {manifestoParagraphs.map((paragraph, index) => (
+          {manifestoParagraphs.map((paragraph) => (
             <div
-              key={index}
+              key={paragraph}
               className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.03] p-6 text-sm leading-7 text-white/74"
             >
               <p>{paragraph}</p>
@@ -84,11 +91,37 @@ export default async function ProjectPage() {
         </div>
       </section>
 
+      <section className="pb-14 md:pb-16">
+        <SectionHeading
+          eyebrow="Hub"
+          title="Cosa significa essere un hub"
+          description="Un hub e un punto centrale di connessione. Non e il posto dove si suona e si va via: e il punto in cui persone, opportunita, contenuti e collaborazioni iniziano a muoversi da sole."
+        />
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {hubPillars.map((pillar) => (
+            <article
+              key={pillar.title}
+              className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.03] p-5"
+            >
+              <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
+                OpenDecks
+              </span>
+              <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
+                {pillar.title}
+              </h3>
+              <p className="mt-3 text-sm leading-7 text-white/72">
+                {pillar.description}
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="pb-16 md:pb-20">
         <SectionHeading
           eyebrow="Mappa"
           title="Una rete che gira, si espande e si connette."
-          description="Invece di una cartina rigida, qui la rete è mostrata come un globo editoriale: una scena che si muove, si allarga e tocca città diverse."
+          description="Invece di una cartina rigida, qui la rete appare come un globo editoriale: una scena che si muove, si allarga e comincia a lasciare tracce in piu territori."
         />
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_360px]">
@@ -155,7 +188,9 @@ export default async function ProjectPage() {
                     className="rounded-xl border border-[#E31F29]/14 bg-black/30 p-4"
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <h3 className="text-base font-medium text-[#f7f3ee]">{place.name}</h3>
+                      <h3 className="text-base font-medium text-[#f7f3ee]">
+                        {place.name}
+                      </h3>
                       <span className="rounded-md border border-[#E31F29]/25 bg-[#E31F29]/10 px-2 py-1 text-[0.68rem] uppercase tracking-[0.18em] text-white/84">
                         {place.count}
                       </span>
@@ -192,14 +227,16 @@ function buildPlaces(events: Awaited<ReturnType<typeof getEvents>>) {
       continue;
     }
 
-    const position = province.position || fallbackPositions[grouped.size % fallbackPositions.length];
+    const position =
+      province.position ||
+      fallbackPositions[grouped.size % fallbackPositions.length];
 
     grouped.set(key, {
       name: province.displayName,
       count: 1,
       titles: [event.title],
       top: position.top,
-      left: position.left
+      left: position.left,
     });
   }
 
@@ -209,21 +246,21 @@ function buildPlaces(events: Awaited<ReturnType<typeof getEvents>>) {
 function resolveProvince(name: string, address: string) {
   const haystack = ` ${normalizeLocationName(`${name} ${address}`)} `;
   const matchedProvince = provincePositions.find((province) =>
-    province.keywords.some((keyword) => haystack.includes(keyword))
+    province.keywords.some((keyword) => haystack.includes(keyword)),
   );
 
   if (matchedProvince) {
     return {
       label: matchedProvince.label,
       displayName: matchedProvince.displayName,
-      position: matchedProvince
+      position: matchedProvince,
     };
   }
 
   return {
     label: "ND",
     displayName: "Non definita",
-    position: null
+    position: null,
   };
 }
 

@@ -1,5 +1,4 @@
-import { AdminEventsManager } from "@/components/admin-events-manager";
-import { SectionHeading } from "@/components/section-heading";
+import { AdminEventsPageContent } from "@/components/admin-events-page-content";
 import { getDjRosterEntries, getEvents, getLocations, getTags } from "@/lib/data";
 
 export default async function AdminEventsPage() {
@@ -12,12 +11,12 @@ export default async function AdminEventsPage() {
 
   return (
     <section className="py-8 md:py-10">
-      <SectionHeading
-        eyebrow="Eventi"
-        title="Gestione eventi"
-        description="Qui tieni sotto controllo calendario, stato delle date e sedi."
+      <AdminEventsPageContent
+        events={events}
+        djRoster={djRoster}
+        tags={tags}
+        locations={locations}
       />
-      <AdminEventsManager initialEvents={events} djRoster={djRoster} availableTags={tags} availableLocations={locations} />
     </section>
   );
 }

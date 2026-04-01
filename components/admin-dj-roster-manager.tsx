@@ -113,7 +113,9 @@ export function AdminDjRosterManager({
             placeholder="Nome, citta, email, telefono, evento..."
           />
         </div>
-        <p className="mt-4 min-h-6 text-sm text-white/65">{message}</p>
+        {message ? (
+          <p className="mt-4 text-sm text-white/65">{message}</p>
+        ) : null}
       </div>
 
       <div className={ui.surface.panel}>

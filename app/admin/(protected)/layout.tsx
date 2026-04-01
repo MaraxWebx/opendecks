@@ -44,7 +44,7 @@ export default function ProtectedAdminLayout({
       <div
         className={`${ui.layout.page} grid gap-6 py-8 lg:grid-cols-[280px_minmax(0,1fr)]`}
       >
-        <div className="flex items-center justify-between gap-4 rounded-2xl border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] px-4 py-3 lg:hidden">
+        <div className="flex items-center justify-between gap-4 rounded-2xl  px-4 py-3 lg:hidden">
           <div className="flex items-center gap-3">
             <Image
               src="/img/loghi/LOGO-OPEN-DECKS_bianco.png"

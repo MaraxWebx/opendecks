@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { GlobalLoader } from "@/components/global-loader";
 import { ui } from "@/lib/ui";
 
 type FormState = {
@@ -55,68 +56,83 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-4">
-      <div className="grid gap-2">
-        <label htmlFor="contact-name" className={ui.form.label}>
-          Nome
-        </label>
-        <input
-          id="contact-name"
-          className={ui.form.field}
-          value={form.name}
-          onChange={(event) => updateField("name", event.target.value)}
-          required
-        />
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="grid gap-2">
-          <label htmlFor="contact-email" className={ui.form.label}>
-            Email
-          </label>
-          <input
-            id="contact-email"
-            type="email"
-            className={ui.form.field}
-            value={form.email}
-            onChange={(event) => updateField("email", event.target.value)}
-            required
+    <div className="grid gap-4">
+      {sending ? (
+        <div className="min-h-[420px] rounded-2xl border border-[#E31F29]/18 bg-black/20">
+          <GlobalLoader
+            compact
+            eyebrow="Invio richiesta"
+            title="Stiamo inoltrando il messaggio"
+            description="Il tuo messaggio viene inviato al team OpenDecks. La colonna contatti resta disponibile se vuoi aprire email, telefono o social."
+            className="min-h-[420px]"
           />
         </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="grid gap-4">
+          <div className="grid gap-2">
+            <label htmlFor="contact-name" className={ui.form.label}>
+              Nome
+            </label>
+            <input
+              id="contact-name"
+              className={ui.form.field}
+              value={form.name}
+              onChange={(event) => updateField("name", event.target.value)}
+              required
+            />
+          </div>
 
-        <div className="grid gap-2">
-          <label htmlFor="contact-phone" className={ui.form.label}>
-            Telefono
-          </label>
-          <input
-            id="contact-phone"
-            type="tel"
-            className={ui.form.field}
-            value={form.phone}
-            onChange={(event) => updateField("phone", event.target.value)}
-          />
-        </div>
-      </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-2">
+              <label htmlFor="contact-email" className={ui.form.label}>
+                Email
+              </label>
+              <input
+                id="contact-email"
+                type="email"
+                className={ui.form.field}
+                value={form.email}
+                onChange={(event) => updateField("email", event.target.value)}
+                required
+              />
+            </div>
 
-      <div className="grid gap-2">
-        <label htmlFor="contact-message" className={ui.form.label}>
-          Messaggio
-        </label>
-        <textarea
-          id="contact-message"
-          className={`${ui.form.field} min-h-40 resize-y`}
-          value={form.message}
-          onChange={(event) => updateField("message", event.target.value)}
-          required
-        />
-      </div>
+            <div className="grid gap-2">
+              <label htmlFor="contact-phone" className={ui.form.label}>
+                Telefono
+              </label>
+              <input
+                id="contact-phone"
+                type="tel"
+                className={ui.form.field}
+                value={form.phone}
+                onChange={(event) => updateField("phone", event.target.value)}
+              />
+            </div>
+          </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <button type="submit" className={ui.action.primary} disabled={sending}>
-          {sending ? "Invio..." : "Invia richiesta"}
-        </button>
-        <span className="text-sm text-white/55">{status}</span>
-      </div>
-    </form>
+          <div className="grid gap-2">
+            <label htmlFor="contact-message" className={ui.form.label}>
+              Messaggio
+            </label>
+            <textarea
+              id="contact-message"
+              className={`${ui.form.field} min-h-40 resize-y`}
+              value={form.message}
+              onChange={(event) => updateField("message", event.target.value)}
+              required
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <button type="submit" className={ui.action.primary} disabled={sending}>
+              Invia richiesta
+            </button>
+            <span className="text-sm text-white/55">{status}</span>
+          </div>
+        </form>
+      )}
+
+    </div>
   );
 }

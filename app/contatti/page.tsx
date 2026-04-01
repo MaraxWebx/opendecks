@@ -1,6 +1,15 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
+import { contactPageCopy } from "@/content/site-copy";
 import { ContactForm } from "@/components/contact-form";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildMetadata({
+  title: contactPageCopy.seoTitle,
+  description: contactPageCopy.seoDescription,
+  path: "/contatti",
+});
 
 export default function ContactPage() {
   return (
@@ -9,15 +18,13 @@ export default function ContactPage() {
         <div className="grid gap-5 rounded-2xl border border-[#E31F29]/18 bg-white/[0.03] p-5 md:p-6">
           <div className="grid gap-3">
             <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
-              Contatti
+              {contactPageCopy.eyebrow}
             </span>
             <h1 className="text-[clamp(1.9rem,4vw,3rem)] font-semibold leading-none tracking-[-0.03em] text-[#f7f3ee]">
-              Scrivici per eventi, partnership e booking.
+              {contactPageCopy.title}
             </h1>
             <p className="max-w-[42rem] text-base leading-7 text-white/74">
-              Se vuoi proporre una collaborazione, un venue, un format o
-              semplicemente entrare in contatto con OpenDecks Italia, usa questo
-              spazio.
+              {contactPageCopy.description}
             </p>
           </div>
 
@@ -56,7 +63,7 @@ function ContactCard({
   icon: ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.03] p-5">
+    <div className="rounded-2xl p-5">
       <div className="flex items-center gap-3">
         <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[#E31F29]/35 bg-[#E31F29]/10 text-white">
           {icon}
@@ -79,7 +86,7 @@ function ContactCard({
 
 function SocialCard() {
   return (
-    <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.03] p-5">
+    <div className="rounded-2xl p-5">
       <div className="flex items-center gap-3">
         <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
           Social
@@ -115,8 +122,7 @@ function SocialCard() {
         </a>
       </div>
       <p className="mt-4 text-sm leading-7 text-white/72">
-        Seguici su Instagram, ascolta i set su SoundCloud e resta aggiornato sul
-        canale Telegram.
+        {contactPageCopy.socialDescription}
       </p>
     </div>
   );
