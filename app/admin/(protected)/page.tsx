@@ -56,8 +56,8 @@ export default async function AdminPage() {
   );
 
   return (
-    <div>
-      <section className="py-8 md:py-10">
+    <div className="min-w-0">
+      <section className="min-w-0 py-8 md:py-10">
         <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
           Admin base
         </span>
@@ -71,7 +71,7 @@ export default async function AdminPage() {
         </p>
       </section>
 
-      <section className="pb-10 md:pb-12">
+      <section className="min-w-0 pb-10 md:pb-12">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5">
           <MetricCard label="Eventi" value={events.length} />
           <MetricCard label="Candidature" value={applications.length} />
@@ -81,7 +81,7 @@ export default async function AdminPage() {
         </div>
       </section>
 
-      <section className="pb-10 md:pb-12">
+      <section className="min-w-0 pb-10 md:pb-12">
         <div className="mb-4 flex items-center justify-between gap-3">
           <div>
             <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
@@ -156,7 +156,7 @@ export default async function AdminPage() {
         </div>
       </section>
 
-      <section className="pb-10 md:pb-12">
+      <section className="min-w-0 pb-10 md:pb-12">
         <div className="mb-4">
           <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
             Statistiche
@@ -217,7 +217,7 @@ export default async function AdminPage() {
 
 function MetricCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-4">
+    <div className="min-w-0 rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-4">
       <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
         {label}
       </span>
@@ -238,7 +238,7 @@ function StatsChart({
   const max = items[0]?.count || 1;
 
   return (
-    <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-5">
+    <div className="min-w-0 rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-5">
       <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
         Dashboard
       </span>
@@ -248,10 +248,12 @@ function StatsChart({
       <div className="mt-5 grid gap-3">
         {items.length ? (
           items.map((item) => (
-            <div key={item.label} className="grid gap-2">
-              <div className="flex items-center justify-between gap-3 text-sm">
-                <span className="text-white/78">{item.label}</span>
-                <span className="rounded-md bg-white/6 px-2 py-1 text-xs uppercase tracking-[0.14em] text-white/84">
+            <div key={item.label} className="grid min-w-0 gap-2">
+              <div className="flex min-w-0 items-start justify-between gap-3 text-sm">
+                <span className="min-w-0 break-words text-white/78">
+                  {item.label}
+                </span>
+                <span className="shrink-0 rounded-md bg-white/6 px-2 py-1 text-xs uppercase tracking-[0.14em] text-white/84">
                   {item.count}
                 </span>
               </div>
@@ -287,7 +289,7 @@ function DualStatsChart({
   );
 
   return (
-    <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-5 ">
+    <div className="min-w-0 rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-5 ">
       <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
         Ultimo Mese
       </span>
@@ -308,10 +310,12 @@ function DualStatsChart({
       <div className="mt-5 grid gap-4">
         {items.length ? (
           items.map((item) => (
-            <div key={item.label} className="grid gap-2">
-              <div className="flex items-center justify-between gap-3 text-sm">
-                <span className="text-white/78">{item.label}</span>
-                <span className="text-white/58">
+            <div key={item.label} className="grid min-w-0 gap-2">
+              <div className="flex min-w-0 items-start justify-between gap-3 text-sm">
+                <span className="min-w-0 break-words text-white/78">
+                  {item.label}
+                </span>
+                <span className="shrink-0 text-right text-white/58">
                   {item.applications} candidature / {item.selectedDjs} DJ
                 </span>
               </div>

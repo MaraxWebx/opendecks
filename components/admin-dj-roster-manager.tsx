@@ -99,8 +99,8 @@ export function AdminDjRosterManager({
   }
 
   return (
-    <div className="grid gap-4">
-      <div className="px-6">
+    <div className="grid min-w-0 gap-4">
+      <div className="px-1 sm:px-6">
         <div className="grid gap-2">
           <label htmlFor="dj-roster-query" className={ui.form.label}>
             Cerca DJ
@@ -118,7 +118,7 @@ export function AdminDjRosterManager({
         ) : null}
       </div>
 
-      <div className={ui.surface.panel}>
+      <div className={`${ui.surface.panel} min-w-0`}>
         <div className="mb-4 flex items-center justify-between gap-3">
           <p className="text-sm text-white/65">
             {filteredRoster.length} DJ nel roster
@@ -127,9 +127,9 @@ export function AdminDjRosterManager({
 
         <div className="grid gap-4">
           {filteredRoster.map((entry) => (
-            <article key={entry.id} className={ui.surface.card}>
+            <article key={entry.id} className={`${ui.surface.card} min-w-0`}>
               <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
-                <div className="grid gap-2">
+                <div className="grid min-w-0 gap-2">
                   <div className="flex flex-wrap items-center gap-2 text-sm text-white/58">
                     {/* <span>{entry.eventTitle}</span> */}
                     <span>
@@ -139,12 +139,12 @@ export function AdminDjRosterManager({
                       {new Date(entry.approvedAt).toLocaleDateString("it-IT")}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-[#f7f3ee]">
+                  <h3 className="break-words text-lg font-semibold text-[#f7f3ee]">
                     {entry.name}
                   </h3>
-                  <p className="text-sm text-white/70">{entry.email}</p>
-                  <p className="text-sm text-white/55">{entry.phone}</p>
-                  <p className="text-sm text-white/55">{entry.instagram}</p>
+                  <p className="break-words text-sm text-white/70">{entry.email}</p>
+                  <p className="break-words text-sm text-white/55">{entry.phone}</p>
+                  <p className="break-words text-sm text-white/55">{entry.instagram}</p>
                   <div className="flex flex-wrap gap-2 pt-1">
                     {entry.membershipCardEnabled ? (
                       <span className="inline-flex rounded-md bg-emerald-500/15 px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-300">

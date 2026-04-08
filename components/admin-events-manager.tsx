@@ -280,7 +280,7 @@ export function AdminEventsManager({
   }
 
   return (
-    <div className="grid gap-4">
+    <div className="grid min-w-0 gap-4">
       {showCreateButton ? (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <button
@@ -303,7 +303,7 @@ export function AdminEventsManager({
         </p>
       ) : null}
 
-      <div className={ui.surface.panel}>
+      <div className={`${ui.surface.panel} min-w-0`}>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap gap-2">
             <button
@@ -437,56 +437,58 @@ export function AdminEventsManager({
 
         {viewMode === "calendar" ? (
           <div className="grid gap-4">
-            <div className="grid grid-cols-7 gap-2">
-              {["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"].map((day) => (
-                <div
-                  key={day}
-                  className="rounded-lg border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] px-2 py-3 text-center text-xs uppercase tracking-[0.16em] text-white/55"
-                >
-                  {day}
-                </div>
-              ))}
-              {calendarDays.map((day) => (
-                <div
-                  key={day.date}
-                  className={`min-h-36 rounded-xl border p-3 align-top ${
-                    day.inCurrentMonth
-                      ? "border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)]"
-                      : "border-[color:var(--color-brand-10)] bg-black/20"
-                  }`}
-                >
-                  <div className="mb-3 flex items-center justify-between">
-                    <span
-                      className={`text-sm font-medium  ${
-                        day.inCurrentMonth ? "text-white" : "text-white/35"
-                      }`}
-                    >
-                      {day.dayNumber}
-                    </span>
-                    {day.events.length ? (
-                      <span className="rounded-full bg-[color:var(--color-brand-12)] px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-white">
-                        {day.events.length}
-                      </span>
-                    ) : null}
+            <div className="-mx-1 overflow-x-auto pb-2">
+              <div className="grid min-w-[42rem] grid-cols-7 gap-2 px-1 md:min-w-0">
+                {["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"].map((day) => (
+                  <div
+                    key={day}
+                    className="rounded-lg border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] px-2 py-3 text-center text-xs uppercase tracking-[0.16em] text-white/55"
+                  >
+                    {day}
                   </div>
-
-                  <div className="grid gap-2">
-                    {day.events.map((event) => (
-                      <div
-                        key={event.id}
-                        className="rounded-lg border border-[color:var(--color-brand-14)] bg-[color:var(--color-brand-10)] p-2"
+                ))}
+                {calendarDays.map((day) => (
+                  <div
+                    key={day.date}
+                    className={`min-h-36 min-w-0 rounded-xl border p-3 align-top ${
+                      day.inCurrentMonth
+                        ? "border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)]"
+                        : "border-[color:var(--color-brand-10)] bg-black/20"
+                    }`}
+                  >
+                    <div className="mb-3 flex items-center justify-between gap-2">
+                      <span
+                        className={`text-sm font-medium ${
+                          day.inCurrentMonth ? "text-white" : "text-white/35"
+                        }`}
                       >
-                        <p className="text-xs  break-all font-medium leading-5 text-white">
-                          {event.title}
-                        </p>
-                        <p className="mt-1 text-[11px] leading-4 text-white/70">
-                          {event.time} / {event.locationName}
-                        </p>
-                      </div>
-                    ))}
+                        {day.dayNumber}
+                      </span>
+                      {day.events.length ? (
+                        <span className="shrink-0 rounded-full bg-[color:var(--color-brand-12)] px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-white">
+                          {day.events.length}
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <div className="grid min-w-0 gap-2">
+                      {day.events.map((event) => (
+                        <div
+                          key={event.id}
+                          className="min-w-0 rounded-lg border border-[color:var(--color-brand-14)] bg-[color:var(--color-brand-10)] p-2"
+                        >
+                          <p className="text-xs break-words font-medium leading-5 text-white">
+                            {event.title}
+                          </p>
+                          <p className="mt-1 break-words text-[11px] leading-4 text-white/70">
+                            {event.time} / {event.locationName}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
             {!calendarEvents.length ? (
@@ -501,7 +503,7 @@ export function AdminEventsManager({
         ) : (
           <div className="grid gap-4">
             {filteredEvents.map((event) => (
-              <div key={event.id} className={ui.surface.card}>
+              <div key={event.id} className={`${ui.surface.card} min-w-0`}>
                 <div className="grid gap-4 md:grid-cols-[140px_minmax(0,1fr)] md:items-start">
                   <div className="overflow-hidden rounded-xl border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)]">
                     <img
@@ -511,7 +513,7 @@ export function AdminEventsManager({
                     />
                   </div>
 
-                  <div>
+                  <div className="min-w-0">
                     <div className="mb-2 flex flex-wrap gap-2 text-sm text-white/58">
                       <span>#{event.eventNumber}</span>
                       <span>
@@ -520,10 +522,10 @@ export function AdminEventsManager({
                       <span>{event.locationName}</span>
                       <span>{event.status}</span>
                     </div>
-                    <h3 className="mb-2 text-lg font-semibold text-[#f7f3ee]">
+                    <h3 className="mb-2 break-words text-lg font-semibold text-[#f7f3ee]">
                       {event.title}
                     </h3>
-                    <p className="text-sm leading-7 text-white/74">
+                    <p className="break-words text-sm leading-7 text-white/74">
                       {event.locationAddress} / {event.time}
                     </p>
                     <div className="mt-3 flex flex-wrap gap-3">

@@ -191,7 +191,7 @@ export function AdminLocationsManager({
   }
 
   return (
-    <div className="grid gap-4">
+    <div className="grid min-w-0 gap-4">
       {showCreateButton ? (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <button
@@ -216,7 +216,7 @@ export function AdminLocationsManager({
         </p>
       ) : null}
 
-      <div className={ui.surface.panel}>
+      <div className={`${ui.surface.panel} min-w-0`}>
         <div className="mb-4 grid gap-2">
           <label htmlFor="locations-query" className={ui.form.label}>
             Cerca location
@@ -232,11 +232,11 @@ export function AdminLocationsManager({
 
         <div className="grid gap-4">
           {filteredLocations.map((location) => (
-            <article key={location.id} className={ui.surface.card}>
+            <article key={location.id} className={`${ui.surface.card} min-w-0`}>
               <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
-                <div className="grid gap-3">
-                  <h3 className="text-lg font-semibold text-[#f7f3ee]">{location.name}</h3>
-                  <p className="text-sm leading-7 text-white/74">{location.address}</p>
+                <div className="grid min-w-0 gap-3">
+                  <h3 className="break-words text-lg font-semibold text-[#f7f3ee]">{location.name}</h3>
+                  <p className="break-words text-sm leading-7 text-white/74">{location.address}</p>
                   <div className="flex flex-wrap gap-2 text-xs text-white/55">
                     {location.phone ? (
                       <span className="rounded-md bg-white/5 px-3 py-1.5">{location.phone}</span>

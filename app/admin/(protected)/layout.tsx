@@ -42,23 +42,21 @@ export default function ProtectedAdminLayout({
     <>
       <AdminBodyClass />
       <div
-        className={`${ui.layout.page} grid gap-6 py-8 lg:grid-cols-[280px_minmax(0,1fr)]`}
+        className={`${ui.layout.page} grid min-w-0 gap-6 overflow-x-clip py-8 lg:grid-cols-[280px_minmax(0,1fr)]`}
       >
-        <div className="flex items-center justify-between gap-4 rounded-2xl  px-4 py-3 lg:hidden">
-          <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl px-4 py-3 lg:hidden">
+          <div className="min-w-0 flex-1">
             <Image
               src="/img/loghi/LOGO-OPEN-DECKS_bianco.png"
               alt="OpenDecks Italia"
               width={260}
               height={68}
-              className="h-20 w-auto object-contain"
+              className="h-auto w-full max-w-[10.5rem] object-contain sm:max-w-[12rem]"
             />
-            {/*             <span className="text-sm text-white/70">Area admin</span>
-             */}{" "}
           </div>
           <button
             type="button"
-            className={ui.action.navToggle}
+            className={`${ui.action.navToggle} shrink-0`}
             aria-expanded={sidebarOpen}
             aria-controls="admin-sidebar"
             aria-label={sidebarOpen ? "Chiudi menu admin" : "Apri menu admin"}
@@ -81,27 +79,27 @@ export default function ProtectedAdminLayout({
 
         <aside
           id="admin-sidebar"
-          className={`fixed inset-y-0 left-0 z-50 grid w-full content-start gap-5 overflow-y-auto p-5 transition duration-300 ease-out lg:sticky lg:top-28 lg:z-auto lg:w-auto lg:self-start lg:translate-x-0 ${ui.surface.panel} ${
+          className={`fixed inset-y-0 left-0 z-50 grid w-full min-w-0 content-start gap-5 overflow-y-auto p-5 transition duration-300 ease-out lg:sticky lg:top-28 lg:z-auto lg:w-auto lg:self-start lg:translate-x-0 ${ui.surface.panel} ${
             sidebarOpen
               ? "translate-x-0 admin-sidebar-enter"
               : "-translate-x-[105%] lg:translate-x-0"
           }`}
         >
-          <div className="flex justify-between items-center">
-            <div>
+          <div className="flex min-w-0 items-start justify-between gap-3">
+            <div className="min-w-0">
               <Image
                 src="/img/loghi/LOGO-OPEN-DECKS_bianco.png"
                 alt="OpenDecks Italia"
                 width={260}
                 height={68}
                 priority
-                className="h-20 w-auto object-contain md:h-24"
+                className="h-auto w-full max-w-[12rem] object-contain md:max-w-[14rem]"
               />
               <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
                 Area admin
               </span>
             </div>
-            <div className=" lg:hidden">
+            <div className="shrink-0 lg:hidden">
               <button
                 type="button"
                 className={ui.action.secondary}

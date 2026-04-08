@@ -164,8 +164,8 @@ export function AdminApplicationsManager({
   }
 
   return (
-    <div className="grid gap-4">
-      <div className="px-6">
+    <div className="grid min-w-0 gap-4">
+      <div className="px-1 sm:px-6">
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_repeat(2,minmax(0,0.7fr))]">
           <div className="grid gap-2">
             <label htmlFor="applications-query" className={ui.form.label}>
@@ -218,7 +218,7 @@ export function AdminApplicationsManager({
         </div>
       </div>
 
-      <div className={ui.surface.panel}>
+      <div className={`${ui.surface.panel} min-w-0`}>
         <div className="mb-4 flex items-center justify-between gap-3">
           <p className="text-sm text-white/65">
             {filteredApplications.length} candidature trovate
@@ -227,7 +227,7 @@ export function AdminApplicationsManager({
 
         <div className="grid gap-4">
           {filteredApplications.map((application) => (
-            <article key={application.id} className={ui.surface.card}>
+            <article key={application.id} className={`${ui.surface.card} min-w-0`}>
               <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-white/58">
                 <span
                   className={`inline-flex rounded-md px-2 py-1 text-xs uppercase tracking-[0.12em] ${
@@ -252,16 +252,16 @@ export function AdminApplicationsManager({
                 </span>
               </div>
               <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
-                <div className="grid gap-2">
-                  <h3 className="text-lg font-semibold text-[#f7f3ee]">
+                <div className="grid min-w-0 gap-2">
+                  <h3 className="break-words text-lg font-semibold text-[#f7f3ee]">
                     {application.name}
                   </h3>
-                  <p className={ui.text.body}>
+                  <p className={`${ui.text.body} break-words`}>
                     {formatCityProvince(application.city, application.province)}{" "}
                     / {application.instagram}
                   </p>
-                  <p className="text-sm text-white/55">{application.email}</p>
-                  <p className="text-sm text-white/55">{application.phone}</p>
+                  <p className="break-words text-sm text-white/55">{application.email}</p>
+                  <p className="break-words text-sm text-white/55">{application.phone}</p>
                   <p className="line-clamp-2 text-sm leading-7 text-white/68">
                     {application.bio}
                   </p>
