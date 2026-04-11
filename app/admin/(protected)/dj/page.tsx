@@ -10,7 +10,7 @@ export default async function AdminDjPage() {
       <SectionHeading
         eyebrow="DJ roster"
         title="DJ approvati"
-        description="Elenco di tutti i DJ passati in roster dopo l'approvazione candidatura, con gestione membership card."
+        description="Elenco dei DJ presenti nel roster, sia da candidatura approvata sia da inserimento manuale, con gestione membership card."
       />
       <AdminDjRosterManager initialRoster={roster} events={events} />
     </section>

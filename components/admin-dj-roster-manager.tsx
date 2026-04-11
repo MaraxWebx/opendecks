@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
 import { BodyScrollLock } from "@/components/body-scroll-lock";
@@ -13,6 +13,32 @@ type AdminDjRosterManagerProps = {
   events: EventRecord[];
 };
 
+type ManualDjFormState = {
+  eventId: string;
+  name: string;
+  city: string;
+  province: string;
+  region: string;
+  email: string;
+  phone: string;
+  instagram: string;
+  setLink: string;
+  photoUrl: string;
+  bio: string;
+};
+
+type MunicipalityOption = {
+  code: string;
+  city: string;
+  province: string;
+  provinceCode: string;
+  region: string;
+  label: string;
+};
+
+const fieldClass =
+  "w-full rounded-xl border border-[#E31F29]/20 bg-white/[0.04] px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[#E31F29]/60";
+
 export function AdminDjRosterManager({
   initialRoster,
   events,
@@ -22,6 +48,15 @@ export function AdminDjRosterManager({
   const [selectedDj, setSelectedDj] = useState<DjRosterRecord | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [manualForm, setManualForm] = useState<ManualDjFormState>(() =>
+    createInitialManualForm(events),
+  );
+  const [cityQuery, setCityQuery] = useState("");
+  const [cityOptions, setCityOptions] = useState<MunicipalityOption[]>([]);
+  const [cityMenuOpen, setCityMenuOpen] = useState(false);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
 
   const filteredRoster = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -38,7 +73,7 @@ export function AdminDjRosterManager({
         item.email,
         item.phone,
         item.instagram,
-        item.eventTitle,
+        item.eventTitle || "",
         item.membershipCardId || "",
       ]
         .join(" ")
@@ -46,6 +81,7 @@ export function AdminDjRosterManager({
         .includes(normalizedQuery);
     });
   }, [query, roster]);
+
   const selectedDjHistory = useMemo(() => {
     if (!selectedDj) {
       return [];
@@ -53,6 +89,121 @@ export function AdminDjRosterManager({
 
     return getDjEventHistory(selectedDj, events, roster);
   }, [events, roster, selectedDj]);
+
+  function applyMunicipalitySelection(municipality: MunicipalityOption | null) {
+    if (!municipality) {
+      setManualForm((current) => ({
+        ...current,
+        city: "",
+        province: "",
+        region: "",
+      }));
+      return;
+    }
+
+    setCityQuery(municipality.label);
+    setManualForm((current) => ({
+      ...current,
+      city: municipality.city,
+      province: municipality.provinceCode,
+      region: municipality.region,
+    }));
+  }
+
+  async function resolveMunicipalityFromQuery(label: string) {
+    const normalizedLabel = label.trim();
+
+    if (!normalizedLabel) {
+      applyMunicipalitySelection(null);
+      return null;
+    }
+
+    const localMatch =
+      cityOptions.find((municipality) => municipality.label === normalizedLabel) ||
+      null;
+
+    if (localMatch) {
+      applyMunicipalitySelection(localMatch);
+      return localMatch;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/municipalities?q=${encodeURIComponent(normalizedLabel)}&exact=1`,
+      );
+      const result = (await response.json()) as {
+        municipality?: MunicipalityOption | null;
+      };
+      const municipality = result.municipality || null;
+      applyMunicipalitySelection(municipality);
+      return municipality;
+    } catch {
+      applyMunicipalitySelection(null);
+      return null;
+    }
+  }
+
+  useEffect(() => {
+    const normalizedQuery = cityQuery.trim();
+
+    if (normalizedQuery.length < 2) {
+      setCityOptions([]);
+      return;
+    }
+
+    let active = true;
+    const timeoutId = window.setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `/api/municipalities?q=${encodeURIComponent(normalizedQuery)}`,
+        );
+        const result = (await response.json()) as {
+          municipalities?: MunicipalityOption[];
+        };
+
+        if (!active) {
+          return;
+        }
+
+        setCityOptions(result.municipalities || []);
+        setCityMenuOpen(Boolean((result.municipalities || []).length));
+      } catch {
+        if (active) {
+          setCityOptions([]);
+          setCityMenuOpen(false);
+        }
+      }
+    }, 150);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timeoutId);
+    };
+  }, [cityQuery]);
+
+  async function uploadPhoto(file: File | null) {
+    if (!file) {
+      throw new Error("Carica una foto personale.");
+    }
+
+    const uploadData = new FormData();
+    uploadData.append("file", file);
+
+    const uploadResponse = await fetch("/api/uploads/application-photo", {
+      method: "POST",
+      body: uploadData,
+    });
+
+    if (!uploadResponse.ok) {
+      const payload = (await uploadResponse.json().catch(() => null)) as {
+        error?: string;
+      } | null;
+      throw new Error(payload?.error || "Upload foto non riuscito.");
+    }
+
+    const result = (await uploadResponse.json()) as { url: string };
+    return result.url;
+  }
 
   async function toggleMembership(entry: DjRosterRecord, enabled: boolean) {
     setBusyId(entry.id);
@@ -98,24 +249,296 @@ export function AdminDjRosterManager({
     }
   }
 
+  async function handleCreateManualDj(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsCreating(true);
+    setMessage("");
+
+    try {
+      if (!manualForm.province) {
+        const resolvedMunicipality = await resolveMunicipalityFromQuery(cityQuery);
+
+        if (!resolvedMunicipality) {
+          throw new Error("Seleziona una citta valida dall'autocomplete.");
+        }
+      }
+
+      const photoUrl = await uploadPhoto(photoFile);
+
+      const response = await fetch("/api/dj-roster", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...manualForm,
+          photoUrl,
+        }),
+      });
+
+      const result = (await response.json()) as {
+        rosterEntry?: DjRosterRecord;
+        error?: string;
+      };
+
+      if (!response.ok || !result.rosterEntry) {
+        throw new Error(result.error || "Creazione DJ non riuscita.");
+      }
+
+      setRoster((current) => [result.rosterEntry!, ...current]);
+      setSelectedDj(result.rosterEntry);
+      setManualForm(createInitialManualForm(events));
+      setCityQuery("");
+      setCityOptions([]);
+      setCityMenuOpen(false);
+      setPhotoFile(null);
+      setIsCreateOpen(false);
+      setMessage("DJ aggiunto manualmente al roster.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Errore creazione DJ.");
+    } finally {
+      setIsCreating(false);
+    }
+  }
+
+  function updateManualForm<K extends keyof ManualDjFormState>(
+    key: K,
+    value: ManualDjFormState[K],
+  ) {
+    setManualForm((current) => ({ ...current, [key]: value }));
+  }
+
   return (
     <div className="grid min-w-0 gap-4">
-      <div className="px-1 sm:px-6">
-        <div className="grid gap-2">
-          <label htmlFor="dj-roster-query" className={ui.form.label}>
-            Cerca DJ
-          </label>
-          <input
-            id="dj-roster-query"
-            className={ui.form.field}
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Nome, citta, email, telefono, evento..."
-          />
+      <div className="grid gap-4 px-1 sm:px-6">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div className="grid flex-1 gap-2">
+            <label htmlFor="dj-roster-query" className={ui.form.label}>
+              Cerca DJ
+            </label>
+            <input
+              id="dj-roster-query"
+              className={ui.form.field}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Nome, citta, email, telefono, evento..."
+            />
+          </div>
+          <button
+            type="button"
+            className={isCreateOpen ? ui.action.secondary : ui.action.primary}
+            onClick={() => {
+              setMessage("");
+              setIsCreateOpen((current) => !current);
+            }}
+          >
+            {isCreateOpen ? "Chiudi form" : "Aggiungi DJ manualmente"}
+          </button>
         </div>
-        {message ? (
-          <p className="mt-4 text-sm text-white/65">{message}</p>
+
+        {isCreateOpen ? (
+          <form className={ui.surface.card} onSubmit={handleCreateManualDj}>
+            <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
+              <div className="grid gap-2">
+                <span className={ui.text.eyebrow}>Inserimento manuale</span>
+                <p className="max-w-2xl text-sm leading-7 text-white/70">
+                  Usa questo form per aggiungere nel roster un DJ che non ha
+                  inviato candidatura dal sito.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Evento" htmlFor="manual-dj-event">
+                <select
+                  id="manual-dj-event"
+                  className={ui.form.select}
+                  value={manualForm.eventId}
+                  onChange={(event) =>
+                    updateManualForm("eventId", event.target.value)
+                  }
+                >
+                  <option value="">Nessun evento associato</option>
+                  {events.map((entry) => (
+                    <option key={entry.id} value={entry.id}>
+                      {entry.title} /{" "}
+                      {new Date(entry.date).toLocaleDateString("it-IT")}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+
+              <Field label="Nome DJ" htmlFor="manual-dj-name">
+                <input
+                  id="manual-dj-name"
+                  className={fieldClass}
+                  value={manualForm.name}
+                  onChange={(event) =>
+                    updateManualForm("name", event.target.value)
+                  }
+                  required
+                />
+              </Field>
+
+              <Field label="Citta" htmlFor="manual-dj-city">
+                <div className="relative">
+                  <input
+                    id="manual-dj-city"
+                    className={fieldClass}
+                    value={cityQuery}
+                    onChange={(event) => {
+                      const nextQuery = event.target.value;
+                      setCityQuery(nextQuery);
+                      setCityMenuOpen(true);
+                      void resolveMunicipalityFromQuery(nextQuery);
+                    }}
+                    onFocus={() => {
+                      if (cityOptions.length) {
+                        setCityMenuOpen(true);
+                      }
+                    }}
+                    onBlur={() => {
+                      window.setTimeout(() => {
+                        setCityMenuOpen(false);
+                        void resolveMunicipalityFromQuery(cityQuery);
+                      }, 120);
+                    }}
+                    placeholder="Scrivi e seleziona il comune, es. Roma - (RM)"
+                    autoComplete="off"
+                    required
+                  />
+                  {cityMenuOpen && cityOptions.length ? (
+                    <div className="absolute z-20 mt-2 max-h-64 w-full overflow-auto rounded-xl border border-[#E31F29]/20 bg-[#0b0b0c] p-2 shadow-[0_18px_50px_rgba(0,0,0,0.45)]">
+                      {cityOptions.map((municipality) => (
+                        <button
+                          key={municipality.code}
+                          type="button"
+                          className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-white/82 transition hover:bg-white/6"
+                          onMouseDown={(event) => {
+                            event.preventDefault();
+                            applyMunicipalitySelection(municipality);
+                            setCityMenuOpen(false);
+                          }}
+                        >
+                          <span>{municipality.label}</span>
+                          <span className="text-xs uppercase tracking-[0.14em] text-white/45">
+                            {municipality.region}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              </Field>
+
+              <Field label="Email" htmlFor="manual-dj-email">
+                <input
+                  id="manual-dj-email"
+                  type="email"
+                  className={fieldClass}
+                  value={manualForm.email}
+                  onChange={(event) =>
+                    updateManualForm("email", event.target.value)
+                  }
+                  required
+                />
+              </Field>
+
+              <Field label="Telefono" htmlFor="manual-dj-phone">
+                <input
+                  id="manual-dj-phone"
+                  type="tel"
+                  className={fieldClass}
+                  value={manualForm.phone}
+                  onChange={(event) =>
+                    updateManualForm("phone", event.target.value)
+                  }
+                  required
+                />
+              </Field>
+
+              <Field label="Link Instagram" htmlFor="manual-dj-instagram">
+                <input
+                  id="manual-dj-instagram"
+                  type="url"
+                  className={fieldClass}
+                  value={manualForm.instagram}
+                  onChange={(event) =>
+                    updateManualForm("instagram", event.target.value)
+                  }
+                  placeholder="https://instagram.com/..."
+                  required
+                />
+              </Field>
+
+              <Field label="Link set" htmlFor="manual-dj-set-link">
+                <input
+                  id="manual-dj-set-link"
+                  type="url"
+                  className={fieldClass}
+                  value={manualForm.setLink}
+                  onChange={(event) =>
+                    updateManualForm("setLink", event.target.value)
+                  }
+                  required
+                />
+              </Field>
+
+              <Field label="Foto personale" htmlFor="manual-dj-photo">
+                <input
+                  id="manual-dj-photo"
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/avif"
+                  className={fieldClass}
+                  onChange={(event) =>
+                    setPhotoFile(event.target.files?.[0] || null)
+                  }
+                  required
+                />
+                <span className="text-xs text-white/45">
+                  Carica una foto chiara del profilo. Formati supportati: JPG,
+                  PNG, WEBP, AVIF.
+                </span>
+              </Field>
+
+              <Field label="Bio" htmlFor="manual-dj-bio" full>
+                <textarea
+                  id="manual-dj-bio"
+                  className={`${fieldClass} min-h-32 resize-y`}
+                  value={manualForm.bio}
+                  onChange={(event) =>
+                    updateManualForm("bio", event.target.value)
+                  }
+                />
+              </Field>
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-3">
+              <button
+                type="submit"
+                className={ui.action.primary}
+                disabled={isCreating}
+              >
+                {isCreating ? "Salvataggio..." : "Salva DJ"}
+              </button>
+              <button
+                type="button"
+                className={ui.action.secondary}
+                onClick={() => {
+                  setManualForm(createInitialManualForm(events));
+                  setCityQuery("");
+                  setCityOptions([]);
+                  setCityMenuOpen(false);
+                  setPhotoFile(null);
+                  setMessage("");
+                }}
+                disabled={isCreating}
+              >
+                Reset form
+              </button>
+            </div>
+          </form>
         ) : null}
+
+        {message ? <p className="text-sm text-white/65">{message}</p> : null}
       </div>
 
       <div className={`${ui.surface.panel} min-w-0`}>
@@ -126,73 +549,90 @@ export function AdminDjRosterManager({
         </div>
 
         <div className="grid gap-4">
-          {filteredRoster.map((entry) => (
-            <article key={entry.id} className={`${ui.surface.card} min-w-0`}>
-              <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
-                <div className="grid min-w-0 gap-2">
-                  <div className="flex flex-wrap items-center gap-2 text-sm text-white/58">
-                    {/* <span>{entry.eventTitle}</span> */}
-                    <span>
-                      {formatCityProvince(entry.city, entry.province)}
-                    </span>
-                    <span>
-                      {new Date(entry.approvedAt).toLocaleDateString("it-IT")}
-                    </span>
+          {filteredRoster.length ? (
+            filteredRoster.map((entry) => (
+              <article key={entry.id} className={`${ui.surface.card} min-w-0`}>
+                <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
+                  <div className="grid min-w-0 gap-2">
+                    <div className="flex flex-wrap items-center gap-2 text-sm text-white/58">
+                      <span>{entry.eventTitle || "Nessun evento associato"}</span>
+                      <span>{formatCityProvince(entry.city, entry.province)}</span>
+                      <span>
+                        {new Date(entry.approvedAt).toLocaleDateString("it-IT")}
+                      </span>
+                      {!entry.applicationId ? (
+                        <span className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.16em] text-white/75">
+                          Manuale
+                        </span>
+                      ) : null}
+                    </div>
+                    <h3 className="break-words text-lg font-semibold text-[#f7f3ee]">
+                      {entry.name}
+                    </h3>
+                    <p className="break-words text-sm text-white/70">
+                      {entry.email}
+                    </p>
+                    <p className="break-words text-sm text-white/55">
+                      {entry.phone}
+                    </p>
+                    <p className="break-words text-sm text-white/55">
+                      {entry.instagram}
+                    </p>
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      {entry.membershipCardEnabled ? (
+                        <span className="inline-flex rounded-md bg-emerald-500/15 px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-300">
+                          Card attiva
+                        </span>
+                      ) : (
+                        <span className="inline-flex rounded-md bg-[color:var(--color-brand-12)] px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-white">
+                          Nessuna card
+                        </span>
+                      )}
+                      {entry.membershipCardId ? (
+                        <span className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-white/75">
+                          {entry.membershipCardId}
+                        </span>
+                      ) : null}
+                    </div>
                   </div>
-                  <h3 className="break-words text-lg font-semibold text-[#f7f3ee]">
-                    {entry.name}
-                  </h3>
-                  <p className="break-words text-sm text-white/70">{entry.email}</p>
-                  <p className="break-words text-sm text-white/55">{entry.phone}</p>
-                  <p className="break-words text-sm text-white/55">{entry.instagram}</p>
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    {entry.membershipCardEnabled ? (
-                      <span className="inline-flex rounded-md bg-emerald-500/15 px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-300">
-                        Card attiva
-                      </span>
-                    ) : (
-                      <span className="inline-flex rounded-md bg-[color:var(--color-brand-12)] px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-white">
-                        Nessuna card
-                      </span>
-                    )}
-                    {entry.membershipCardId ? (
-                      <span className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-white/75">
-                        {entry.membershipCardId}
-                      </span>
-                    ) : null}
-                  </div>
-                </div>
 
-                <div className="flex flex-wrap gap-3">
-                  <button
-                    type="button"
-                    className={ui.action.secondary}
-                    onClick={() => setSelectedDj(entry)}
-                  >
-                    Dettagli
-                  </button>
-                  <button
-                    type="button"
-                    className={
-                      entry.membershipCardEnabled
-                        ? ui.action.secondary
-                        : ui.action.primary
-                    }
-                    disabled={busyId === entry.id}
-                    onClick={() =>
-                      toggleMembership(entry, !entry.membershipCardEnabled)
-                    }
-                  >
-                    {busyId === entry.id
-                      ? "Invio..."
-                      : entry.membershipCardEnabled
-                        ? "Disattiva card"
-                        : "Abilita card"}
-                  </button>
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      type="button"
+                      className={ui.action.secondary}
+                      onClick={() => setSelectedDj(entry)}
+                    >
+                      Dettagli
+                    </button>
+                    <button
+                      type="button"
+                      className={
+                        entry.membershipCardEnabled
+                          ? ui.action.secondary
+                          : ui.action.primary
+                      }
+                      disabled={busyId === entry.id}
+                      onClick={() =>
+                        toggleMembership(entry, !entry.membershipCardEnabled)
+                      }
+                    >
+                      {busyId === entry.id
+                        ? "Invio..."
+                        : entry.membershipCardEnabled
+                          ? "Disattiva card"
+                          : "Abilita card"}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            ))
+          ) : (
+            <div className={ui.surface.card}>
+              <p className="text-sm text-white/60">
+                Nessun DJ trovato con i filtri attivi.
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -238,7 +678,11 @@ export function AdminDjRosterManager({
                         </div>
                       </div>
                     </>
-                  ) : null}
+                  ) : (
+                    <div className="rounded-xl border border-dashed border-white/12 px-4 py-6 text-sm text-white/45">
+                      Nessuna foto profilo disponibile.
+                    </div>
+                  )}
 
                   <div className="mt-5 grid gap-4">
                     <span className={ui.form.label}>Info anagrafiche</span>
@@ -259,20 +703,28 @@ export function AdminDjRosterManager({
                       <InfoRow
                         icon={<MailIcon />}
                         label="Email"
-                        value={selectedDj.email}
-                        href={`mailto:${selectedDj.email}`}
+                        value={selectedDj.email || "Non disponibile"}
+                        href={
+                          selectedDj.email
+                            ? `mailto:${selectedDj.email}`
+                            : undefined
+                        }
                       />
                       <InfoRow
                         icon={<PhoneIcon />}
                         label="Telefono"
-                        value={selectedDj.phone}
-                        href={`tel:${selectedDj.phone}`}
+                        value={selectedDj.phone || "Non disponibile"}
+                        href={
+                          selectedDj.phone
+                            ? `tel:${selectedDj.phone}`
+                            : undefined
+                        }
                       />
                       <InfoRow
                         icon={<InstagramIcon />}
                         label="Instagram"
-                        value={selectedDj.instagram}
-                        href={selectedDj.instagram}
+                        value={selectedDj.instagram || "Non disponibile"}
+                        href={normalizeExternalHref(selectedDj.instagram)}
                       />
                     </div>
                   </div>
@@ -280,7 +732,18 @@ export function AdminDjRosterManager({
 
                 <div className="grid gap-4">
                   <div className="grid gap-3">
-                    <DetailItem label="Evento" value={selectedDj.eventTitle} />
+                    <DetailItem
+                      label="Evento"
+                      value={selectedDj.eventTitle || "Nessun evento associato"}
+                    />
+                    <DetailItem
+                      label="Origine"
+                      value={
+                        selectedDj.applicationId
+                          ? "Da candidatura approvata"
+                          : "Inserimento manuale"
+                      }
+                    />
                     <DetailItem
                       label="Approvato il"
                       value={new Date(selectedDj.approvedAt).toLocaleString(
@@ -308,14 +771,20 @@ export function AdminDjRosterManager({
                     </div>
                     <div className={ui.surface.card}>
                       <span className={ui.form.label}>Link set</span>
-                      <a
-                        href={selectedDj.setLink}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="mt-2 block break-all text-sm text-[#f7f3ee] underline decoration-[color:var(--color-brand)] underline-offset-4"
-                      >
-                        {selectedDj.setLink}
-                      </a>
+                      {selectedDj.setLink ? (
+                        <a
+                          href={selectedDj.setLink}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-2 block break-all text-sm text-[#f7f3ee] underline decoration-[color:var(--color-brand)] underline-offset-4"
+                        >
+                          {selectedDj.setLink}
+                        </a>
+                      ) : (
+                        <p className="mt-2 text-sm text-white/50">
+                          Nessun link set disponibile.
+                        </p>
+                      )}
                     </div>
                     <div className={ui.surface.card}>
                       <span className={ui.form.label}>Storico eventi</span>
@@ -345,7 +814,7 @@ export function AdminDjRosterManager({
               <div className={ui.surface.card}>
                 <span className={ui.form.label}>Bio</span>
                 <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-white/74">
-                  {selectedDj.bio}
+                  {selectedDj.bio || "Nessuna bio disponibile."}
                 </p>
               </div>
             </div>
@@ -353,6 +822,28 @@ export function AdminDjRosterManager({
         </div>
       ) : null}
     </div>
+  );
+}
+
+function Field({
+  label,
+  htmlFor,
+  full,
+  children,
+}: {
+  label: string;
+  htmlFor: string;
+  full?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <label
+      htmlFor={htmlFor}
+      className={`grid gap-2 ${full ? "md:col-span-2" : ""}`}
+    >
+      <span className={ui.form.label}>{label}</span>
+      {children}
+    </label>
   );
 }
 
@@ -398,6 +889,38 @@ function InfoRow({
       </div>
     </div>
   );
+}
+
+function createInitialManualForm(events: EventRecord[]): ManualDjFormState {
+  return {
+    eventId: "",
+    name: "",
+    city: "",
+    province: "",
+    region: "",
+    email: "",
+    phone: "",
+    instagram: "",
+    setLink: "",
+    photoUrl: "",
+    bio: "",
+  };
+}
+
+function normalizeExternalHref(value: string) {
+  if (!value) {
+    return undefined;
+  }
+
+  if (value.startsWith("http://") || value.startsWith("https://")) {
+    return value;
+  }
+
+  if (value.startsWith("@")) {
+    return `https://instagram.com/${value.slice(1)}`;
+  }
+
+  return `https://instagram.com/${value}`;
 }
 
 function PinIcon() {

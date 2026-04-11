@@ -11,6 +11,15 @@ type UpdateEventInput = Partial<Omit<EventRecord, "id">>;
 type NewArchiveEntry = Omit<ArchiveRecord, "id">;
 type UpdateArchiveEntry = Partial<NewArchiveEntry>;
 type UpdateApplicationInput = Partial<Pick<ApplicationRecord, "status">>;
+type NewDjRosterEntry = Omit<
+  DjRosterRecord,
+  | "id"
+  | "approvedAt"
+  | "membershipCardEnabled"
+  | "membershipCardId"
+  | "membershipCardIssuedAt"
+  | "membershipCardEmailSentAt"
+>;
 type UpdateDjRosterMembershipInput = {
   membershipCardEnabled: boolean;
   membershipCardId?: string;
@@ -311,6 +320,32 @@ export async function updateDjRosterMembership(
       return updated ? normalizeDjRoster(updated) : null;
     },
     () => updateDjRosterMembershipMock(id, input)
+  );
+}
+
+export async function createDjRosterEntry(input: NewDjRosterEntry) {
+  const record: DjRosterRecord = {
+    id: new ObjectId().toHexString(),
+    approvedAt: new Date().toISOString(),
+    membershipCardEnabled: false,
+    ...input
+  };
+
+  if (!isMongoConfigured()) {
+    mockDjRoster.unshift(record);
+    return record;
+  }
+
+  return withMongoFallback(
+    async () => {
+      const db = await getDatabase();
+      await db.collection<DjRosterRecord>("dj_roster").insertOne(record);
+      return record;
+    },
+    () => {
+      mockDjRoster.unshift(record);
+      return record;
+    }
   );
 }
 
@@ -832,6 +867,8 @@ function normalizeDjRoster(record: DjRosterRecord & { _id?: ObjectId }) {
 
   return {
     ...roster,
+    eventId: roster.eventId || "",
+    eventTitle: roster.eventTitle || "",
     province: roster.province || "",
     region: roster.region || "",
     email: roster.email || "",

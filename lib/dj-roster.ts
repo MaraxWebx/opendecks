@@ -77,7 +77,7 @@ export function getEventLineupDjs(event: EventRecord, roster: DjRosterRecord[]) 
     }
   }
 
-  return roster.filter((record) => record.eventId === event.id);
+  return roster.filter((record) => record.eventId && record.eventId === event.id);
 }
 
 export function getDjEventHistory(
@@ -94,7 +94,7 @@ export function getDjEventHistory(
   const relatedEventIds = new Set<string>();
 
   for (const entry of roster) {
-    if (getDjIdentityKey(entry) === identityKey) {
+    if (getDjIdentityKey(entry) === identityKey && entry.eventId) {
       relatedEventIds.add(entry.eventId);
     }
   }
