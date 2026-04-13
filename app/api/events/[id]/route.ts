@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { deleteEvent, getApplications, getDjRosterEntries, getEvents, getLocations, updateEvent } from "@/lib/data";
+import { sendDjEventAssignmentEmail } from "@/lib/email";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -10,34 +11,14 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params;
     const body = await request.json();
-    const locations = await getLocations();
+    const [locations, djRoster] = await Promise.all([getLocations(), getDjRosterEntries()]);
     const selectedLocation = locations.find((location) => location.id === body.locationId);
 
     if (!selectedLocation) {
       return NextResponse.json({ error: "Location non valida." }, { status: 400 });
     }
 
-    const requestedEventNumber = Number(body.eventNumber) || 0;
-
-    if (requestedEventNumber > 0) {
-      const events = await getEvents();
-      const duplicate = events.find(
-        (event) =>
-          event.id !== id &&
-          event.locationId === selectedLocation.id &&
-          event.eventNumber === requestedEventNumber
-      );
-
-      if (duplicate) {
-        return NextResponse.json(
-          { error: "Numero evento gia assegnato a questa location." },
-          { status: 409 }
-        );
-      }
-    }
-
     const event = await updateEvent(id, {
-      eventNumber: requestedEventNumber || undefined,
       slug: body.title ? createSlug(body.title) : undefined,
       title: body.title,
       locationId: selectedLocation.id,
@@ -60,6 +41,38 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       return NextResponse.json({ error: "Evento non trovato." }, { status: 404 });
     }
 
+    const previousLineupIds = new Set(
+      Array.isArray(body.previousLineupDjIds) ? body.previousLineupDjIds : []
+    );
+    const nextLineupIds = new Set(event.lineupDjIds || []);
+    const addedDjIds = [...nextLineupIds].filter((djId) => !previousLineupIds.has(djId));
+
+    if (addedDjIds.length) {
+      await Promise.all(
+        addedDjIds.map(async (djId) => {
+          const dj = djRoster.find((entry) => entry.id === djId);
+
+          if (!dj?.email) {
+            return;
+          }
+
+          try {
+            await sendDjEventAssignmentEmail({
+              to: dj.email,
+              djName: dj.name,
+              eventTitle: event.title,
+              eventDate: event.date,
+              eventTime: event.time,
+              locationName: event.locationName,
+              locationAddress: event.locationAddress,
+            });
+          } catch (error) {
+            console.error("Lineup assignment email failed:", error);
+          }
+        })
+      );
+    }
+
     return NextResponse.json({ event });
   } catch (error) {
     return NextResponse.json(
@@ -73,15 +86,16 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
   const { id } = await context.params;
   const force = request.nextUrl.searchParams.get("force") === "true";
 
-  const [applications, djRoster] = await Promise.all([
+  const [applications, events] = await Promise.all([
     getApplications(),
-    getDjRosterEntries()
+    getEvents()
   ]);
+  const targetEvent = events.find((event) => event.id === id) || null;
 
   const linkedApplicationsCount = applications.filter(
     (application) => application.eventId === id
   ).length;
-  const linkedDjCount = djRoster.filter((record) => record.eventId === id).length;
+  const linkedDjCount = targetEvent?.lineupDjIds?.length || 0;
 
   if (!force && (linkedApplicationsCount > 0 || linkedDjCount > 0)) {
     return NextResponse.json(

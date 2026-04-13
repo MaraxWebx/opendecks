@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createDjRosterEntry, getDjRosterEntries, getEvents } from "@/lib/data";
+import { createDjRosterEntry, getDjRosterEntries } from "@/lib/data";
 import { getItalianProvince, italianProvinceCodes } from "@/lib/italian-provinces";
 
 export async function POST(request: NextRequest) {
@@ -43,20 +43,7 @@ export async function POST(request: NextRequest) {
   }
 
   const province = getItalianProvince(body.province);
-  let relatedEvent = null;
-
-  if (body.eventId) {
-    const events = await getEvents();
-    relatedEvent = events.find((event) => event.id === body.eventId) || null;
-
-    if (!relatedEvent) {
-      return NextResponse.json({ error: "Evento non trovato." }, { status: 404 });
-    }
-  }
-
   const rosterEntry = await createDjRosterEntry({
-    eventId: relatedEvent?.id || "",
-    eventTitle: relatedEvent?.title || "",
     name: String(body.name).trim(),
     city: String(body.city).trim(),
     province: body.province,

@@ -35,25 +35,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Location non valida." }, { status: 400 });
     }
 
-    const requestedEventNumber = Number(body.eventNumber) || 0;
-
-    if (requestedEventNumber > 0) {
-      const events = await getEvents();
-      const duplicate = events.find(
-        (event) =>
-          event.locationId === selectedLocation.id && event.eventNumber === requestedEventNumber
-      );
-
-      if (duplicate) {
-        return NextResponse.json(
-          { error: "Numero evento gia assegnato a questa location." },
-          { status: 409 }
-        );
-      }
-    }
-
     const event = await createEvent({
-      eventNumber: requestedEventNumber || undefined,
       slug: createSlug(body.title),
       title: body.title,
       locationId: selectedLocation.id,

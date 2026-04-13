@@ -50,7 +50,12 @@ export function buildDjRosterProfiles(roster: DjRosterRecord[]) {
 
     existing.sourceEntries.push(entry);
 
-    const existingApprovedAt = existing.sourceEntries[0]?.approvedAt || "";
+    const existingApprovedAt =
+      existing.sourceEntries.reduce(
+        (latest, sourceEntry) =>
+          sourceEntry.approvedAt > latest ? sourceEntry.approvedAt : latest,
+        ""
+      ) || "";
     if (entry.approvedAt > existingApprovedAt) {
       existing.id = entry.id;
       existing.name = entry.name;
@@ -67,17 +72,13 @@ export function buildDjRosterProfiles(roster: DjRosterRecord[]) {
 }
 
 export function getEventLineupDjs(event: EventRecord, roster: DjRosterRecord[]) {
-  if (event.lineupDjIds?.length) {
-    const lineupEntries = event.lineupDjIds
-      .map((id) => roster.find((record) => record.id === id))
-      .filter((record): record is DjRosterRecord => Boolean(record));
-
-    if (lineupEntries.length) {
-      return lineupEntries;
-    }
+  if (!event.lineupDjIds?.length) {
+    return [];
   }
 
-  return roster.filter((record) => record.eventId && record.eventId === event.id);
+  return event.lineupDjIds
+    .map((id) => roster.find((record) => record.id === id))
+    .filter((record): record is DjRosterRecord => Boolean(record));
 }
 
 export function getDjEventHistory(
@@ -94,8 +95,8 @@ export function getDjEventHistory(
   const relatedEventIds = new Set<string>();
 
   for (const entry of roster) {
-    if (getDjIdentityKey(entry) === identityKey && entry.eventId) {
-      relatedEventIds.add(entry.eventId);
+    if (getDjIdentityKey(entry) === identityKey && entry.sourceApplicationEventId) {
+      relatedEventIds.add(entry.sourceApplicationEventId);
     }
   }
 

@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Route } from "next";
 
 import { BodyScrollLock } from "@/components/body-scroll-lock";
+import { ModalCloseButton } from "@/components/modal-close-button";
 import { LocationRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
 
@@ -292,9 +293,7 @@ export function AdminLocationsManager({
                   Inserisci location
                 </h3>
               </div>
-              <button type="button" className={ui.action.secondary} onClick={() => setOpen(false)}>
-                Chiudi
-              </button>
+              <ModalCloseButton onClick={() => setOpen(false)} />
             </div>
 
             <form onSubmit={handleSubmit} className="grid gap-4">

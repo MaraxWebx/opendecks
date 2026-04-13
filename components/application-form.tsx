@@ -268,7 +268,42 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
 
   return (
     <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.03] p-6">
-      {loading ? (
+      {!events.length ? (
+        <div className="grid gap-6 rounded-[1.75rem] border border-[#E31F29]/18 bg-[linear-gradient(180deg,rgba(227,31,41,0.08)_0%,rgba(255,255,255,0.03)_100%)] p-6 md:p-8">
+          <div className="flex flex-col items-start gap-5">
+            <div className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3">
+              <Image
+                src="/img/loghi/LOGO-OPEN-DECKS_bianco.png"
+                alt="OpenDecks"
+                width={180}
+                height={42}
+                className="h-auto w-[140px] md:w-[180px]"
+              />
+            </div>
+            <div className="grid gap-3">
+              <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
+                Candidature chiuse
+              </span>
+              <h2 className="text-[clamp(1.9rem,4vw,3rem)] font-semibold leading-none tracking-[-0.03em] text-[#f7f3ee]">
+                Resta connesso per i prossimi eventi.
+              </h2>
+              <p className="max-w-[42rem] text-base leading-7 text-white/76">
+                Al momento non ci sono eventi con candidature aperte. A breve
+                verranno pubblicate nuove call: torna presto o seguici sui
+                canali OpenDecks per i prossimi aggiornamenti.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/eventi" className={ui.action.secondary}>
+              Vedi gli eventi
+            </Link>
+            <Link href="/contatti" className={ui.action.secondary}>
+              Contattaci
+            </Link>
+          </div>
+        </div>
+      ) : loading ? (
         <GlobalLoader
           compact
           eyebrow={applicationFormCopy.loaderEyebrow}

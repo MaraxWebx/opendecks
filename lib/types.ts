@@ -1,6 +1,5 @@
 export type EventRecord = {
   id: string;
-  eventNumber: number;
   slug: string;
   title: string;
   locationId: string;
@@ -55,8 +54,8 @@ export type ApplicationRecord = {
 export type DjRosterRecord = {
   id: string;
   applicationId?: string;
-  eventId?: string;
-  eventTitle?: string;
+  sourceApplicationEventId?: string;
+  sourceApplicationEventTitle?: string;
   name: string;
   city: string;
   province?: string;

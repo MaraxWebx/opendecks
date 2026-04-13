@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
 import { BodyScrollLock } from "@/components/body-scroll-lock";
+import { GlobalLoader } from "@/components/global-loader";
+import { ModalCloseButton } from "@/components/modal-close-button";
 import { getDjEventHistory } from "@/lib/dj-roster";
 import { DjRosterRecord, EventRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
@@ -14,7 +16,6 @@ type AdminDjRosterManagerProps = {
 };
 
 type ManualDjFormState = {
-  eventId: string;
   name: string;
   city: string;
   province: string;
@@ -50,6 +51,7 @@ export function AdminDjRosterManager({
   const [message, setMessage] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [createMessage, setCreateMessage] = useState("");
   const [manualForm, setManualForm] = useState<ManualDjFormState>(() =>
     createInitialManualForm(events),
   );
@@ -73,7 +75,7 @@ export function AdminDjRosterManager({
         item.email,
         item.phone,
         item.instagram,
-        item.eventTitle || "",
+        item.sourceApplicationEventTitle || "",
         item.membershipCardId || "",
       ]
         .join(" ")
@@ -253,6 +255,7 @@ export function AdminDjRosterManager({
     event.preventDefault();
     setIsCreating(true);
     setMessage("");
+    setCreateMessage("");
 
     try {
       if (!manualForm.province) {
@@ -293,7 +296,9 @@ export function AdminDjRosterManager({
       setIsCreateOpen(false);
       setMessage("DJ aggiunto manualmente al roster.");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Errore creazione DJ.");
+      setCreateMessage(
+        error instanceof Error ? error.message : "Errore creazione DJ.",
+      );
     } finally {
       setIsCreating(false);
     }
@@ -324,219 +329,15 @@ export function AdminDjRosterManager({
           </div>
           <button
             type="button"
-            className={isCreateOpen ? ui.action.secondary : ui.action.primary}
+            className={ui.action.primary}
             onClick={() => {
               setMessage("");
-              setIsCreateOpen((current) => !current);
+              setIsCreateOpen(true);
             }}
           >
-            {isCreateOpen ? "Chiudi form" : "Aggiungi DJ manualmente"}
+            Aggiungi DJ manualmente
           </button>
         </div>
-
-        {isCreateOpen ? (
-          <form className={ui.surface.card} onSubmit={handleCreateManualDj}>
-            <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
-              <div className="grid gap-2">
-                <span className={ui.text.eyebrow}>Inserimento manuale</span>
-                <p className="max-w-2xl text-sm leading-7 text-white/70">
-                  Usa questo form per aggiungere nel roster un DJ che non ha
-                  inviato candidatura dal sito.
-                </p>
-              </div>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <Field label="Evento" htmlFor="manual-dj-event">
-                <select
-                  id="manual-dj-event"
-                  className={ui.form.select}
-                  value={manualForm.eventId}
-                  onChange={(event) =>
-                    updateManualForm("eventId", event.target.value)
-                  }
-                >
-                  <option value="">Nessun evento associato</option>
-                  {events.map((entry) => (
-                    <option key={entry.id} value={entry.id}>
-                      {entry.title} /{" "}
-                      {new Date(entry.date).toLocaleDateString("it-IT")}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-
-              <Field label="Nome DJ" htmlFor="manual-dj-name">
-                <input
-                  id="manual-dj-name"
-                  className={fieldClass}
-                  value={manualForm.name}
-                  onChange={(event) =>
-                    updateManualForm("name", event.target.value)
-                  }
-                  required
-                />
-              </Field>
-
-              <Field label="Citta" htmlFor="manual-dj-city">
-                <div className="relative">
-                  <input
-                    id="manual-dj-city"
-                    className={fieldClass}
-                    value={cityQuery}
-                    onChange={(event) => {
-                      const nextQuery = event.target.value;
-                      setCityQuery(nextQuery);
-                      setCityMenuOpen(true);
-                      void resolveMunicipalityFromQuery(nextQuery);
-                    }}
-                    onFocus={() => {
-                      if (cityOptions.length) {
-                        setCityMenuOpen(true);
-                      }
-                    }}
-                    onBlur={() => {
-                      window.setTimeout(() => {
-                        setCityMenuOpen(false);
-                        void resolveMunicipalityFromQuery(cityQuery);
-                      }, 120);
-                    }}
-                    placeholder="Scrivi e seleziona il comune, es. Roma - (RM)"
-                    autoComplete="off"
-                    required
-                  />
-                  {cityMenuOpen && cityOptions.length ? (
-                    <div className="absolute z-20 mt-2 max-h-64 w-full overflow-auto rounded-xl border border-[#E31F29]/20 bg-[#0b0b0c] p-2 shadow-[0_18px_50px_rgba(0,0,0,0.45)]">
-                      {cityOptions.map((municipality) => (
-                        <button
-                          key={municipality.code}
-                          type="button"
-                          className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-white/82 transition hover:bg-white/6"
-                          onMouseDown={(event) => {
-                            event.preventDefault();
-                            applyMunicipalitySelection(municipality);
-                            setCityMenuOpen(false);
-                          }}
-                        >
-                          <span>{municipality.label}</span>
-                          <span className="text-xs uppercase tracking-[0.14em] text-white/45">
-                            {municipality.region}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
-              </Field>
-
-              <Field label="Email" htmlFor="manual-dj-email">
-                <input
-                  id="manual-dj-email"
-                  type="email"
-                  className={fieldClass}
-                  value={manualForm.email}
-                  onChange={(event) =>
-                    updateManualForm("email", event.target.value)
-                  }
-                  required
-                />
-              </Field>
-
-              <Field label="Telefono" htmlFor="manual-dj-phone">
-                <input
-                  id="manual-dj-phone"
-                  type="tel"
-                  className={fieldClass}
-                  value={manualForm.phone}
-                  onChange={(event) =>
-                    updateManualForm("phone", event.target.value)
-                  }
-                  required
-                />
-              </Field>
-
-              <Field label="Link Instagram" htmlFor="manual-dj-instagram">
-                <input
-                  id="manual-dj-instagram"
-                  type="url"
-                  className={fieldClass}
-                  value={manualForm.instagram}
-                  onChange={(event) =>
-                    updateManualForm("instagram", event.target.value)
-                  }
-                  placeholder="https://instagram.com/..."
-                  required
-                />
-              </Field>
-
-              <Field label="Link set" htmlFor="manual-dj-set-link">
-                <input
-                  id="manual-dj-set-link"
-                  type="url"
-                  className={fieldClass}
-                  value={manualForm.setLink}
-                  onChange={(event) =>
-                    updateManualForm("setLink", event.target.value)
-                  }
-                  required
-                />
-              </Field>
-
-              <Field label="Foto personale" htmlFor="manual-dj-photo">
-                <input
-                  id="manual-dj-photo"
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp,image/avif"
-                  className={fieldClass}
-                  onChange={(event) =>
-                    setPhotoFile(event.target.files?.[0] || null)
-                  }
-                  required
-                />
-                <span className="text-xs text-white/45">
-                  Carica una foto chiara del profilo. Formati supportati: JPG,
-                  PNG, WEBP, AVIF.
-                </span>
-              </Field>
-
-              <Field label="Bio" htmlFor="manual-dj-bio" full>
-                <textarea
-                  id="manual-dj-bio"
-                  className={`${fieldClass} min-h-32 resize-y`}
-                  value={manualForm.bio}
-                  onChange={(event) =>
-                    updateManualForm("bio", event.target.value)
-                  }
-                />
-              </Field>
-            </div>
-
-            <div className="mt-5 flex flex-wrap gap-3">
-              <button
-                type="submit"
-                className={ui.action.primary}
-                disabled={isCreating}
-              >
-                {isCreating ? "Salvataggio..." : "Salva DJ"}
-              </button>
-              <button
-                type="button"
-                className={ui.action.secondary}
-                onClick={() => {
-                  setManualForm(createInitialManualForm(events));
-                  setCityQuery("");
-                  setCityOptions([]);
-                  setCityMenuOpen(false);
-                  setPhotoFile(null);
-                  setMessage("");
-                }}
-                disabled={isCreating}
-              >
-                Reset form
-              </button>
-            </div>
-          </form>
-        ) : null}
 
         {message ? <p className="text-sm text-white/65">{message}</p> : null}
       </div>
@@ -555,7 +356,6 @@ export function AdminDjRosterManager({
                 <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
                   <div className="grid min-w-0 gap-2">
                     <div className="flex flex-wrap items-center gap-2 text-sm text-white/58">
-                      <span>{entry.eventTitle || "Nessun evento associato"}</span>
                       <span>{formatCityProvince(entry.city, entry.province)}</span>
                       <span>
                         {new Date(entry.approvedAt).toLocaleDateString("it-IT")}
@@ -563,6 +363,10 @@ export function AdminDjRosterManager({
                       {!entry.applicationId ? (
                         <span className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.16em] text-white/75">
                           Manuale
+                        </span>
+                      ) : entry.sourceApplicationEventTitle ? (
+                        <span className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.16em] text-white/75">
+                          Candidatura / {entry.sourceApplicationEventTitle}
                         </span>
                       ) : null}
                     </div>
@@ -651,13 +455,7 @@ export function AdminDjRosterManager({
                   {selectedDj.name}
                 </h3>
               </div>
-              <button
-                type="button"
-                className={ui.action.secondary}
-                onClick={() => setSelectedDj(null)}
-              >
-                Chiudi
-              </button>
+              <ModalCloseButton onClick={() => setSelectedDj(null)} />
             </div>
 
             <div className="grid gap-4">
@@ -733,8 +531,12 @@ export function AdminDjRosterManager({
                 <div className="grid gap-4">
                   <div className="grid gap-3">
                     <DetailItem
-                      label="Evento"
-                      value={selectedDj.eventTitle || "Nessun evento associato"}
+                      label="Origine candidatura"
+                      value={
+                        selectedDj.applicationId
+                          ? selectedDj.sourceApplicationEventTitle || "Evento candidatura non disponibile"
+                          : "Inserimento manuale"
+                      }
                     />
                     <DetailItem
                       label="Origine"
@@ -821,6 +623,230 @@ export function AdminDjRosterManager({
           </div>
         </div>
       ) : null}
+
+      {isCreateOpen ? (
+        <div className="fixed inset-0 z-50 grid place-items-center p-4">
+          <BodyScrollLock />
+          <div
+            className="absolute inset-0 bg-black/72"
+            onClick={() => {
+              if (!isCreating) {
+                setIsCreateOpen(false);
+              }
+            }}
+          />
+          <div className={`${ui.surface.modal} max-w-5xl`}>
+            <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
+              <div className="grid gap-2">
+                <span className={ui.text.eyebrow}>Inserimento manuale</span>
+                <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
+                  Aggiungi DJ al roster
+                </h3>
+                <p className="max-w-2xl text-sm leading-7 text-white/70">
+                  Usa questo form per aggiungere nel roster un DJ che non ha
+                  inviato candidatura dal sito.
+                </p>
+              </div>
+              <ModalCloseButton
+                onClick={() => {
+                  if (!isCreating) {
+                    setIsCreateOpen(false);
+                  }
+                }}
+                disabled={isCreating}
+              />
+            </div>
+
+            {createMessage ? (
+              <div className="mb-5 rounded-xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+                {createMessage}
+              </div>
+            ) : null}
+
+            {isCreating ? (
+              <GlobalLoader
+                eyebrow="Salvataggio DJ"
+                title="Stiamo inserendo il profilo nel roster"
+                description="Foto, dati e contatti vengono salvati ora. Aspetta un istante."
+              />
+            ) : (
+              <form className="grid gap-5" onSubmit={handleCreateManualDj}>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Field label="Nome DJ" htmlFor="manual-dj-name">
+                    <input
+                      id="manual-dj-name"
+                      className={fieldClass}
+                      value={manualForm.name}
+                      onChange={(event) =>
+                        updateManualForm("name", event.target.value)
+                      }
+                      required
+                    />
+                  </Field>
+
+                  <Field label="Citta" htmlFor="manual-dj-city">
+                    <div className="relative">
+                      <input
+                        id="manual-dj-city"
+                        className={fieldClass}
+                        value={cityQuery}
+                        onChange={(event) => {
+                          const nextQuery = event.target.value;
+                          setCityQuery(nextQuery);
+                          setCityMenuOpen(true);
+                          void resolveMunicipalityFromQuery(nextQuery);
+                        }}
+                        onFocus={() => {
+                          if (cityOptions.length) {
+                            setCityMenuOpen(true);
+                          }
+                        }}
+                        onBlur={() => {
+                          window.setTimeout(() => {
+                            setCityMenuOpen(false);
+                            void resolveMunicipalityFromQuery(cityQuery);
+                          }, 120);
+                        }}
+                        placeholder="Scrivi e seleziona il comune, es. Roma - (RM)"
+                        autoComplete="off"
+                        required
+                      />
+                      {cityMenuOpen && cityOptions.length ? (
+                        <div className="absolute z-20 mt-2 max-h-64 w-full overflow-auto rounded-xl border border-[#E31F29]/20 bg-[#0b0b0c] p-2 shadow-[0_18px_50px_rgba(0,0,0,0.45)]">
+                          {cityOptions.map((municipality) => (
+                            <button
+                              key={municipality.code}
+                              type="button"
+                              className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-white/82 transition hover:bg-white/6"
+                              onMouseDown={(event) => {
+                                event.preventDefault();
+                                applyMunicipalitySelection(municipality);
+                                setCityMenuOpen(false);
+                              }}
+                            >
+                              <span>{municipality.label}</span>
+                              <span className="text-xs uppercase tracking-[0.14em] text-white/45">
+                                {municipality.region}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+                  </Field>
+
+                  <Field label="Email" htmlFor="manual-dj-email">
+                    <input
+                      id="manual-dj-email"
+                      type="email"
+                      className={fieldClass}
+                      value={manualForm.email}
+                      onChange={(event) =>
+                        updateManualForm("email", event.target.value)
+                      }
+                      required
+                    />
+                  </Field>
+
+                  <Field label="Telefono" htmlFor="manual-dj-phone">
+                    <input
+                      id="manual-dj-phone"
+                      type="tel"
+                      className={fieldClass}
+                      value={manualForm.phone}
+                      onChange={(event) =>
+                        updateManualForm("phone", event.target.value)
+                      }
+                      required
+                    />
+                  </Field>
+
+                  <Field label="Link Instagram" htmlFor="manual-dj-instagram">
+                    <input
+                      id="manual-dj-instagram"
+                      type="url"
+                      className={fieldClass}
+                      value={manualForm.instagram}
+                      onChange={(event) =>
+                        updateManualForm("instagram", event.target.value)
+                      }
+                      placeholder="https://instagram.com/..."
+                      required
+                    />
+                  </Field>
+
+                  <Field label="Link set" htmlFor="manual-dj-set-link">
+                    <input
+                      id="manual-dj-set-link"
+                      type="url"
+                      className={fieldClass}
+                      value={manualForm.setLink}
+                      onChange={(event) =>
+                        updateManualForm("setLink", event.target.value)
+                      }
+                      required
+                    />
+                  </Field>
+
+                  <Field label="Foto personale" htmlFor="manual-dj-photo">
+                    <input
+                      id="manual-dj-photo"
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/avif"
+                      className={fieldClass}
+                      onChange={(event) =>
+                        setPhotoFile(event.target.files?.[0] || null)
+                      }
+                      required
+                    />
+                    <span className="text-xs text-white/45">
+                      Carica una foto chiara del profilo. Formati supportati: JPG,
+                      PNG, WEBP, AVIF.
+                    </span>
+                  </Field>
+
+                  <Field label="Bio" htmlFor="manual-dj-bio" full>
+                    <textarea
+                      id="manual-dj-bio"
+                      className={`${fieldClass} min-h-32 resize-y`}
+                      value={manualForm.bio}
+                      onChange={(event) =>
+                        updateManualForm("bio", event.target.value)
+                      }
+                    />
+                  </Field>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="submit"
+                    className={ui.action.primary}
+                    disabled={isCreating}
+                  >
+                    Salva DJ
+                  </button>
+                  <button
+                    type="button"
+                    className={ui.action.secondary}
+                    onClick={() => {
+                      setManualForm(createInitialManualForm(events));
+                      setCityQuery("");
+                      setCityOptions([]);
+                      setCityMenuOpen(false);
+                      setPhotoFile(null);
+                      setMessage("");
+                      setCreateMessage("");
+                    }}
+                    disabled={isCreating}
+                  >
+                    Reset form
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -891,9 +917,8 @@ function InfoRow({
   );
 }
 
-function createInitialManualForm(events: EventRecord[]): ManualDjFormState {
+function createInitialManualForm(_events: EventRecord[]): ManualDjFormState {
   return {
-    eventId: "",
     name: "",
     city: "",
     province: "",

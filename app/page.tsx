@@ -165,11 +165,22 @@ export default async function HomePage() {
             </div>
 
             <div className="order-1 overflow-hidden rounded-2xl bg-[#111] md:order-2">
-              <img
+              <div className="flex flex-col gap-3 w-full">
+                <iframe
+                  width="100%"
+                  height="166"
+                  scrolling="no"
+                  frameBorder="no"
+                  allow="autoplay"
+                  src="https://w.soundcloud.com/player/?url=https://soundcloud.com/open-decks-107831124"
+                  className="rounded-xl"
+                ></iframe>
+              </div>
+              {/*  <img
                 src="/img/home/home-session-art.svg"
                 alt="OpenDecks session visual"
                 className="aspect-[4/3] w-full object-cover"
-              />
+              /> */}
             </div>
           </div>
 

@@ -52,6 +52,17 @@ type ApplicationNotificationEmailInput = {
 type ApplicationApprovedEmailInput = {
   to: string;
   applicantName: string;
+  eventTitle?: string;
+  eventDate?: string;
+  eventTime?: string;
+  locationName?: string;
+  locationAddress?: string;
+  rosterOnly?: boolean;
+};
+
+type DjEventAssignmentEmailInput = {
+  to: string;
+  djName: string;
   eventTitle: string;
   eventDate?: string;
   eventTime?: string;
@@ -247,6 +258,15 @@ export async function sendApplicationApprovedEmail(
   input: ApplicationApprovedEmailInput,
 ) {
   const { transporter, from, user } = getMailClient();
+  const hasEventContext =
+    !input.rosterOnly &&
+    Boolean(
+      input.eventTitle ||
+        input.eventDate ||
+        input.eventTime ||
+        input.locationName ||
+        input.locationAddress,
+    );
   const eventDetails = [
     input.eventDate
       ? `Data evento: ${new Date(input.eventDate).toLocaleDateString("it-IT")}`
@@ -260,19 +280,28 @@ export async function sendApplicationApprovedEmail(
     from,
     to: input.to,
     replyTo: user,
-    subject: `Candidatura approvata - ${input.eventTitle}`,
+    subject: hasEventContext
+      ? `Candidatura approvata - ${input.eventTitle}`
+      : "Candidatura approvata - ingresso nel roster OpenDecks",
     html: buildEmailTemplate({
       title: emailCopy.applicationApprovedTitle,
       body: `
         <p style="margin:0 0 12px">Ciao ${escapeHtml(input.applicantName)},</p>
         <p style="margin:0 0 12px">${escapeHtml(emailCopy.applicationApprovedIntro)}</p>
-        <div style="margin:0 0 16px;border:1px solid rgba(227,31,41,0.18);border-radius:16px;padding:16px;background:rgba(255,255,255,0.03)">
-          <p style="margin:0 0 10px"><strong>Evento:</strong> ${escapeHtml(input.eventTitle)}</p>
+        ${
+          hasEventContext
+            ? `<div style="margin:0 0 16px;border:1px solid rgba(227,31,41,0.18);border-radius:16px;padding:16px;background:rgba(255,255,255,0.03)">
+          ${input.eventTitle ? `<p style="margin:0 0 10px"><strong>Evento:</strong> ${escapeHtml(input.eventTitle)}</p>` : ""}
           ${input.eventDate ? `<p style="margin:0 0 10px"><strong>Data:</strong> ${escapeHtml(new Date(input.eventDate).toLocaleDateString("it-IT"))}</p>` : ""}
           ${input.eventTime ? `<p style="margin:0 0 10px"><strong>Orario:</strong> ${escapeHtml(input.eventTime)}</p>` : ""}
           ${input.locationName ? `<p style="margin:0 0 10px"><strong>Location:</strong> ${escapeHtml(input.locationName)}</p>` : ""}
           ${input.locationAddress ? `<p style="margin:0"><strong>Indirizzo:</strong> ${escapeHtml(input.locationAddress)}</p>` : ""}
-        </div>
+        </div>`
+            : `<div style="margin:0 0 16px;border:1px solid rgba(227,31,41,0.18);border-radius:16px;padding:16px;background:rgba(255,255,255,0.03)">
+          <p style="margin:0 0 10px"><strong>Esito:</strong> sei entrato nel roster OpenDecks.</p>
+          <p style="margin:0">Il team potra collegarti ai prossimi eventi direttamente dalla dashboard interna.</p>
+        </div>`
+        }
         <p style="margin:0 0 12px">${escapeHtml(emailCopy.applicationApprovedOutro)}</p>
         <p style="margin:0">${escapeHtml(emailCopy.applicationApprovedReminder)}</p>
       `,
@@ -285,10 +314,62 @@ export async function sendApplicationApprovedEmail(
       `Ciao ${input.applicantName},`,
       "",
       "La tua candidatura e stata approvata.",
+      ...(hasEventContext
+        ? [`Evento: ${input.eventTitle}`, ...eventDetails]
+        : ["Sei entrato nel roster OpenDecks.", "Il team potra associarti ai prossimi eventi successivamente."]),
+      "",
+      "Controlla la tua casella email per i prossimi aggiornamenti.",
+    ].join("\n"),
+    attachments: [buildLogoAttachment()],
+  });
+}
+
+export async function sendDjEventAssignmentEmail(
+  input: DjEventAssignmentEmailInput,
+) {
+  const { transporter, from, user } = getMailClient();
+  const eventDetails = [
+    input.eventDate
+      ? `Data evento: ${new Date(input.eventDate).toLocaleDateString("it-IT")}`
+      : "",
+    input.eventTime ? `Orario: ${input.eventTime}` : "",
+    input.locationName ? `Location: ${input.locationName}` : "",
+    input.locationAddress ? `Indirizzo: ${input.locationAddress}` : "",
+  ].filter(Boolean);
+
+  await transporter.sendMail({
+    from,
+    to: input.to,
+    replyTo: user,
+    subject: `Line up confermata - ${input.eventTitle}`,
+    html: buildEmailTemplate({
+      title: emailCopy.lineupAssignedTitle,
+      body: `
+        <p style="margin:0 0 12px">Ciao ${escapeHtml(input.djName)},</p>
+        <p style="margin:0 0 12px">${escapeHtml(emailCopy.lineupAssignedIntro)}</p>
+        <div style="margin:0 0 16px;border:1px solid rgba(227,31,41,0.18);border-radius:16px;padding:16px;background:rgba(255,255,255,0.03)">
+          <p style="margin:0 0 10px"><strong>Evento:</strong> ${escapeHtml(input.eventTitle)}</p>
+          ${input.eventDate ? `<p style="margin:0 0 10px"><strong>Data:</strong> ${escapeHtml(new Date(input.eventDate).toLocaleDateString("it-IT"))}</p>` : ""}
+          ${input.eventTime ? `<p style="margin:0 0 10px"><strong>Orario:</strong> ${escapeHtml(input.eventTime)}</p>` : ""}
+          ${input.locationName ? `<p style="margin:0 0 10px"><strong>Location:</strong> ${escapeHtml(input.locationName)}</p>` : ""}
+          ${input.locationAddress ? `<p style="margin:0"><strong>Indirizzo:</strong> ${escapeHtml(input.locationAddress)}</p>` : ""}
+        </div>
+        <p style="margin:0 0 12px">${escapeHtml(emailCopy.lineupAssignedOutro)}</p>
+        <p style="margin:0">${escapeHtml(emailCopy.lineupAssignedReminder)}</p>
+      `,
+    }),
+    text: [
+      "OpenDecks Italia",
+      "",
+      "Sei stato inserito nella line up",
+      "",
+      `Ciao ${input.djName},`,
+      "",
+      "Sei stato inserito ufficialmente nella line up di un evento OpenDecks.",
       `Evento: ${input.eventTitle}`,
       ...eventDetails,
       "",
-      "Controlla la tua casella email per i prossimi aggiornamenti.",
+      "Conserva questa email come riferimento e controlla la casella per eventuali aggiornamenti.",
     ].join("\n"),
     attachments: [buildLogoAttachment()],
   });

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 
 import { BodyScrollLock } from "@/components/body-scroll-lock";
+import { ModalCloseButton } from "@/components/modal-close-button";
 import { ArchiveRecord, EventRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
 
@@ -399,13 +400,7 @@ function GalleryModal({
               {title}
             </h3>
           </div>
-          <button
-            type="button"
-            className={ui.action.secondary}
-            onClick={onClose}
-          >
-            Chiudi
-          </button>
+          <ModalCloseButton onClick={onClose} />
         </div>
 
         <form onSubmit={onSubmit} className="grid gap-5">

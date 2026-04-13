@@ -32,16 +32,18 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
   if (currentApplication.status !== "selected" && application.status === "selected") {
     const events = await getEvents();
     const linkedEvent = events.find((event) => event.id === application.eventId) || null;
+    const isFutureEvent = linkedEvent?.status === "upcoming";
 
     try {
       await sendApplicationApprovedEmail({
         to: application.email,
         applicantName: application.name,
-        eventTitle: application.eventTitle,
-        eventDate: linkedEvent?.date,
-        eventTime: linkedEvent?.time,
-        locationName: linkedEvent?.locationName,
-        locationAddress: linkedEvent?.locationAddress,
+        eventTitle: isFutureEvent ? application.eventTitle : undefined,
+        eventDate: isFutureEvent ? linkedEvent?.date : undefined,
+        eventTime: isFutureEvent ? linkedEvent?.time : undefined,
+        locationName: isFutureEvent ? linkedEvent?.locationName : undefined,
+        locationAddress: isFutureEvent ? linkedEvent?.locationAddress : undefined,
+        rosterOnly: !isFutureEvent,
       });
     } catch (error) {
       console.error("Application approval email failed:", error);

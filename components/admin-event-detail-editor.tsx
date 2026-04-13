@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { BodyScrollLock } from "@/components/body-scroll-lock";
+import { ModalCloseButton } from "@/components/modal-close-button";
 import { buildDjRosterProfiles, getEventLineupDjs } from "@/lib/dj-roster";
 import {
   ApplicationRecord,
@@ -25,7 +26,6 @@ type AdminEventDetailEditorProps = {
 };
 
 type EventFormState = {
-  eventNumber: string;
   title: string;
   locationId: string;
   coverImage: string;
@@ -55,8 +55,10 @@ export function AdminEventDetailEditor({
 }: AdminEventDetailEditorProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [originalLineupDjIds, setOriginalLineupDjIds] = useState(
+    event.lineupDjIds || [],
+  );
   const [form, setForm] = useState<EventFormState>({
-    eventNumber: String(event.eventNumber),
     title: event.title,
     locationId: event.locationId,
     coverImage: event.coverImage,
@@ -74,7 +76,6 @@ export function AdminEventDetailEditor({
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [status, setStatus] = useState("");
-  const [eventNumberError, setEventNumberError] = useState("");
   const [deleteState, setDeleteState] = useState<DeleteState>({
     open: false,
     requiresForce: false,
@@ -114,9 +115,6 @@ export function AdminEventDetailEditor({
     key: Key,
     value: EventFormState[Key],
   ) {
-    if (key === "eventNumber") {
-      setEventNumberError("");
-    }
     setForm((current) => ({ ...current, [key]: value }));
   }
 
@@ -124,7 +122,6 @@ export function AdminEventDetailEditor({
     eventSubmit.preventDefault();
     setSaving(true);
     setStatus("");
-    setEventNumberError("");
 
     try {
       let coverImage = form.coverImage;
@@ -156,8 +153,8 @@ export function AdminEventDetailEditor({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
-          eventNumber: Number(form.eventNumber) || undefined,
           coverImage,
+          previousLineupDjIds: originalLineupDjIds,
         }),
       });
 
@@ -172,7 +169,6 @@ export function AdminEventDetailEditor({
 
       const result = (await response.json()) as { event: EventRecord };
       setForm({
-        eventNumber: String(result.event.eventNumber),
         title: result.event.title,
         locationId: result.event.locationId,
         coverImage: result.event.coverImage,
@@ -184,17 +180,13 @@ export function AdminEventDetailEditor({
         lineupDjIds: result.event.lineupDjIds || [],
         tagIds: result.event.tagIds || [],
       });
+      setOriginalLineupDjIds(result.event.lineupDjIds || []);
       setImageFile(null);
       setOpen(false);
       setStatus("Evento aggiornato.");
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Errore aggiornamento evento.";
-
-      if (message.toLowerCase().includes("numero evento")) {
-        setEventNumberError(message);
-      }
-
       setStatus(message);
     } finally {
       setSaving(false);
@@ -288,7 +280,7 @@ export function AdminEventDetailEditor({
             <div className="grid gap-2">
               <span className={ui.text.eyebrow}>Scheda evento</span>
               <h2 className="text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
-                #{form.eventNumber} / {form.title}
+                {form.title}
               </h2>
               <p className="text-sm leading-7 text-white/68">
                 Gestione evento, line up e andamento candidature in un'unica
@@ -431,10 +423,6 @@ export function AdminEventDetailEditor({
             </div>
             <div className="mt-4 grid gap-2 text-sm text-white/74">
               <p>
-                <strong className="text-white">Numero:</strong> #
-                {form.eventNumber}
-              </p>
-              <p>
                 <strong className="text-white">Location:</strong>{" "}
                 {locations.find((item) => item.id === form.locationId)?.name ||
                   "Non selezionata"}
@@ -493,16 +481,10 @@ export function AdminEventDetailEditor({
                   Modifica evento
                 </span>
                 <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
-                  #{form.eventNumber} / {form.title}
+                  {form.title}
                 </h3>
               </div>
-              <button
-                type="button"
-                className={ui.action.secondary}
-                onClick={() => setOpen(false)}
-              >
-                Chiudi
-              </button>
+              <ModalCloseButton onClick={() => setOpen(false)} />
             </div>
 
             <form onSubmit={handleSubmit} className="grid gap-5">
@@ -535,27 +517,6 @@ export function AdminEventDetailEditor({
                       </option>
                     ))}
                   </select>
-                </Field>
-                <Field label="Numero evento" htmlFor="detail-event-number">
-                  <input
-                    id="detail-event-number"
-                    type="number"
-                    min={1}
-                    className={ui.form.field}
-                    value={form.eventNumber}
-                    onChange={(event) =>
-                      updateField("eventNumber", event.target.value)
-                    }
-                    required
-                  />
-                  {eventNumberError ? (
-                    <p className="text-sm text-red-200">{eventNumberError}</p>
-                  ) : (
-                    <p className="text-sm text-white/55">
-                      Puoi correggere il numero evento qui e poi salvare le
-                      modifiche.
-                    </p>
-                  )}
                 </Field>
                 <Field label="Data" htmlFor="detail-date">
                   <input

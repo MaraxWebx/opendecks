@@ -396,8 +396,7 @@ function buildRecentEventPerformance(
     applications: applications.filter(
       (application) => application.eventId === event.id,
     ).length,
-    selectedDjs: djRoster.filter((record) => record.eventId === event.id)
-      .length,
+    selectedDjs: event.lineupDjIds.length,
   }));
 
   return {
@@ -409,7 +408,7 @@ function buildRecentEventPerformance(
 function buildEventChartLabel(
   event: Awaited<ReturnType<typeof getEvents>>[number],
 ) {
-  return `#${event.eventNumber} ${event.title}`;
+  return event.title;
 }
 
 function resolveEventGeo(address: string) {

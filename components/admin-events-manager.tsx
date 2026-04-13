@@ -14,6 +14,7 @@ import {
 import { ui } from "@/lib/ui";
 import { GlobalLoader } from "@/components/global-loader";
 import { DjMultiSelect } from "@/components/dj-multi-select";
+import { ModalCloseButton } from "@/components/modal-close-button";
 import { TagMultiSelect } from "@/components/tag-multi-select";
 
 type AdminEventsManagerProps = {
@@ -26,7 +27,6 @@ type AdminEventsManagerProps = {
 };
 
 type EventFormState = {
-  eventNumber: string;
   title: string;
   locationId: string;
   coverImage: string;
@@ -39,7 +39,6 @@ type EventFormState = {
 };
 
 const emptyForm: EventFormState = {
-  eventNumber: "",
   title: "",
   locationId: "",
   coverImage: "",
@@ -71,7 +70,6 @@ export function AdminEventsManager({
   const [monthFilter, setMonthFilter] = useState("all");
   const [form, setForm] = useState<EventFormState>(emptyForm);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [eventNumberError, setEventNumberError] = useState("");
   const previousCreateSignal = useRef(createSignal);
 
   const sortedEvents = useMemo(
@@ -114,7 +112,6 @@ export function AdminEventsManager({
       const matchesQuery =
         !normalizedQuery ||
         [
-          event.eventNumber,
           event.title,
           event.locationName,
           event.locationAddress,
@@ -161,24 +158,11 @@ export function AdminEventsManager({
     () => buildCalendarDays(activeCalendarMonth, calendarEvents),
     [activeCalendarMonth, calendarEvents],
   );
-  const suggestedEventNumber = useMemo(() => {
-    if (!form.locationId) {
-      return "";
-    }
-
-    const maxForLocation = events
-      .filter((event) => event.locationId === form.locationId)
-      .reduce((max, event) => Math.max(max, event.eventNumber || 0), 0);
-
-    return String(maxForLocation + 1);
-  }, [events, form.locationId]);
-
   useEffect(() => {
     if (createSignal !== previousCreateSignal.current) {
       previousCreateSignal.current = createSignal;
       setForm(emptyForm);
       setImageFile(null);
-      setEventNumberError("");
       setOpen(true);
     }
   }, [createSignal]);
@@ -187,9 +171,6 @@ export function AdminEventsManager({
     key: Key,
     value: EventFormState[Key],
   ) {
-    if (key === "eventNumber") {
-      setEventNumberError("");
-    }
     setForm((current) => ({ ...current, [key]: value }));
   }
 
@@ -211,7 +192,6 @@ export function AdminEventsManager({
     event.preventDefault();
     setSaving(true);
     setStatus("");
-    setEventNumberError("");
 
     try {
       let coverImage = form.coverImage;
@@ -243,7 +223,6 @@ export function AdminEventsManager({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
-          eventNumber: Number(form.eventNumber) || undefined,
           coverImage,
           lineupDjIds: form.lineupDjIds,
           tagIds: form.tagIds,
@@ -268,11 +247,6 @@ export function AdminEventsManager({
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Errore salvataggio evento.";
-
-      if (message.toLowerCase().includes("numero evento")) {
-        setEventNumberError(message);
-      }
-
       setStatus(message);
     } finally {
       setSaving(false);
@@ -515,7 +489,6 @@ export function AdminEventsManager({
 
                   <div className="min-w-0">
                     <div className="mb-2 flex flex-wrap gap-2 text-sm text-white/58">
-                      <span>#{event.eventNumber}</span>
                       <span>
                         {new Date(event.date).toLocaleDateString("it-IT")}
                       </span>
@@ -580,13 +553,7 @@ export function AdminEventsManager({
                   Inserisci evento
                 </h3>
               </div>
-              <button
-                type="button"
-                className={ui.action.secondary}
-                onClick={() => setOpen(false)}
-              >
-                Chiudi
-              </button>
+              <ModalCloseButton onClick={() => setOpen(false)} />
             </div>
 
             {saving ? (
@@ -597,23 +564,7 @@ export function AdminEventsManager({
               />
             ) : (
               <form onSubmit={handleSubmit} className="grid gap-5">
-                <div className="rounded-xl border border-[color:var(--color-brand-14)] bg-[color:var(--color-brand-10)] px-4 py-3 text-sm text-white/72">
-                  {form.locationId ? undefined : "Seleziona prima la location"}
-                  {eventNumberError ? (
-                    <p className="text-sm text-red-200">{eventNumberError}</p>
-                  ) : form.locationId && suggestedEventNumber ? (
-                    <p className="text-sm text-white/55">
-                      Prossimo numero per questa location:{" "}
-                      {suggestedEventNumber}
-                    </p>
-                  ) : (
-                    <p className="text-sm text-white/45">
-                      Scegli una location per attivare la numerazione
-                      progressiva.
-                    </p>
-                  )}
-                </div>
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 md:grid-cols-2">
                   <Field label="Titolo" htmlFor="event-title">
                     <input
                       id="event-title"
@@ -630,24 +581,9 @@ export function AdminEventsManager({
                       id="event-location"
                       className={ui.form.select}
                       value={form.locationId}
-                      onChange={(event) => {
-                        const nextLocationId = event.target.value;
-                        const maxForLocation = events
-                          .filter((item) => item.locationId === nextLocationId)
-                          .reduce(
-                            (max, item) => Math.max(max, item.eventNumber || 0),
-                            0,
-                          );
-
-                        setEventNumberError("");
-                        setForm((current) => ({
-                          ...current,
-                          locationId: nextLocationId,
-                          eventNumber: nextLocationId
-                            ? String(maxForLocation + 1)
-                            : "",
-                        }));
-                      }}
+                      onChange={(event) =>
+                        updateField("locationId", event.target.value)
+                      }
                       required
                     >
                       <option value="">Seleziona location</option>
@@ -657,20 +593,6 @@ export function AdminEventsManager({
                         </option>
                       ))}
                     </select>
-                  </Field>
-                  <Field label="Numero evento" htmlFor="event-number">
-                    <input
-                      id="event-number"
-                      type="number"
-                      min={1}
-                      className={`${ui.form.field} ${!form.locationId ? "cursor-not-allowed opacity-60" : ""}`}
-                      value={form.eventNumber}
-                      onChange={(event) =>
-                        updateField("eventNumber", event.target.value)
-                      }
-                      disabled={!form.locationId}
-                      required
-                    />
                   </Field>
                 </div>
                 <div className="grid gap-4 md:grid-cols-3">

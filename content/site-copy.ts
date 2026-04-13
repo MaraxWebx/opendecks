@@ -85,6 +85,13 @@ export const emailCopy = {
     "Nei prossimi passaggi potresti ricevere aggiornamenti operativi, dettagli sulla line up o indicazioni utili per la serata.",
   applicationApprovedReminder:
     "Controlla la tua casella email: useremo questo canale per eventuali conferme e comunicazioni legate all'evento.",
+  lineupAssignedTitle: "Sei stato inserito nella line up",
+  lineupAssignedIntro:
+    "Sei stato inserito ufficialmente nella line up di un evento OpenDecks.",
+  lineupAssignedOutro:
+    "Qui sotto trovi i dettagli operativi dell'evento associato alla tua presenza in line up.",
+  lineupAssignedReminder:
+    "Conserva questa email come riferimento e controlla la casella nei prossimi giorni per eventuali aggiornamenti.",
 };
 
 export const contactPageCopy = {

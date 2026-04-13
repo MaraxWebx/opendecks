@@ -6,7 +6,7 @@ import { mockApplications, mockArchive, mockDjRoster, mockEvents, mockLocations,
 import { ApplicationRecord, ArchiveRecord, DjRosterRecord, EventRecord, LocationRecord, TagRecord } from "@/lib/types";
 
 type NewApplication = Omit<ApplicationRecord, "id" | "submittedAt" | "status">;
-type NewEvent = Omit<EventRecord, "id" | "status" | "eventNumber"> & { eventNumber?: number };
+type NewEvent = Omit<EventRecord, "id" | "status">;
 type UpdateEventInput = Partial<Omit<EventRecord, "id">>;
 type NewArchiveEntry = Omit<ArchiveRecord, "id">;
 type UpdateArchiveEntry = Partial<NewArchiveEntry>;
@@ -31,7 +31,19 @@ type NewLocation = Omit<LocationRecord, "id">;
 type UpdateLocationInput = Partial<NewLocation>;
 
 function sortEvents(events: EventRecord[]) {
-  return [...events].sort((a, b) => b.date.localeCompare(a.date));
+  return [...events].sort(
+    (a, b) => getEventTimestamp(b.date, b.time) - getEventTimestamp(a.date, a.time)
+  );
+}
+
+function applyEventDerivedState(event: EventRecord): EventRecord {
+  const status = getEventStatusFromDate(event.date, event.time);
+
+  return {
+    ...event,
+    status,
+    applicationsOpen: status === "upcoming" ? Boolean(event.applicationsOpen) : false
+  };
 }
 
 async function withMongoFallback<T>(query: () => Promise<T>, fallback: () => T | Promise<T>) {
@@ -88,13 +100,12 @@ export async function getEventBySlug(slug: string) {
 export async function getUpcomingEvent() {
   noStore();
 
-  const now = new Date().toISOString().slice(0, 10);
   const events = await getEvents();
   const upcomingEvents = events
-    .filter((event) => event.date >= now)
-    .sort((a, b) => a.date.localeCompare(b.date));
+    .filter((event) => getEventStatusFromDate(event.date, event.time) === "upcoming")
+    .sort((a, b) => getEventTimestamp(a.date, a.time) - getEventTimestamp(b.date, b.time));
 
-  return upcomingEvents[0] || events[0] || null;
+  return upcomingEvents[0] || null;
 }
 
 export async function getArchiveEntries() {
@@ -407,80 +418,45 @@ export async function deleteApplication(id: string) {
     async () => {
       const db = await getDatabase();
       const result = await db.collection<ApplicationRecord>("applications").deleteOne({ id });
-
-      if (!result.deletedCount) {
-        return false;
-      }
-
-      await db.collection<DjRosterRecord>("dj_roster").deleteOne({ applicationId: id });
-      return true;
+      return Boolean(result.deletedCount);
     },
     () => deleteApplicationMock(id)
   );
 }
 
 export async function createEvent(input: NewEvent) {
-  const nextEventNumber = await getNextEventNumber(input.locationId);
-  const requestedEventNumber = input.eventNumber || nextEventNumber;
-
   if (!isMongoConfigured()) {
-    const existing = mockEvents.find(
-      (event) =>
-        event.locationId === input.locationId && event.eventNumber === requestedEventNumber
-    );
-
-    if (existing) {
-      throw new Error("Numero evento gia assegnato a questa location.");
-    }
-
     const record: EventRecord = {
       id: new ObjectId().toHexString(),
-      eventNumber: requestedEventNumber,
-      status: getEventStatusFromDate(input.date),
+      status: getEventStatusFromDate(input.date, input.time),
       ...input
     };
-    mockEvents.push(record);
-    return sortEvents(mockEvents).find((event) => event.id === record.id) || record;
+    const nextRecord = applyEventDerivedState(record);
+    mockEvents.push(nextRecord);
+    return sortEvents(mockEvents).find((event) => event.id === nextRecord.id) || nextRecord;
   }
 
   return withMongoFallback(
     async () => {
       const db = await getDatabase();
-      const existing = await db
-        .collection<EventRecord>("events")
-        .findOne({ locationId: input.locationId, eventNumber: requestedEventNumber });
-
-      if (existing) {
-        throw new Error("Numero evento gia assegnato a questa location.");
-      }
-
       const record: EventRecord = {
         id: new ObjectId().toHexString(),
-        eventNumber: requestedEventNumber,
-        status: getEventStatusFromDate(input.date),
+        status: getEventStatusFromDate(input.date, input.time),
         ...input
       };
-      await db.collection<EventRecord>("events").insertOne(record);
-      return record;
+      const nextRecord = applyEventDerivedState(record);
+      await db.collection<EventRecord>("events").insertOne(nextRecord);
+      return nextRecord;
     },
     () => {
-      const existing = mockEvents.find(
-        (event) =>
-          event.locationId === input.locationId && event.eventNumber === requestedEventNumber
-      );
-
-      if (existing) {
-        throw new Error("Numero evento gia assegnato a questa location.");
-      }
-
       const record: EventRecord = {
         id: new ObjectId().toHexString(),
-        eventNumber: requestedEventNumber,
-        status: getEventStatusFromDate(input.date),
+        status: getEventStatusFromDate(input.date, input.time),
         ...input
       };
-      mockEvents.push(record);
-      return sortEvents(mockEvents).find((event) => event.id === record.id) || record;
+      const nextRecord = applyEventDerivedState(record);
+      mockEvents.push(nextRecord);
+      return sortEvents(mockEvents).find((event) => event.id === nextRecord.id) || nextRecord;
     }
   );
 }
@@ -499,30 +475,20 @@ export async function updateEvent(id: string, input: UpdateEventInput) {
         return null;
       }
 
-      if (
-        typeof input.eventNumber === "number" &&
-        input.eventNumber > 0 &&
-        (input.eventNumber !== current.eventNumber ||
-          (input.locationId && input.locationId !== current.locationId))
-      ) {
-        const targetLocationId = input.locationId || current.locationId;
-        const existing = await db
-          .collection<EventRecord>("events")
-          .findOne({
-            locationId: targetLocationId,
-            eventNumber: input.eventNumber,
-            id: { $ne: id } as any
-          });
-
-        if (existing) {
-          throw new Error("Numero evento gia assegnato a questa location.");
-        }
-      }
-
       const nextInput = {
         ...input,
-        status: input.date ? getEventStatusFromDate(input.date) : current.status
+        status:
+          input.date || input.time
+            ? getEventStatusFromDate(input.date || current.date, input.time || current.time)
+            : current.status
       };
+
+      const targetStatus =
+        nextInput.status || getEventStatusFromDate(input.date || current.date, input.time || current.time);
+
+      if (targetStatus === "past") {
+        nextInput.applicationsOpen = false;
+      }
 
       await db.collection<EventRecord>("events").updateOne({ id }, { $set: nextInput });
       const updated = await db.collection<EventRecord>("events").findOne({ id });
@@ -547,20 +513,11 @@ export async function deleteEvent(id: string) {
       }
 
       await db.collection<ApplicationRecord>("applications").deleteMany({ eventId: id });
-      await db.collection<DjRosterRecord>("dj_roster").deleteMany({ eventId: id });
 
       return true;
     },
     () => deleteEventMock(id)
   );
-}
-
-async function getNextEventNumber(locationId: string) {
-  const events = await getEvents();
-  const maxEventNumber = events
-    .filter((event) => event.locationId === locationId)
-    .reduce((max, event) => Math.max(max, event.eventNumber || 0), 0);
-  return maxEventNumber + 1;
 }
 
 export async function createArchiveEntry(input: NewArchiveEntry) {
@@ -654,24 +611,16 @@ function updateEventMock(id: string, input: UpdateEventInput) {
     return null;
   }
 
-  if (
-    typeof input.eventNumber === "number" &&
-    input.eventNumber > 0 &&
-    mockEvents.some(
-      (item) =>
-        item.id !== id &&
-        item.locationId === (input.locationId || mockEvents[index].locationId) &&
-        item.eventNumber === input.eventNumber
-    )
-  ) {
-    throw new Error("Numero evento gia assegnato a questa location.");
-  }
-
   mockEvents[index] = {
     ...mockEvents[index],
     ...input,
-    status: input.date ? getEventStatusFromDate(input.date) : mockEvents[index].status
+    status:
+      input.date || input.time
+        ? getEventStatusFromDate(input.date || mockEvents[index].date, input.time || mockEvents[index].time)
+        : mockEvents[index].status
   };
+
+  mockEvents[index] = applyEventDerivedState(mockEvents[index]);
 
   return mockEvents[index];
 }
@@ -701,11 +650,6 @@ function deleteApplicationMock(id: string) {
 
   mockApplications.splice(index, 1);
 
-  const rosterIndex = mockDjRoster.findIndex((item) => item.applicationId === id);
-  if (rosterIndex !== -1) {
-    mockDjRoster.splice(rosterIndex, 1);
-  }
-
   return true;
 }
 
@@ -721,12 +665,6 @@ function deleteEventMock(id: string) {
   for (let cursor = mockApplications.length - 1; cursor >= 0; cursor -= 1) {
     if (mockApplications[cursor].eventId === id) {
       mockApplications.splice(cursor, 1);
-    }
-  }
-
-  for (let cursor = mockDjRoster.length - 1; cursor >= 0; cursor -= 1) {
-    if (mockDjRoster[cursor].eventId === id) {
-      mockDjRoster.splice(cursor, 1);
     }
   }
 
@@ -826,8 +764,7 @@ function normalizeEvent(record: EventRecord & { _id?: ObjectId }) {
   const { _id, ...event } = record;
 
   return {
-    ...event,
-    eventNumber: Number(event.eventNumber) || 1,
+    ...applyEventDerivedState(event),
     lineupPublished: Boolean(event.lineupPublished),
     lineupDjIds: event.lineupDjIds || [],
     tagIds: event.tagIds || [],
@@ -835,8 +772,13 @@ function normalizeEvent(record: EventRecord & { _id?: ObjectId }) {
   };
 }
 
-function getEventStatusFromDate(date: string): EventRecord["status"] {
-  return date >= new Date().toISOString().slice(0, 10) ? "upcoming" : "past";
+function getEventStatusFromDate(date: string, time?: string): EventRecord["status"] {
+  return getEventTimestamp(date, time) >= Date.now() ? "upcoming" : "past";
+}
+
+function getEventTimestamp(date: string, time?: string) {
+  const normalizedTime = /^\d{2}:\d{2}$/.test(time || "") ? `${time}:00` : "23:59:59";
+  return new Date(`${date}T${normalizedTime}`).getTime();
 }
 
 function normalizeApplication(record: ApplicationRecord & { _id?: ObjectId }) {
@@ -867,8 +809,8 @@ function normalizeDjRoster(record: DjRosterRecord & { _id?: ObjectId }) {
 
   return {
     ...roster,
-    eventId: roster.eventId || "",
-    eventTitle: roster.eventTitle || "",
+    sourceApplicationEventId: roster.sourceApplicationEventId || "",
+    sourceApplicationEventTitle: roster.sourceApplicationEventTitle || "",
     province: roster.province || "",
     region: roster.region || "",
     email: roster.email || "",
@@ -923,11 +865,14 @@ async function syncDjRosterForApplication(
   application: ApplicationRecord
 ) {
   if (application.status === "selected") {
+    const existingRosterRecord = await db
+      .collection<DjRosterRecord>("dj_roster")
+      .findOne({ applicationId: application.id });
     const rosterRecord: DjRosterRecord = {
       id: application.id,
       applicationId: application.id,
-      eventId: application.eventId,
-      eventTitle: application.eventTitle,
+      sourceApplicationEventId: application.eventId,
+      sourceApplicationEventTitle: application.eventTitle,
       name: application.name,
       city: application.city,
       province: application.province || "",
@@ -938,28 +883,29 @@ async function syncDjRosterForApplication(
       instagram: application.instagram,
       setLink: application.setLink,
       bio: application.bio,
-      approvedAt: new Date().toISOString(),
-      membershipCardEnabled: false
+      approvedAt: existingRosterRecord?.approvedAt || new Date().toISOString(),
+      membershipCardEnabled: existingRosterRecord?.membershipCardEnabled || false,
+      membershipCardId: existingRosterRecord?.membershipCardId,
+      membershipCardIssuedAt: existingRosterRecord?.membershipCardIssuedAt,
+      membershipCardEmailSentAt: existingRosterRecord?.membershipCardEmailSentAt
     };
 
     await db
       .collection<DjRosterRecord>("dj_roster")
       .updateOne({ applicationId: application.id }, { $set: rosterRecord }, { upsert: true });
-    return;
   }
-
-  await db.collection<DjRosterRecord>("dj_roster").deleteOne({ applicationId: application.id });
 }
 
 function syncDjRosterMock(application: ApplicationRecord) {
   const existingIndex = mockDjRoster.findIndex((item) => item.applicationId === application.id);
+  const existingRosterRecord = existingIndex === -1 ? null : mockDjRoster[existingIndex];
 
   if (application.status === "selected") {
     const rosterRecord: DjRosterRecord = {
       id: application.id,
       applicationId: application.id,
-      eventId: application.eventId,
-      eventTitle: application.eventTitle,
+      sourceApplicationEventId: application.eventId,
+      sourceApplicationEventTitle: application.eventTitle,
       name: application.name,
       city: application.city,
       province: application.province || "",
@@ -970,8 +916,11 @@ function syncDjRosterMock(application: ApplicationRecord) {
       instagram: application.instagram,
       setLink: application.setLink,
       bio: application.bio,
-      approvedAt: new Date().toISOString(),
-      membershipCardEnabled: false
+      approvedAt: existingRosterRecord?.approvedAt || new Date().toISOString(),
+      membershipCardEnabled: existingRosterRecord?.membershipCardEnabled || false,
+      membershipCardId: existingRosterRecord?.membershipCardId,
+      membershipCardIssuedAt: existingRosterRecord?.membershipCardIssuedAt,
+      membershipCardEmailSentAt: existingRosterRecord?.membershipCardEmailSentAt
     };
 
     if (existingIndex === -1) {
@@ -981,9 +930,5 @@ function syncDjRosterMock(application: ApplicationRecord) {
     }
 
     return;
-  }
-
-  if (existingIndex !== -1) {
-    mockDjRoster.splice(existingIndex, 1);
   }
 }

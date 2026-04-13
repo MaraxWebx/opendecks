@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { BodyScrollLock } from "@/components/body-scroll-lock";
+import { ModalCloseButton } from "@/components/modal-close-button";
 import { ApplicationRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
 
@@ -311,13 +312,7 @@ export function AdminApplicationsManager({
                   {selectedApplication.name}
                 </h3>
               </div>
-              <button
-                type="button"
-                className={ui.action.secondary}
-                onClick={() => setSelectedApplication(null)}
-              >
-                Chiudi
-              </button>
+              <ModalCloseButton onClick={() => setSelectedApplication(null)} />
             </div>
 
             <div className="grid gap-4">
