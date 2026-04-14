@@ -75,7 +75,7 @@ export function HomeEventsCarousel({ events }: HomeEventsCarouselProps) {
         <div className="flex gap-2">
           <button
             type="button"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[#E31F29]/35 text-white transition hover:bg-[#E31F29]/14 disabled:cursor-not-allowed disabled:border-white/10 disabled:text-white/25 disabled:hover:bg-transparent"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#E31F29]/35 text-white transition hover:bg-[#E31F29]/14 disabled:cursor-not-allowed disabled:border-white/10 disabled:text-white/25 disabled:hover:bg-transparent"
             onClick={() => scrollByAmount("prev")}
             disabled={!canScrollPrev}
             aria-label="Evento precedente"
@@ -86,7 +86,7 @@ export function HomeEventsCarousel({ events }: HomeEventsCarouselProps) {
           </button>
           <button
             type="button"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[#E31F29]/35 text-white transition hover:bg-[#E31F29]/14 disabled:cursor-not-allowed disabled:border-white/10 disabled:text-white/25 disabled:hover:bg-transparent"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#E31F29]/35 text-white transition hover:bg-[#E31F29]/14 disabled:cursor-not-allowed disabled:border-white/10 disabled:text-white/25 disabled:hover:bg-transparent"
             onClick={() => scrollByAmount("next")}
             disabled={!canScrollNext}
             aria-label="Evento successivo"
@@ -106,7 +106,7 @@ export function HomeEventsCarousel({ events }: HomeEventsCarouselProps) {
           <Link
             key={event.id}
             href={`/eventi/${event.slug}`}
-            className="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-[#111] md:h-[24rem] md:aspect-auto lg:h-[22rem]"
+            className="group relative aspect-[4/5] overflow-hidden rounded-xl bg-[#111] md:h-[24rem] md:aspect-auto lg:h-[22rem]"
           >
             <img
               className="h-full w-full bg-[#111] object-cover transition duration-300 group-hover:scale-[1.01] md:object-contain"

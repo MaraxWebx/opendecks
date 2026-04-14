@@ -48,13 +48,13 @@ export default async function HomePage() {
               <div className="flex flex-wrap justify-center gap-3">
                 <Link
                   href="/eventi"
-                  className="inline-flex min-h-12 w-full max-w-[20rem] items-center justify-center rounded-xl border border-[#E31F29] bg-[#E31F29] px-6 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-white transition hover:border-[#c91922] hover:bg-[#c91922] sm:w-auto sm:min-w-72"
+                  className="inline-flex min-h-12 w-full max-w-[20rem] items-center justify-center rounded-lg border border-[#E31F29] bg-[#E31F29] px-6 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-white transition hover:border-[#c91922] hover:bg-[#c91922] sm:w-auto sm:min-w-72"
                 >
                   {homeCopy.primaryCta}
                 </Link>
                 <Link
                   href="/progetto"
-                  className="inline-flex min-h-12 w-full max-w-[20rem] items-center justify-center rounded-xl border border-[#E31F29]/35 px-6 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-[#E31F29]/10 sm:w-auto sm:min-w-72"
+                  className="inline-flex min-h-12 w-full max-w-[20rem] items-center justify-center rounded-lg border border-[#E31F29]/35 px-6 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-[#E31F29]/10 sm:w-auto sm:min-w-72"
                 >
                   {homeCopy.secondaryCta}
                 </Link>
@@ -69,14 +69,14 @@ export default async function HomePage() {
           <div className="mx-auto grid max-w-[1240px] min-w-0 gap-4 md:grid-cols-[auto_minmax(0,1fr)] md:items-start">
             <Link
               href={`/eventi/${nextEvent.slug}`}
-              className="relative block min-h-[16rem] w-full max-w-full overflow-hidden rounded-2xl bg-[#111] md:h-[26rem] md:w-fit"
+              className="relative block min-h-[16rem] w-full max-w-full overflow-hidden rounded-xl bg-[#111] md:h-[26rem] md:w-fit"
             >
               <img
                 src={nextEvent.coverImage}
                 alt={nextEvent.coverAlt}
                 className="block h-full w-full max-w-full bg-[#111] object-contain"
               />
-              <div className="absolute left-4 top-4 inline-flex rounded-[0.55rem] border border-[#E31F29] bg-[#E31F29]/90 px-3 py-2 text-[0.72rem] uppercase tracking-[0.12em] text-white">
+              <div className="absolute left-4 top-4 inline-flex rounded-md border border-[#E31F29] bg-[#E31F29]/90 px-3 py-2 text-[0.72rem] uppercase tracking-[0.12em] text-white">
                 Prossimo evento
               </div>
             </Link>
@@ -122,13 +122,13 @@ export default async function HomePage() {
               <div className="mt-4 flex flex-wrap gap-3">
                 <Link
                   href={`/eventi/${nextEvent.slug}`}
-                  className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border border-[#E31F29] bg-[#E31F29] px-5 py-3 text-sm font-medium text-white transition hover:border-[#c91922] hover:bg-[#c91922] sm:flex-none"
+                  className="inline-flex min-h-11 flex-1 items-center justify-center rounded-lg border border-[#E31F29] bg-[#E31F29] px-5 py-3 text-sm font-medium text-white transition hover:border-[#c91922] hover:bg-[#c91922] sm:flex-none"
                 >
                   Scheda evento
                 </Link>
                 <Link
                   href={`/prenota?event=${nextEvent.slug}`}
-                  className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border border-[#E31F29]/35 px-5 py-3 text-sm font-medium text-[#f3efe5] transition hover:bg-[#E31F29]/10 sm:flex-none"
+                  className="inline-flex min-h-11 flex-1 items-center justify-center rounded-lg border border-[#E31F29]/35 px-5 py-3 text-sm font-medium text-[#f3efe5] transition hover:bg-[#E31F29]/10 sm:flex-none"
                 >
                   Candidati ora
                 </Link>
@@ -156,7 +156,7 @@ export default async function HomePage() {
                   href="https://soundcloud.com/open-decks-107831124?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#E31F29] bg-[#E31F29] px-5 py-3 text-sm font-medium text-white transition hover:border-[#c91922] hover:bg-[#c91922]"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-[#E31F29] bg-[#E31F29] px-5 py-3 text-sm font-medium text-white transition hover:border-[#c91922] hover:bg-[#c91922]"
                 >
                   <SoundCloudIcon />
                   Ascolta su SoundCloud
@@ -164,7 +164,7 @@ export default async function HomePage() {
               </div>
             </div>
 
-            <div className="order-1 overflow-hidden rounded-2xl bg-[#111] md:order-2">
+            <div className="order-1 overflow-hidden rounded-xl bg-[#111] md:order-2">
               <div className="flex flex-col gap-3 w-full">
                 <iframe
                   width="100%"
@@ -173,7 +173,7 @@ export default async function HomePage() {
                   frameBorder="no"
                   allow="autoplay"
                   src="https://w.soundcloud.com/player/?url=https://soundcloud.com/open-decks-107831124"
-                  className="rounded-xl"
+                  className="rounded-lg"
                 ></iframe>
               </div>
               {/*  <img
@@ -202,7 +202,7 @@ export default async function HomePage() {
                   href="https://t.me/opendecksitalia?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnpj7YXBWihu6z5LbMl71a-JWR8ghi42oUKWpR9Nc3u-WHwwuaRgo_yUVLaFM_aem_aX73IYbUVPrT6RnEeVirAA"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#E31F29] bg-[#E31F29] px-5 py-3 text-sm font-medium text-white transition hover:border-[#c91922] hover:bg-[#c91922]"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-[#E31F29] bg-[#E31F29] px-5 py-3 text-sm font-medium text-white transition hover:border-[#c91922] hover:bg-[#c91922]"
                 >
                   <TelegramIcon />
                   Apri Telegram
@@ -236,7 +236,7 @@ function ShotsStack() {
         return (
           <div
             key={src}
-            className={`absolute h-[88%] w-[74%] overflow-hidden rounded-[1.8rem] bg-[#111] shadow-[0_18px_50px_rgba(0,0,0,0.28)] ${offsets[index]}`}
+            className={`absolute h-[88%] w-[74%] overflow-hidden rounded-xl bg-[#111] shadow-[0_18px_50px_rgba(0,0,0,0.28)] ${offsets[index]}`}
           >
             <img
               src={src}

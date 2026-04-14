@@ -52,7 +52,7 @@ const initialState: FormState = {
 };
 
 const fieldClass =
-  "w-full rounded-xl border border-[#E31F29]/20 bg-white/[0.04] px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[#E31F29]/60";
+  "w-full rounded-lg border border-[#E31F29]/20 bg-white/[0.04] px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[#E31F29]/60";
 
 export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
   const [form, setForm] = useState<FormState>({
@@ -267,11 +267,11 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
   }
 
   return (
-    <div className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.03] p-6">
+    <div className="rounded-xl border border-[#E31F29]/18 bg-white/[0.03] p-6">
       {!events.length ? (
-        <div className="grid gap-6 rounded-[1.75rem] border border-[#E31F29]/18 bg-[linear-gradient(180deg,rgba(227,31,41,0.08)_0%,rgba(255,255,255,0.03)_100%)] p-6 md:p-8">
+        <div className="grid gap-6 rounded-xl border border-[#E31F29]/18 bg-[linear-gradient(180deg,rgba(227,31,41,0.08)_0%,rgba(255,255,255,0.03)_100%)] p-6 md:p-8">
           <div className="flex flex-col items-start gap-5">
-            <div className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3">
+            <div className="rounded-lg border border-white/10 bg-black/30 px-4 py-3">
               <Image
                 src="/img/loghi/LOGO-OPEN-DECKS_bianco.png"
                 alt="OpenDecks"
@@ -311,9 +311,9 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
           description={applicationFormCopy.loaderDescription}
         />
       ) : status.type === "error" ? (
-        <div className="grid gap-6 rounded-[1.75rem] border border-[#E31F29]/24 bg-[linear-gradient(180deg,rgba(227,31,41,0.1)_0%,rgba(255,255,255,0.03)_100%)] p-6 md:p-8">
+        <div className="grid gap-6 rounded-xl border border-[#E31F29]/24 bg-[linear-gradient(180deg,rgba(227,31,41,0.1)_0%,rgba(255,255,255,0.03)_100%)] p-6 md:p-8">
           <div className="flex flex-col items-start gap-5">
-            <div className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3">
+            <div className="rounded-lg border border-white/10 bg-black/30 px-4 py-3">
               <Image
                 src="/img/loghi/LOGO-OPEN-DECKS_bianco.png"
                 alt="OpenDecks"
@@ -348,9 +348,9 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
           </div>
         </div>
       ) : status.type === "ok" ? (
-        <div className="grid gap-6 rounded-[1.75rem] border border-emerald-500/22 bg-[linear-gradient(180deg,rgba(16,185,129,0.08)_0%,rgba(255,255,255,0.03)_100%)] p-6 md:p-8">
+        <div className="grid gap-6 rounded-xl border border-emerald-500/22 bg-[linear-gradient(180deg,rgba(16,185,129,0.08)_0%,rgba(255,255,255,0.03)_100%)] p-6 md:p-8">
           <div className="flex flex-col items-start gap-5">
-            <div className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3">
+            <div className="rounded-lg border border-white/10 bg-black/30 px-4 py-3">
               <Image
                 src="/img/loghi/LOGO-OPEN-DECKS_bianco.png"
                 alt="OpenDecks"

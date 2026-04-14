@@ -44,7 +44,7 @@ export default function ProtectedAdminLayout({
       <div
         className={`${ui.layout.page} grid min-w-0 gap-6 overflow-x-clip py-8 lg:grid-cols-[280px_minmax(0,1fr)]`}
       >
-        <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl px-4 py-3 lg:hidden">
+        <div className="flex min-w-0 items-center justify-between gap-3 rounded-xl px-4 py-3 lg:hidden">
           <div className="min-w-0 flex-1">
             <Image
               src="/img/loghi/LOGO-OPEN-DECKS_bianco.png"
@@ -115,7 +115,7 @@ export default function ProtectedAdminLayout({
               <Link
                 key={item.key}
                 href={item.href as Route}
-                className={`inline-flex min-h-11 items-center rounded-[0.55rem] border px-4 py-3 text-sm transition ${
+                className={`inline-flex min-h-11 items-center rounded-md border px-4 py-3 text-sm transition ${
                   pathname === item.href
                     ? ui.nav.sidebarActive
                     : ui.nav.sidebarIdle
@@ -133,7 +133,7 @@ export default function ProtectedAdminLayout({
             </span>
             <Link
               href="/"
-              className="inline-flex min-h-11 items-center rounded-[0.55rem] border border-[color:var(--color-brand-14)] bg-[color:var(--color-surface-faint)] px-4 py-3 text-sm text-white/80 transition hover:bg-[color:var(--color-brand-12)]"
+              className="inline-flex min-h-11 items-center rounded-md border border-[color:var(--color-brand-14)] bg-[color:var(--color-surface-faint)] px-4 py-3 text-sm text-white/80 transition hover:bg-[color:var(--color-brand-12)]"
               onClick={() => setSidebarOpen(false)}
             >
               Torna al sito

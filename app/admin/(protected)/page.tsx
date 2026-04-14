@@ -93,7 +93,7 @@ export default async function AdminPage() {
           </div>
           <Link
             href="/admin/candidature"
-            className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#E31F29]/35 px-4 py-3 text-sm font-medium text-[#f7f3ee] transition hover:bg-[#E31F29]/10"
+            className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[#E31F29]/35 px-4 py-3 text-sm font-medium text-[#f7f3ee] transition hover:bg-[#E31F29]/10"
           >
             Vedi tutte
           </Link>
@@ -103,7 +103,7 @@ export default async function AdminPage() {
           {newApplications.slice(0, 5).map((application) => (
             <article
               key={application.id}
-              className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-5"
+              className="rounded-xl border border-[#E31F29]/18 bg-white/[0.04] p-5"
             >
               <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-white/58">
                 <span
@@ -139,7 +139,7 @@ export default async function AdminPage() {
               <div className="mt-4 flex flex-wrap gap-3">
                 <Link
                   href={`/admin/candidature?applicationId=${application.id}`}
-                  className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#E31F29]/35 px-4 py-3 text-sm font-medium text-[#f7f3ee] transition hover:bg-[#E31F29]/10"
+                  className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[#E31F29]/35 px-4 py-3 text-sm font-medium text-[#f7f3ee] transition hover:bg-[#E31F29]/10"
                 >
                   Dettagli
                 </Link>
@@ -147,7 +147,7 @@ export default async function AdminPage() {
             </article>
           ))}
           {!newApplications.length ? (
-            <article className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-5">
+            <article className="rounded-xl border border-[#E31F29]/18 bg-white/[0.04] p-5">
               <p className="text-sm text-white/65">
                 Nessuna candidatura nuova al momento.
               </p>
@@ -217,7 +217,7 @@ export default async function AdminPage() {
 
 function MetricCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="min-w-0 rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-4">
+    <div className="min-w-0 rounded-xl border border-[#E31F29]/18 bg-white/[0.04] p-4">
       <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
         {label}
       </span>
@@ -238,7 +238,7 @@ function StatsChart({
   const max = items[0]?.count || 1;
 
   return (
-    <div className="min-w-0 rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-5">
+    <div className="min-w-0 rounded-xl border border-[#E31F29]/18 bg-white/[0.04] p-5">
       <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
         Dashboard
       </span>
@@ -289,7 +289,7 @@ function DualStatsChart({
   );
 
   return (
-    <div className="min-w-0 rounded-2xl border border-[#E31F29]/18 bg-white/[0.04] p-5 ">
+    <div className="min-w-0 rounded-xl border border-[#E31F29]/18 bg-white/[0.04] p-5 ">
       <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
         Ultimo Mese
       </span>

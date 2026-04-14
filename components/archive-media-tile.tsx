@@ -23,7 +23,7 @@ export function ArchiveMediaTile({
   const wrapperClass =
     variant === "editorial"
       ? "mb-2 break-inside-avoid overflow-hidden bg-transparent"
-      : "overflow-hidden rounded-2xl border border-[#E31F29]/15 bg-white/[0.03]";
+      : "overflow-hidden rounded-xl border border-[#E31F29]/15 bg-white/[0.03]";
 
   const frameClass =
     sizeClass === "portrait"

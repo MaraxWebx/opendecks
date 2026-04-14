@@ -76,7 +76,7 @@ export function Header() {
             <Link
               href={item.href}
               key={item.href}
-              className={`w-auto rounded-[0.55rem] border px-4 py-2 text-[0.95rem] text-white transition ${
+              className={`w-auto rounded-md border px-4 py-2 text-[0.95rem] text-white transition ${
                 item.featured
                   ? "border-[#ff5a63] bg-[#E31F29] shadow-[0_0_12px_rgba(227,31,41,0.45),0_0_28px_rgba(227,31,41,0.18)] hover:border-[#ff7077] hover:bg-[#c91922]"
                   : pathname === item.href

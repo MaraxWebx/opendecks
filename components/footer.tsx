@@ -29,7 +29,7 @@ export async function Footer() {
           </p>
           <Link
             href="/admin/login"
-            className="inline-flex w-fit items-center rounded-[0.55rem] border border-[#E31F29]/35 bg-[#E31F29]/10 px-3 py-2 text-white transition hover:bg-[#E31F29]/16"
+            className="inline-flex w-fit items-center rounded-md border border-[#E31F29]/35 bg-[#E31F29]/10 px-3 py-2 text-white transition hover:bg-[#E31F29]/16"
           >
             Admin access
           </Link>
@@ -56,7 +56,7 @@ export async function Footer() {
               target="_blank"
               rel="noreferrer"
               aria-label="Instagram OpenDecks Italia"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[#E31F29]/35 text-white transition hover:bg-[#E31F29]/10"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#E31F29]/35 text-white transition hover:bg-[#E31F29]/10"
             >
               <InstagramIcon />
             </a>
@@ -65,7 +65,7 @@ export async function Footer() {
               target="_blank"
               rel="noreferrer"
               aria-label="Telegram OpenDecks Italia"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[#E31F29]/35 text-white transition hover:bg-[#E31F29]/10"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#E31F29]/35 text-white transition hover:bg-[#E31F29]/10"
             >
               <TelegramIcon />
             </a>
@@ -74,7 +74,7 @@ export async function Footer() {
               target="_blank"
               rel="noreferrer"
               aria-label="SoundCloud OpenDecks Italia"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[#E31F29]/35 text-white transition hover:bg-[#E31F29]/10"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#E31F29]/35 text-white transition hover:bg-[#E31F29]/10"
             >
               <SoundCloudIcon />
             </a>

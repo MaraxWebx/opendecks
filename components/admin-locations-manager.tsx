@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Route } from "next";
 
 import { BodyScrollLock } from "@/components/body-scroll-lock";
+import { DeleteIconButton } from "@/components/delete-icon-button";
 import { ModalCloseButton } from "@/components/modal-close-button";
 import { LocationRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
@@ -261,14 +262,12 @@ export function AdminLocationsManager({
                   <Link href={`/admin/locations/${location.id}` as Route} className={ui.action.secondary}>
                     Apri scheda
                   </Link>
-                  <button
-                    type="button"
-                    className={ui.action.secondary}
-                    disabled={busyId === location.id}
+                  <DeleteIconButton
                     onClick={() => handleDelete(location.id)}
-                  >
-                    {busyId === location.id ? "Eliminazione..." : "Elimina"}
-                  </button>
+                    disabled={busyId === location.id}
+                    busy={busyId === location.id}
+                    label={`Elimina location ${location.name}`}
+                  />
                 </div>
               </div>
             </article>

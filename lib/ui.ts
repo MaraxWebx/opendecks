@@ -39,27 +39,27 @@ export const ui = {
   },
   surface: {
     panel:
-      "rounded-2xl p-6",
+      "rounded-xl p-6",
     card:
-      "rounded-xl border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] p-5",
+      "rounded-lg border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] p-5",
     modal:
-      "relative z-10 max-h-[calc(100vh-2rem)] w-full overflow-auto rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-6"
+      "relative z-10 max-h-[calc(100vh-2rem)] w-full overflow-auto rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-6"
   },
   action: {
     primary:
-      "inline-flex min-h-11 items-center justify-center rounded-xl border border-[color:var(--color-brand)] bg-[color:var(--color-brand)] px-5 py-3 text-sm font-medium text-white transition hover:border-[color:var(--color-brand-hover)] hover:bg-[color:var(--color-brand-hover)]",
+      "inline-flex min-h-11 items-center justify-center rounded-lg border border-[color:var(--color-brand)] bg-[color:var(--color-brand)] px-5 py-3 text-sm font-medium text-white transition hover:border-[color:var(--color-brand-hover)] hover:bg-[color:var(--color-brand-hover)]",
     secondary:
-      "inline-flex min-h-11 items-center justify-center rounded-xl border border-[color:var(--color-brand-35)] px-4 py-3 text-sm font-medium text-[color:var(--color-text)] transition hover:bg-[color:var(--color-brand-10)]",
+      "inline-flex min-h-11 items-center justify-center rounded-lg border border-[color:var(--color-brand-35)] px-4 py-3 text-sm font-medium text-[color:var(--color-text)] transition hover:bg-[color:var(--color-brand-10)]",
     danger:
-      "inline-flex min-h-11 items-center justify-center rounded-xl border border-[#E31F29]/45 bg-[#E31F29]/12 px-4 py-3 text-sm font-medium text-[#f7f3ee] transition hover:bg-[#E31F29]/18 disabled:cursor-not-allowed disabled:opacity-60",
+      "inline-flex min-h-11 items-center justify-center rounded-lg border border-[#E31F29]/45 bg-[#E31F29]/12 px-4 py-3 text-sm font-medium text-[#f7f3ee] transition hover:bg-[#E31F29]/18 disabled:cursor-not-allowed disabled:opacity-60",
     navToggle:
       "inline-flex h-12 w-12 flex-col items-center justify-center gap-1.5 rounded-[0.55rem] border border-[color:var(--color-brand-25)] bg-[color:var(--color-brand-10)] text-white md:hidden"
   },
   form: {
     field:
-      "w-full rounded-xl border border-[color:var(--color-brand-20)] bg-[color:var(--color-surface)] px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[color:var(--color-brand-60)]",
+      "w-full rounded-lg border border-[color:var(--color-brand-20)] bg-[color:var(--color-surface)] px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[color:var(--color-brand-60)]",
     select:
-      "select-theme w-full rounded-xl border border-[color:var(--color-brand-20)] bg-[color:var(--color-surface)] px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[color:var(--color-brand-60)]",
+      "select-theme w-full rounded-lg border border-[color:var(--color-brand-20)] bg-[color:var(--color-surface)] px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[color:var(--color-brand-60)]",
     label: "text-xs uppercase tracking-[0.18em] text-white/70"
   },
   nav: {

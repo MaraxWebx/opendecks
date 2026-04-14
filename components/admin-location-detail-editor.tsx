@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { DeleteIconButton } from "@/components/delete-icon-button";
 import { LocationRecord, EventRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
 
@@ -228,14 +229,12 @@ export function AdminLocationDetailEditor({
               <button type="submit" className={ui.action.primary} disabled={saving}>
                 {saving ? "Salvataggio..." : "Salva modifiche"}
               </button>
-              <button
-                type="button"
-                className="inline-flex min-h-11 items-center justify-center rounded-xl border border-red-500/35 bg-red-500/12 px-5 py-3 text-sm font-medium text-red-200 transition hover:bg-red-500/18 disabled:cursor-not-allowed disabled:opacity-50"
+              <DeleteIconButton
                 onClick={handleDelete}
                 disabled={deleting || saving || relatedEvents.length > 0}
-              >
-                {deleting ? "Eliminazione..." : "Elimina location"}
-              </button>
+                busy={deleting}
+                label={`Elimina location ${form.name}`}
+              />
               {status ? <p className="text-sm text-white/70">{status}</p> : null}
             </div>
 

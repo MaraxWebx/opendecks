@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { BodyScrollLock } from "@/components/body-scroll-lock";
+import { DeleteIconButton } from "@/components/delete-icon-button";
 import { ModalCloseButton } from "@/components/modal-close-button";
 import { ApplicationRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
@@ -280,16 +281,12 @@ export function AdminApplicationsManager({
                   >
                     Dettagli
                   </button>
-                  <button
-                    type="button"
-                    className={ui.action.danger}
-                    disabled={deletingId === application.id}
+                  <DeleteIconButton
                     onClick={() => setDeleteTarget(application)}
-                  >
-                    {deletingId === application.id
-                      ? "Eliminazione..."
-                      : "Elimina"}
-                  </button>
+                    disabled={deletingId === application.id}
+                    busy={deletingId === application.id}
+                    label={`Elimina candidatura ${application.name}`}
+                  />
                 </div>
               </div>
             </article>
@@ -325,7 +322,7 @@ export function AdminApplicationsManager({
                         <img
                           src={selectedApplication.photoUrl}
                           alt={selectedApplication.name}
-                          className="h-64 w-full rounded-xl object-cover lg:h-72"
+                          className="h-64 w-full rounded-lg object-cover lg:h-72"
                         />
                         <div className="absolute bottom-3 right-3">
                           <span
@@ -436,16 +433,12 @@ export function AdminApplicationsManager({
                         </button>
                       </div>
                       <div className="mt-3">
-                        <button
-                          type="button"
-                          className={ui.action.danger}
-                          disabled={deletingId === selectedApplication.id}
+                        <DeleteIconButton
                           onClick={() => setDeleteTarget(selectedApplication)}
-                        >
-                          {deletingId === selectedApplication.id
-                            ? "Eliminazione..."
-                            : "Elimina candidatura"}
-                        </button>
+                          disabled={deletingId === selectedApplication.id}
+                          busy={deletingId === selectedApplication.id}
+                          label={`Elimina candidatura ${selectedApplication.name}`}
+                        />
                       </div>
                       {statusMessage ? (
                         <p className="mt-3 text-sm text-white/70">
@@ -507,7 +500,7 @@ export function AdminApplicationsManager({
                 </p>
               </div>
 
-              <div className="rounded-xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-white/78">
+              <div className="rounded-lg border border-red-500/25 bg-red-500/10 p-4 text-sm text-white/78">
                 <p>Evento: {deleteTarget.eventTitle}</p>
                 <p>Email: {deleteTarget.email}</p>
               </div>

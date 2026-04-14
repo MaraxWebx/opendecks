@@ -41,12 +41,12 @@ export function DjMultiSelect({ djs, value, onChange }: DjMultiSelectProps) {
 
   return (
     <div className="grid gap-2">
-      <div className="rounded-xl border border-[color:var(--color-brand-20)] bg-[color:var(--color-surface)] p-3">
+      <div className="rounded-lg border border-[color:var(--color-brand-20)] bg-[color:var(--color-surface)] p-3">
         <div className="flex flex-wrap items-center gap-2">
           {selectedDjs.map((dj) => (
             <span
               key={dj.id}
-              className="inline-flex items-center gap-2 rounded-full border border-[color:var(--color-brand-25)] bg-[color:var(--color-brand-10)] px-3 py-1.5 text-sm text-white"
+              className="inline-flex items-center gap-2 rounded-md border border-[color:var(--color-brand-25)] bg-[color:var(--color-brand-10)] px-3 py-1.5 text-sm text-white"
             >
               {dj.name}
               <button
@@ -69,7 +69,7 @@ export function DjMultiSelect({ djs, value, onChange }: DjMultiSelectProps) {
       </div>
 
       {showDropdown && availableDjs.length > 0 ? (
-        <div className="overflow-hidden rounded-xl border border-[color:var(--color-border-soft)] bg-[color:var(--color-bg-elevated)]">
+        <div className="overflow-hidden rounded-lg border border-[color:var(--color-border-soft)] bg-[color:var(--color-bg-elevated)]">
           {availableDjs.slice(0, 8).map((dj) => (
             <button
               key={dj.id}

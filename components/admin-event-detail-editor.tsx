@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { BodyScrollLock } from "@/components/body-scroll-lock";
+import { DeleteIconButton } from "@/components/delete-icon-button";
 import { ModalCloseButton } from "@/components/modal-close-button";
 import { buildDjRosterProfiles, getEventLineupDjs } from "@/lib/dj-roster";
 import {
@@ -394,14 +395,12 @@ export function AdminEventDetailEditor({
               >
                 Modifica evento
               </button>
-              <button
-                type="button"
-                className="inline-flex min-h-11 items-center justify-center rounded-xl border border-red-500/35 bg-red-500/12 px-5 py-3 text-sm font-medium text-red-200 transition hover:bg-red-500/18 disabled:cursor-not-allowed disabled:opacity-50"
+              <DeleteIconButton
                 onClick={openDeleteModal}
                 disabled={deleting}
-              >
-                {deleting ? "Eliminazione..." : "Elimina evento"}
-              </button>
+                busy={deleting}
+                label={`Elimina evento ${form.title}`}
+              />
               {status ? (
                 <p className="text-sm text-white/70">{status}</p>
               ) : null}
@@ -412,7 +411,7 @@ export function AdminEventDetailEditor({
         <div className="grid gap-4">
           <div className={ui.surface.panel}>
             <span className={ui.text.eyebrow}>Anteprima</span>
-            <div className="mt-4 overflow-hidden rounded-xl border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)]">
+            <div className="mt-4 overflow-hidden rounded-lg border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)]">
               <img
                 src={
                   imageFile ? URL.createObjectURL(imageFile) : form.coverImage
@@ -656,7 +655,7 @@ export function AdminEventDetailEditor({
               </div>
 
               {deleteState.requiresForce ? (
-                <div className="rounded-xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-white/78">
+                <div className="rounded-lg border border-red-500/25 bg-red-500/10 p-4 text-sm text-white/78">
                   <p>
                     Candidature collegate: {deleteState.linkedApplicationsCount}
                   </p>
@@ -670,7 +669,7 @@ export function AdminEventDetailEditor({
               <div className="flex flex-wrap gap-3">
                 <button
                   type="button"
-                  className="inline-flex min-h-11 items-center justify-center rounded-xl border border-red-500/35 bg-red-500/12 px-5 py-3 text-sm font-medium text-red-200 transition hover:bg-red-500/18 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="inline-flex min-h-11 items-center justify-center rounded-lg border border-red-500/35 bg-red-500/12 px-5 py-3 text-sm font-medium text-red-200 transition hover:bg-red-500/18 disabled:cursor-not-allowed disabled:opacity-50"
                   onClick={
                     deleteState.requiresForce
                       ? handleForceDelete

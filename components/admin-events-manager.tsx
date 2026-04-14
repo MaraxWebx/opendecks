@@ -396,7 +396,7 @@ export function AdminEventsManager({
               <button
                 key={month}
                 type="button"
-                className={`shrink-0 rounded-xl border px-4 py-3 text-sm transition ${
+                className={`shrink-0 rounded-lg border px-4 py-3 text-sm transition ${
                   monthFilter === month
                     ? ui.nav.sidebarActive
                     : ui.nav.sidebarIdle
@@ -424,7 +424,7 @@ export function AdminEventsManager({
                 {calendarDays.map((day) => (
                   <div
                     key={day.date}
-                    className={`min-h-36 min-w-0 rounded-xl border p-3 align-top ${
+                    className={`min-h-36 min-w-0 rounded-lg border p-3 align-top ${
                       day.inCurrentMonth
                         ? "border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)]"
                         : "border-[color:var(--color-brand-10)] bg-black/20"
@@ -447,9 +447,11 @@ export function AdminEventsManager({
 
                     <div className="grid min-w-0 gap-2">
                       {day.events.map((event) => (
-                        <div
+                        <Link
                           key={event.id}
-                          className="min-w-0 rounded-lg border border-[color:var(--color-brand-14)] bg-[color:var(--color-brand-10)] p-2"
+                          href={`/admin/eventi/${event.slug}`}
+                          className="min-w-0 rounded-lg border border-[color:var(--color-brand-14)] bg-[color:var(--color-brand-10)] p-2 transition hover:border-[color:var(--color-brand-38)] hover:bg-[color:var(--color-brand-12)]"
+                          title={`Apri ${event.title}`}
                         >
                           <p className="text-xs break-words font-medium leading-5 text-white">
                             {event.title}
@@ -457,7 +459,7 @@ export function AdminEventsManager({
                           <p className="mt-1 break-words text-[11px] leading-4 text-white/70">
                             {event.time} / {event.locationName}
                           </p>
-                        </div>
+                        </Link>
                       ))}
                     </div>
                   </div>
@@ -479,7 +481,7 @@ export function AdminEventsManager({
             {filteredEvents.map((event) => (
               <div key={event.id} className={`${ui.surface.card} min-w-0`}>
                 <div className="grid gap-4 md:grid-cols-[140px_minmax(0,1fr)] md:items-start">
-                  <div className="overflow-hidden rounded-xl border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)]">
+                  <div className="overflow-hidden rounded-lg border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)]">
                     <img
                       src={event.coverImage}
                       alt={event.coverAlt}
@@ -660,7 +662,7 @@ export function AdminEventsManager({
                         <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
                           Anteprima immagine
                         </span>
-                        <div className="max-w-xs overflow-hidden rounded-xl border border-[#E31F29]/18 bg-white/[0.03]">
+                        <div className="max-w-xs overflow-hidden rounded-lg border border-[#E31F29]/18 bg-white/[0.03]">
                           <img
                             src={
                               imageFile

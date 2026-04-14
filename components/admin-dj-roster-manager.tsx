@@ -38,7 +38,7 @@ type MunicipalityOption = {
 };
 
 const fieldClass =
-  "w-full rounded-xl border border-[#E31F29]/20 bg-white/[0.04] px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[#E31F29]/60";
+  "w-full rounded-lg border border-[#E31F29]/20 bg-white/[0.04] px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[#E31F29]/60";
 
 export function AdminDjRosterManager({
   initialRoster,
@@ -468,7 +468,7 @@ export function AdminDjRosterManager({
                         <img
                           src={selectedDj.photoUrl}
                           alt={selectedDj.name}
-                          className="h-64 w-full rounded-xl object-cover lg:h-72"
+                          className="h-64 w-full rounded-lg object-cover lg:h-72"
                         />
                         <div className="absolute bottom-3 right-3 inline-flex items-center rounded-full border border-white/15 bg-black/72 px-3 py-1.5 text-[0.68rem] font-medium uppercase tracking-[0.18em] text-white shadow-[0_10px_30px_rgba(0,0,0,0.32)] backdrop-blur-sm">
                           <span className="mr-2 h-2 w-2 rounded-full bg-[color:var(--color-brand)]" />
@@ -477,7 +477,7 @@ export function AdminDjRosterManager({
                       </div>
                     </>
                   ) : (
-                    <div className="rounded-xl border border-dashed border-white/12 px-4 py-6 text-sm text-white/45">
+                    <div className="rounded-lg border border-dashed border-white/12 px-4 py-6 text-sm text-white/45">
                       Nessuna foto profilo disponibile.
                     </div>
                   )}
@@ -658,7 +658,7 @@ export function AdminDjRosterManager({
             </div>
 
             {createMessage ? (
-              <div className="mb-5 rounded-xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+              <div className="mb-5 rounded-lg border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-100">
                 {createMessage}
               </div>
             ) : null}
@@ -712,7 +712,7 @@ export function AdminDjRosterManager({
                         required
                       />
                       {cityMenuOpen && cityOptions.length ? (
-                        <div className="absolute z-20 mt-2 max-h-64 w-full overflow-auto rounded-xl border border-[#E31F29]/20 bg-[#0b0b0c] p-2 shadow-[0_18px_50px_rgba(0,0,0,0.45)]">
+                        <div className="absolute z-20 mt-2 max-h-64 w-full overflow-auto rounded-lg border border-[#E31F29]/20 bg-[#0b0b0c] p-2 shadow-[0_18px_50px_rgba(0,0,0,0.45)]">
                           {cityOptions.map((municipality) => (
                             <button
                               key={municipality.code}

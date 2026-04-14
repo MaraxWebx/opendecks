@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 
 import { BodyScrollLock } from "@/components/body-scroll-lock";
+import { DeleteIconButton } from "@/components/delete-icon-button";
 import { ModalCloseButton } from "@/components/modal-close-button";
 import { ArchiveRecord, EventRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
@@ -274,7 +275,7 @@ export function ArchiveAdminManager({
         {sortedItems.map((item) => (
           <article
             key={item.id}
-            className="overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-surface)]"
+            className="overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-surface)]"
           >
             <div className="bg-[#0d0d0d]">
               {item.mediaType === "video" ? (
@@ -311,14 +312,12 @@ export function ArchiveAdminManager({
                 >
                   Modifica
                 </button>
-                <button
-                  type="button"
-                  className="inline-flex min-h-11 items-center justify-center rounded-xl border border-red-500/35 bg-red-500/12 px-4 py-3 text-sm font-medium text-red-200 transition hover:bg-red-500/18 disabled:cursor-not-allowed disabled:opacity-50"
+                <DeleteIconButton
                   onClick={() => void handleDelete(item.id)}
                   disabled={deletingId === item.id}
-                >
-                  {deletingId === item.id ? "Eliminazione..." : "Elimina"}
-                </button>
+                  busy={deletingId === item.id}
+                  label={`Elimina contenuto gallery ${item.title || item.alt}`}
+                />
               </div>
             </div>
           </article>
@@ -464,7 +463,7 @@ function GalleryModal({
           </div>
 
           {mediaFile || form.mediaUrl ? (
-            <div className="rounded-xl border border-[color:var(--color-brand-14)] bg-[color:var(--color-brand-10)] px-4 py-3 text-sm text-white/72">
+            <div className="rounded-lg border border-[color:var(--color-brand-14)] bg-[color:var(--color-brand-10)] px-4 py-3 text-sm text-white/72">
               File principale: {mediaFile?.name || "Media già presente"}
             </div>
           ) : null}
