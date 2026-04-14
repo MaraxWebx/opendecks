@@ -48,8 +48,17 @@ try {
   await db.collection("tags").createIndex({ id: 1 }, { unique: true });
   await db.collection("tags").createIndex({ slug: 1 }, { unique: true });
   await db.collection("dj_roster").createIndex({ id: 1 }, { unique: true });
-  await db.collection("dj_roster").createIndex({ applicationId: 1 }, { unique: true });
-  await db.collection("dj_roster").createIndex({ eventId: 1 });
+  await safelyDropIndex(db.collection("dj_roster"), "applicationId_1");
+  await safelyDropIndex(db.collection("dj_roster"), "eventId_1");
+  await db.collection("dj_roster").createIndex(
+    { applicationId: 1 },
+    {
+      unique: true,
+      partialFilterExpression: {
+        applicationId: { $type: "string" }
+      }
+    }
+  );
   await db.collection("archive").createIndex({ id: 1 }, { unique: true });
   await db.collection("admin_users").createIndex({ username: 1 }, { unique: true });
 
@@ -79,11 +88,15 @@ function buildRosterSeed(seedData) {
     .map((application) => ({
       id: application.id,
       applicationId: application.id,
-      eventId: application.eventId,
-      eventTitle: application.eventTitle,
+      sourceApplicationEventId: application.eventId,
+      sourceApplicationEventTitle: application.eventTitle,
       name: application.name,
       city: application.city,
+      province: application.province || "",
+      region: application.region || "",
       email: application.email || "",
+      phone: application.phone || "",
+      photoUrl: application.photoUrl || "",
       instagram: application.instagram,
       setLink: application.setLink,
       bio: application.bio,
@@ -100,4 +113,23 @@ function buildRosterSeed(seedData) {
   }
 
   return merged;
+}
+
+async function safelyDropIndex(collection, name) {
+  try {
+    await collection.dropIndex(name);
+  } catch (error) {
+    if (!(error instanceof Error)) {
+      throw error;
+    }
+
+    if (
+      error.message.includes("index not found") ||
+      error.message.includes("ns not found")
+    ) {
+      return;
+    }
+
+    throw error;
+  }
 }

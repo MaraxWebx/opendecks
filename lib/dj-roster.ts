@@ -48,15 +48,15 @@ export function buildDjRosterProfiles(roster: DjRosterRecord[]) {
       continue;
     }
 
+    const previousApprovedAt = existing.sourceEntries.reduce(
+      (latest, sourceEntry) =>
+        sourceEntry.approvedAt > latest ? sourceEntry.approvedAt : latest,
+      ""
+    );
+
     existing.sourceEntries.push(entry);
 
-    const existingApprovedAt =
-      existing.sourceEntries.reduce(
-        (latest, sourceEntry) =>
-          sourceEntry.approvedAt > latest ? sourceEntry.approvedAt : latest,
-        ""
-      ) || "";
-    if (entry.approvedAt > existingApprovedAt) {
+    if (entry.approvedAt > previousApprovedAt) {
       existing.id = entry.id;
       existing.name = entry.name;
       existing.city = entry.city;

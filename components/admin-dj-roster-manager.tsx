@@ -277,17 +277,18 @@ export function AdminDjRosterManager({
         }),
       });
 
-      const result = (await response.json()) as {
+      const result = (await response.json().catch(() => null)) as {
         rosterEntry?: DjRosterRecord;
         error?: string;
-      };
+      } | null;
 
-      if (!response.ok || !result.rosterEntry) {
-        throw new Error(result.error || "Creazione DJ non riuscita.");
+      if (!response.ok || !result?.rosterEntry) {
+        throw new Error(result?.error || "Creazione DJ non riuscita.");
       }
 
-      setRoster((current) => [result.rosterEntry!, ...current]);
-      setSelectedDj(result.rosterEntry);
+      const createdRosterEntry = result.rosterEntry;
+      setRoster((current) => [createdRosterEntry, ...current]);
+      setSelectedDj(createdRosterEntry);
       setManualForm(createInitialManualForm(events));
       setCityQuery("");
       setCityOptions([]);

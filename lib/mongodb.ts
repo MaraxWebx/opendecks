@@ -6,6 +6,7 @@ const dbName = process.env.MONGODB_DB || "opendecks";
 declare global {
   var __opendecksMongoClient__: MongoClient | undefined;
   var __opendecksMongoClientPromise__: Promise<MongoClient> | undefined;
+  var __opendecksMongoSchemaPromise__: Promise<void> | undefined;
 }
 
 let mongoUnavailable = false;
@@ -77,5 +78,58 @@ async function getClient() {
 
 export async function getDatabase() {
   const client = await getClient();
-  return client.db(dbName);
+  const db = client.db(dbName);
+
+  if (!global.__opendecksMongoSchemaPromise__) {
+    global.__opendecksMongoSchemaPromise__ = ensureMongoSchema(db);
+  }
+
+  await global.__opendecksMongoSchemaPromise__;
+  return db;
+}
+
+async function ensureMongoSchema(db: ReturnType<MongoClient["db"]>) {
+  await ensureDjRosterIndexes(db);
+}
+
+async function ensureDjRosterIndexes(db: ReturnType<MongoClient["db"]>) {
+  const collection = db.collection("dj_roster");
+
+  try {
+    await collection.dropIndex("applicationId_1");
+  } catch (error) {
+    if (!isMissingIndexError(error)) {
+      throw error;
+    }
+  }
+
+  try {
+    await collection.dropIndex("eventId_1");
+  } catch (error) {
+    if (!isMissingIndexError(error)) {
+      throw error;
+    }
+  }
+
+  await collection.createIndex({ id: 1 }, { unique: true });
+  await collection.createIndex(
+    { applicationId: 1 },
+    {
+      unique: true,
+      partialFilterExpression: {
+        applicationId: { $type: "string" },
+      },
+    },
+  );
+}
+
+function isMissingIndexError(error: unknown) {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+
+  return (
+    error.message.includes("index not found") ||
+    error.message.includes("ns not found")
+  );
 }

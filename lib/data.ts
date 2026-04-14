@@ -222,25 +222,20 @@ export async function createTag(input: NewTag) {
     return createTagMock(input);
   }
 
-  return withMongoFallback(
-    async () => {
-      const db = await getDatabase();
-      const existing = await db.collection<TagRecord>("tags").findOne({ slug: input.slug });
+  const db = await getDatabase();
+  const existing = await db.collection<TagRecord>("tags").findOne({ slug: input.slug });
 
-      if (existing) {
-        return normalizeTag(existing);
-      }
+  if (existing) {
+    return normalizeTag(existing);
+  }
 
-      const record: TagRecord = {
-        id: new ObjectId().toHexString(),
-        ...input
-      };
+  const record: TagRecord = {
+    id: new ObjectId().toHexString(),
+    ...input
+  };
 
-      await db.collection<TagRecord>("tags").insertOne(record);
-      return record;
-    },
-    () => createTagMock(input)
-  );
+  await db.collection<TagRecord>("tags").insertOne(record);
+  return record;
 }
 
 export async function createLocation(input: NewLocation) {
@@ -248,19 +243,14 @@ export async function createLocation(input: NewLocation) {
     return createLocationMock(input);
   }
 
-  return withMongoFallback(
-    async () => {
-      const db = await getDatabase();
-      const record: LocationRecord = {
-        id: new ObjectId().toHexString(),
-        ...input
-      };
+  const db = await getDatabase();
+  const record: LocationRecord = {
+    id: new ObjectId().toHexString(),
+    ...input
+  };
 
-      await db.collection<LocationRecord>("locations").insertOne(record);
-      return record;
-    },
-    () => createLocationMock(input)
-  );
+  await db.collection<LocationRecord>("locations").insertOne(record);
+  return record;
 }
 
 export async function updateLocation(id: string, input: UpdateLocationInput) {
@@ -268,32 +258,27 @@ export async function updateLocation(id: string, input: UpdateLocationInput) {
     return updateLocationMock(id, input);
   }
 
-  return withMongoFallback(
-    async () => {
-      const db = await getDatabase();
-      await db.collection<LocationRecord>("locations").updateOne({ id }, { $set: input });
-      const updated = await db.collection<LocationRecord>("locations").findOne({ id });
+  const db = await getDatabase();
+  await db.collection<LocationRecord>("locations").updateOne({ id }, { $set: input });
+  const updated = await db.collection<LocationRecord>("locations").findOne({ id });
 
-      if (!updated) {
-        return null;
+  if (!updated) {
+    return null;
+  }
+
+  const normalizedLocation = normalizeLocation(updated);
+
+  await db.collection<EventRecord>("events").updateMany(
+    { locationId: id },
+    {
+      $set: {
+        locationName: normalizedLocation.name,
+        locationAddress: normalizedLocation.address
       }
-
-      const normalizedLocation = normalizeLocation(updated);
-
-      await db.collection<EventRecord>("events").updateMany(
-        { locationId: id },
-        {
-          $set: {
-            locationName: normalizedLocation.name,
-            locationAddress: normalizedLocation.address
-          }
-        }
-      );
-
-      return normalizedLocation;
-    },
-    () => updateLocationMock(id, input)
+    }
   );
+
+  return normalizedLocation;
 }
 
 export async function deleteLocation(id: string) {
@@ -301,20 +286,15 @@ export async function deleteLocation(id: string) {
     return deleteLocationMock(id);
   }
 
-  return withMongoFallback(
-    async () => {
-      const db = await getDatabase();
-      const linkedEvents = await db.collection<EventRecord>("events").countDocuments({ locationId: id });
+  const db = await getDatabase();
+  const linkedEvents = await db.collection<EventRecord>("events").countDocuments({ locationId: id });
 
-      if (linkedEvents > 0) {
-        return { deleted: false, blocked: true };
-      }
+  if (linkedEvents > 0) {
+    return { deleted: false, blocked: true };
+  }
 
-      const result = await db.collection<LocationRecord>("locations").deleteOne({ id });
-      return { deleted: Boolean(result.deletedCount), blocked: false };
-    },
-    () => deleteLocationMock(id)
-  );
+  const result = await db.collection<LocationRecord>("locations").deleteOne({ id });
+  return { deleted: Boolean(result.deletedCount), blocked: false };
 }
 
 export async function updateDjRosterMembership(
@@ -325,15 +305,10 @@ export async function updateDjRosterMembership(
     return updateDjRosterMembershipMock(id, input);
   }
 
-  return withMongoFallback(
-    async () => {
-      const db = await getDatabase();
-      await db.collection<DjRosterRecord>("dj_roster").updateOne({ id }, { $set: input });
-      const updated = await db.collection<DjRosterRecord>("dj_roster").findOne({ id });
-      return updated ? normalizeDjRoster(updated) : null;
-    },
-    () => updateDjRosterMembershipMock(id, input)
-  );
+  const db = await getDatabase();
+  await db.collection<DjRosterRecord>("dj_roster").updateOne({ id }, { $set: input });
+  const updated = await db.collection<DjRosterRecord>("dj_roster").findOne({ id });
+  return updated ? normalizeDjRoster(updated) : null;
 }
 
 export async function createDjRosterEntry(input: NewDjRosterEntry) {
@@ -349,17 +324,9 @@ export async function createDjRosterEntry(input: NewDjRosterEntry) {
     return record;
   }
 
-  return withMongoFallback(
-    async () => {
-      const db = await getDatabase();
-      await db.collection<DjRosterRecord>("dj_roster").insertOne(record);
-      return record;
-    },
-    () => {
-      mockDjRoster.unshift(record);
-      return record;
-    }
-  );
+  const db = await getDatabase();
+  await db.collection<DjRosterRecord>("dj_roster").insertOne(record);
+  return record;
 }
 
 export async function createApplication(input: NewApplication) {
@@ -375,17 +342,9 @@ export async function createApplication(input: NewApplication) {
     return record;
   }
 
-  return withMongoFallback(
-    async () => {
-      const db = await getDatabase();
-      await db.collection<ApplicationRecord>("applications").insertOne(record);
-      return record;
-    },
-    () => {
-      mockApplications.unshift(record);
-      return record;
-    }
-  );
+  const db = await getDatabase();
+  await db.collection<ApplicationRecord>("applications").insertOne(record);
+  return record;
 }
 
 export async function createContactSubmission(input: NewContactSubmission) {
@@ -400,17 +359,9 @@ export async function createContactSubmission(input: NewContactSubmission) {
     return record;
   }
 
-  return withMongoFallback(
-    async () => {
-      const db = await getDatabase();
-      await db.collection<ContactSubmissionRecord>("contact_submissions").insertOne(record);
-      return record;
-    },
-    () => {
-      mockContactSubmissions.unshift(record);
-      return record;
-    }
-  );
+  const db = await getDatabase();
+  await db.collection<ContactSubmissionRecord>("contact_submissions").insertOne(record);
+  return record;
 }
 
 export async function updateApplication(id: string, input: UpdateApplicationInput) {
@@ -418,22 +369,17 @@ export async function updateApplication(id: string, input: UpdateApplicationInpu
     return updateApplicationMock(id, input);
   }
 
-  return withMongoFallback(
-    async () => {
-      const db = await getDatabase();
-      await db.collection<ApplicationRecord>("applications").updateOne({ id }, { $set: input });
-      const updated = await db.collection<ApplicationRecord>("applications").findOne({ id });
+  const db = await getDatabase();
+  await db.collection<ApplicationRecord>("applications").updateOne({ id }, { $set: input });
+  const updated = await db.collection<ApplicationRecord>("applications").findOne({ id });
 
-      if (!updated) {
-        return null;
-      }
+  if (!updated) {
+    return null;
+  }
 
-      const normalized = normalizeApplication(updated);
-      await syncDjRosterForApplication(db, normalized);
-      return normalized;
-    },
-    () => updateApplicationMock(id, input)
-  );
+  const normalized = normalizeApplication(updated);
+  await syncDjRosterForApplication(db, normalized);
+  return normalized;
 }
 
 export async function deleteApplication(id: string) {
@@ -441,14 +387,9 @@ export async function deleteApplication(id: string) {
     return deleteApplicationMock(id);
   }
 
-  return withMongoFallback(
-    async () => {
-      const db = await getDatabase();
-      const result = await db.collection<ApplicationRecord>("applications").deleteOne({ id });
-      return Boolean(result.deletedCount);
-    },
-    () => deleteApplicationMock(id)
-  );
+  const db = await getDatabase();
+  const result = await db.collection<ApplicationRecord>("applications").deleteOne({ id });
+  return Boolean(result.deletedCount);
 }
 
 export async function createEvent(input: NewEvent) {
@@ -463,29 +404,15 @@ export async function createEvent(input: NewEvent) {
     return sortEvents(mockEvents).find((event) => event.id === nextRecord.id) || nextRecord;
   }
 
-  return withMongoFallback(
-    async () => {
-      const db = await getDatabase();
-      const record: EventRecord = {
-        id: new ObjectId().toHexString(),
-        status: getEventStatusFromDate(input.date, input.time),
-        ...input
-      };
-      const nextRecord = applyEventDerivedState(record);
-      await db.collection<EventRecord>("events").insertOne(nextRecord);
-      return nextRecord;
-    },
-    () => {
-      const record: EventRecord = {
-        id: new ObjectId().toHexString(),
-        status: getEventStatusFromDate(input.date, input.time),
-        ...input
-      };
-      const nextRecord = applyEventDerivedState(record);
-      mockEvents.push(nextRecord);
-      return sortEvents(mockEvents).find((event) => event.id === nextRecord.id) || nextRecord;
-    }
-  );
+  const db = await getDatabase();
+  const record: EventRecord = {
+    id: new ObjectId().toHexString(),
+    status: getEventStatusFromDate(input.date, input.time),
+    ...input
+  };
+  const nextRecord = applyEventDerivedState(record);
+  await db.collection<EventRecord>("events").insertOne(nextRecord);
+  return nextRecord;
 }
 
 export async function updateEvent(id: string, input: UpdateEventInput) {
@@ -493,36 +420,31 @@ export async function updateEvent(id: string, input: UpdateEventInput) {
     return updateEventMock(id, input);
   }
 
-  return withMongoFallback(
-    async () => {
-      const db = await getDatabase();
-      const current = await db.collection<EventRecord>("events").findOne({ id });
+  const db = await getDatabase();
+  const current = await db.collection<EventRecord>("events").findOne({ id });
 
-      if (!current) {
-        return null;
-      }
+  if (!current) {
+    return null;
+  }
 
-      const nextInput = {
-        ...input,
-        status:
-          input.date || input.time
-            ? getEventStatusFromDate(input.date || current.date, input.time || current.time)
-            : current.status
-      };
+  const nextInput = {
+    ...input,
+    status:
+      input.date || input.time
+        ? getEventStatusFromDate(input.date || current.date, input.time || current.time)
+        : current.status
+  };
 
-      const targetStatus =
-        nextInput.status || getEventStatusFromDate(input.date || current.date, input.time || current.time);
+  const targetStatus =
+    nextInput.status || getEventStatusFromDate(input.date || current.date, input.time || current.time);
 
-      if (targetStatus === "past") {
-        nextInput.applicationsOpen = false;
-      }
+  if (targetStatus === "past") {
+    nextInput.applicationsOpen = false;
+  }
 
-      await db.collection<EventRecord>("events").updateOne({ id }, { $set: nextInput });
-      const updated = await db.collection<EventRecord>("events").findOne({ id });
-      return updated ? normalizeEvent(updated) : null;
-    },
-    () => updateEventMock(id, input)
-  );
+  await db.collection<EventRecord>("events").updateOne({ id }, { $set: nextInput });
+  const updated = await db.collection<EventRecord>("events").findOne({ id });
+  return updated ? normalizeEvent(updated) : null;
 }
 
 export async function deleteEvent(id: string) {
@@ -530,21 +452,16 @@ export async function deleteEvent(id: string) {
     return deleteEventMock(id);
   }
 
-  return withMongoFallback(
-    async () => {
-      const db = await getDatabase();
-      const eventDeleteResult = await db.collection<EventRecord>("events").deleteOne({ id });
+  const db = await getDatabase();
+  const eventDeleteResult = await db.collection<EventRecord>("events").deleteOne({ id });
 
-      if (!eventDeleteResult.deletedCount) {
-        return false;
-      }
+  if (!eventDeleteResult.deletedCount) {
+    return false;
+  }
 
-      await db.collection<ApplicationRecord>("applications").deleteMany({ eventId: id });
+  await db.collection<ApplicationRecord>("applications").deleteMany({ eventId: id });
 
-      return true;
-    },
-    () => deleteEventMock(id)
-  );
+  return true;
 }
 
 export async function createArchiveEntry(input: NewArchiveEntry) {
@@ -559,18 +476,9 @@ export async function createArchiveEntry(input: NewArchiveEntry) {
     return record;
   }
 
-  return withMongoFallback(
-    async () => {
-      const db = await getDatabase();
-      await db.collection<ArchiveRecord>("archive").insertOne(record);
-      return record;
-    },
-    () => {
-      mockArchive.push(record);
-      mockArchive.sort((a, b) => a.order - b.order);
-      return record;
-    }
-  );
+  const db = await getDatabase();
+  await db.collection<ArchiveRecord>("archive").insertOne(record);
+  return record;
 }
 
 export async function updateArchiveEntry(id: string, input: UpdateArchiveEntry) {
@@ -578,15 +486,10 @@ export async function updateArchiveEntry(id: string, input: UpdateArchiveEntry) 
     return updateArchiveMock(id, input);
   }
 
-  return withMongoFallback(
-    async () => {
-      const db = await getDatabase();
-      await db.collection<ArchiveRecord>("archive").updateOne({ id }, { $set: input });
-      const updated = await db.collection<ArchiveRecord>("archive").findOne({ id });
-      return updated ? normalizeArchive(updated) : null;
-    },
-    () => updateArchiveMock(id, input)
-  );
+  const db = await getDatabase();
+  await db.collection<ArchiveRecord>("archive").updateOne({ id }, { $set: input });
+  const updated = await db.collection<ArchiveRecord>("archive").findOne({ id });
+  return updated ? normalizeArchive(updated) : null;
 }
 
 export async function deleteArchiveEntry(id: string) {
@@ -594,14 +497,9 @@ export async function deleteArchiveEntry(id: string) {
     return deleteArchiveMock(id);
   }
 
-  return withMongoFallback(
-    async () => {
-      const db = await getDatabase();
-      const result = await db.collection<ArchiveRecord>("archive").deleteOne({ id });
-      return Boolean(result.deletedCount);
-    },
-    () => deleteArchiveMock(id)
-  );
+  const db = await getDatabase();
+  const result = await db.collection<ArchiveRecord>("archive").deleteOne({ id });
+  return Boolean(result.deletedCount);
 }
 
 function updateArchiveMock(id: string, input: UpdateArchiveEntry) {

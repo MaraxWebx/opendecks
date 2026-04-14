@@ -12,6 +12,7 @@ type DjMultiSelectProps = {
 
 export function DjMultiSelect({ djs, value, onChange }: DjMultiSelectProps) {
   const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
 
   const selectedDjs = useMemo(
     () => value.map((id) => djs.find((dj) => dj.id === id)).filter(Boolean) as DjRosterProfile[],
@@ -37,7 +38,7 @@ export function DjMultiSelect({ djs, value, onChange }: DjMultiSelectProps) {
     });
   }, [djs, query, value]);
 
-  const showDropdown = query.trim().length > 0;
+  const showDropdown = open && availableDjs.length > 0;
 
   return (
     <div className="grid gap-2">
@@ -63,6 +64,10 @@ export function DjMultiSelect({ djs, value, onChange }: DjMultiSelectProps) {
             className="min-w-28 flex-1 border-0 bg-transparent px-1 py-1 text-sm text-white outline-none placeholder:text-white/35"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
+            onFocus={() => setOpen(true)}
+            onBlur={() => {
+              window.setTimeout(() => setOpen(false), 120);
+            }}
             placeholder="Cerca DJ"
           />
         </div>
@@ -75,9 +80,11 @@ export function DjMultiSelect({ djs, value, onChange }: DjMultiSelectProps) {
               key={dj.id}
               type="button"
               className="flex w-full items-center justify-between border-b border-[color:var(--color-border-soft)] px-4 py-3 text-left text-sm text-white transition last:border-b-0 hover:bg-[color:var(--color-brand-12)]"
-              onClick={() => {
+              onMouseDown={(event) => {
+                event.preventDefault();
                 onChange([...value, dj.id]);
                 setQuery("");
+                setOpen(false);
               }}
             >
               <span>{dj.name}</span>
