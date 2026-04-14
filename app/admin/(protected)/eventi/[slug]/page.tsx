@@ -28,17 +28,21 @@ export default async function AdminEventDetailPage({
 
   return (
     <section className={ui.layout.sectionCompact}>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <div>
+      <div className="mb-6 grid gap-3 sm:flex sm:items-start sm:justify-between">
+        <Link
+          href="/admin/eventi"
+          className={`${ui.action.secondary} gap-2 justify-self-end sm:order-2 sm:self-start`}
+        >
+          <ArrowLeftIcon />
+          Torna agli eventi
+        </Link>
+        <div className="sm:order-1">
           <SectionHeading
             eyebrow="Evento"
             title={event.title}
             description="Scheda privata evento con dettagli, roster approvato e modifica contenuti."
           />
         </div>
-        <Link href="/admin/eventi" className={ui.action.secondary}>
-          Torna agli eventi
-        </Link>
       </div>
 
       <AdminEventDetailEditor
@@ -49,5 +53,25 @@ export default async function AdminEventDetailPage({
         availableLocations={locations}
       />
     </section>
+  );
+}
+
+function ArrowLeftIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M14.5 5.5 8 12l6.5 6.5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }

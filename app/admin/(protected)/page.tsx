@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { getAuthenticatedAdminUsername } from "@/lib/admin-auth";
 import {
   getApplications,
   getArchiveEntries,
@@ -25,6 +26,7 @@ export default async function AdminPage() {
     getArchiveEntries(),
     getDjRosterEntries(),
   ]);
+  const adminUsername = await getAuthenticatedAdminUsername();
   const newApplications = applications.filter(
     (application) => application.status === "new",
   );
@@ -57,18 +59,13 @@ export default async function AdminPage() {
 
   return (
     <div className="min-w-0">
-      <section className="min-w-0 py-8 md:py-10">
+      <section className="min-w-0 pb-8 md:py-10">
         <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
-          Admin base
+          Admin
         </span>
         <h1 className="mt-3 text-[clamp(1.9rem,4vw,3.1rem)] font-semibold leading-none tracking-[-0.03em] text-[#f7f3ee]">
-          Controllo operativo essenziale.
+          Ciao, {adminUsername} 👋
         </h1>
-        <p className="mt-4 max-w-[42rem] text-lg leading-8 text-white/76">
-          Qui c&apos;e una vista base per leggere eventi, candidature e
-          contenuti. In questa fase serve come riferimento funzionale per la
-          futura dashboard vera.
-        </p>
       </section>
 
       <section className="min-w-0 pb-10 md:pb-12">

@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { canAttemptMongo, getDatabase } from "@/lib/mongodb";
 
 const ADMIN_COOKIE = "opendecks_admin_session";
+const ADMIN_USERNAME_COOKIE = "opendecks_admin_username";
 
 export function getAdminSeedCredentials() {
   return {
@@ -45,6 +46,21 @@ export async function isAdminAuthenticated() {
   return store.get(ADMIN_COOKIE)?.value === "authenticated";
 }
 
+export async function getAuthenticatedAdminUsername() {
+  const store = await cookies();
+  const rawValue = store.get(ADMIN_USERNAME_COOKIE)?.value;
+
+  if (!rawValue) {
+    return getAdminSeedCredentials().username;
+  }
+
+  try {
+    return decodeURIComponent(rawValue);
+  } catch {
+    return rawValue;
+  }
+}
+
 export async function createAdminSession() {
   const store = await cookies();
   store.set(ADMIN_COOKIE, "authenticated", {
@@ -59,6 +75,13 @@ export async function createAdminSession() {
 export async function clearAdminSession() {
   const store = await cookies();
   store.set(ADMIN_COOKIE, "", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 0
+  });
+  store.set(ADMIN_USERNAME_COOKIE, "", {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",

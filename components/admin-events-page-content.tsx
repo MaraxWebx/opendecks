@@ -24,6 +24,7 @@ export function AdminEventsPageContent({
   locations,
 }: AdminEventsPageContentProps) {
   const [createSignal, setCreateSignal] = useState(0);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   return (
     <div className="grid gap-6">
@@ -39,13 +40,15 @@ export function AdminEventsPageContent({
             Qui tieni sotto controllo calendario, stato delle date e sedi.
           </p>
         </div>
-        <button
-          type="button"
-          className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#E31F29] bg-[#E31F29] px-5 py-3 text-sm font-medium text-white transition hover:border-[#c91922] hover:bg-[#c91922]"
-          onClick={() => setCreateSignal((current) => current + 1)}
-        >
-          Nuovo evento
-        </button>
+        {!isCreateOpen ? (
+          <button
+            type="button"
+            className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#E31F29] bg-[#E31F29] px-5 py-3 text-sm font-medium text-white transition hover:border-[#c91922] hover:bg-[#c91922]"
+            onClick={() => setCreateSignal((current) => current + 1)}
+          >
+            Nuovo evento
+          </button>
+        ) : null}
       </div>
 
       <AdminEventsManager
@@ -55,6 +58,7 @@ export function AdminEventsPageContent({
         availableLocations={locations}
         createSignal={createSignal}
         showCreateButton={false}
+        onCreateOpenChange={setIsCreateOpen}
       />
     </div>
   );

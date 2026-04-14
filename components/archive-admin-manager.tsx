@@ -388,7 +388,7 @@ function GalleryModal({
   return (
     <div className="fixed inset-0 z-50 grid items-start justify-items-center overflow-x-hidden overflow-y-auto overscroll-contain p-4 sm:items-center">
       <BodyScrollLock />
-      <div className="absolute inset-0 bg-black/72" onClick={onClose} />
+      <div className="absolute inset-0 bg-black" onClick={onClose} />
       <div className={`${ui.surface.modal} max-w-4xl`}>
         <div className="mb-5 flex min-w-0 items-start justify-between gap-4">
           <div className="grid min-w-0 gap-2">

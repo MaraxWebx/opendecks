@@ -4,7 +4,7 @@ import { verifyAdminCredentials } from "@/lib/admin-auth";
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
-  const username = String(formData.get("username") || "admin");
+  const username = String(formData.get("username") || "admin").trim() || "admin";
   const password = String(formData.get("password") || "opendecks123");
 
   const valid = await verifyAdminCredentials(username, password);
@@ -15,6 +15,13 @@ export async function POST(request: NextRequest) {
 
   const response = NextResponse.redirect(new URL("/admin", request.url), { status: 303 });
   response.cookies.set("opendecks_admin_session", "authenticated", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 12
+  });
+  response.cookies.set("opendecks_admin_username", encodeURIComponent(username), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",

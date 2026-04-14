@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
-import { BodyScrollLock } from "@/components/body-scroll-lock";
 import { GlobalLoader } from "@/components/global-loader";
-import { ModalCloseButton } from "@/components/modal-close-button";
 import { getDjEventHistory } from "@/lib/dj-roster";
 import { DjRosterRecord, EventRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
@@ -44,6 +42,8 @@ export function AdminDjRosterManager({
   initialRoster,
   events,
 }: AdminDjRosterManagerProps) {
+  const detailPanelRef = useRef<HTMLDivElement | null>(null);
+  const createPanelRef = useRef<HTMLDivElement | null>(null);
   const [roster, setRoster] = useState(initialRoster);
   const [query, setQuery] = useState("");
   const [selectedDj, setSelectedDj] = useState<DjRosterRecord | null>(null);
@@ -121,8 +121,9 @@ export function AdminDjRosterManager({
     }
 
     const localMatch =
-      cityOptions.find((municipality) => municipality.label === normalizedLabel) ||
-      null;
+      cityOptions.find(
+        (municipality) => municipality.label === normalizedLabel,
+      ) || null;
 
     if (localMatch) {
       applyMunicipalitySelection(localMatch);
@@ -182,6 +183,36 @@ export function AdminDjRosterManager({
       window.clearTimeout(timeoutId);
     };
   }, [cityQuery]);
+
+  useEffect(() => {
+    if (!selectedDj) {
+      return;
+    }
+
+    const frameId = window.requestAnimationFrame(() => {
+      detailPanelRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [selectedDj]);
+
+  useEffect(() => {
+    if (!isCreateOpen) {
+      return;
+    }
+
+    const frameId = window.requestAnimationFrame(() => {
+      createPanelRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [isCreateOpen]);
 
   async function uploadPhoto(file: File | null) {
     if (!file) {
@@ -259,7 +290,8 @@ export function AdminDjRosterManager({
 
     try {
       if (!manualForm.province) {
-        const resolvedMunicipality = await resolveMunicipalityFromQuery(cityQuery);
+        const resolvedMunicipality =
+          await resolveMunicipalityFromQuery(cityQuery);
 
         if (!resolvedMunicipality) {
           throw new Error("Seleziona una citta valida dall'autocomplete.");
@@ -314,311 +346,359 @@ export function AdminDjRosterManager({
 
   return (
     <div className="grid min-w-0 gap-4">
-      <div className="grid gap-4 px-1 sm:px-6">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div className="grid flex-1 gap-2">
-            <label htmlFor="dj-roster-query" className={ui.form.label}>
-              Cerca DJ
-            </label>
-            <input
-              id="dj-roster-query"
-              className={ui.form.field}
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Nome, citta, email, telefono, evento..."
-            />
+      {!selectedDj && !isCreateOpen ? (
+        <>
+          <div className="grid gap-4 px-1 sm:px-6">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div className="grid flex-1 gap-2">
+                <label htmlFor="dj-roster-query" className={ui.form.label}>
+                  Cerca DJ
+                </label>
+                <input
+                  id="dj-roster-query"
+                  className={ui.form.field}
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Nome, citta, email, telefono, evento..."
+                />
+              </div>
+              <button
+                type="button"
+                className={ui.action.primary}
+                onClick={() => {
+                  setMessage("");
+                  setSelectedDj(null);
+                  setCreateMessage("");
+                  setIsCreateOpen(true);
+                }}
+              >
+                Aggiungi DJ manualmente
+              </button>
+            </div>
+
+            {message ? <p className="text-sm text-white/65">{message}</p> : null}
           </div>
-          <button
-            type="button"
-            className={ui.action.primary}
-            onClick={() => {
-              setMessage("");
-              setIsCreateOpen(true);
-            }}
-          >
-            Aggiungi DJ manualmente
-          </button>
-        </div>
 
-        {message ? <p className="text-sm text-white/65">{message}</p> : null}
-      </div>
+          <div className={`${ui.surface.panel} min-w-0`}>
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <p className="text-sm text-white/65">
+                {filteredRoster.length} DJ nel roster
+              </p>
+            </div>
 
-      <div className={`${ui.surface.panel} min-w-0`}>
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <p className="text-sm text-white/65">
-            {filteredRoster.length} DJ nel roster
-          </p>
-        </div>
+            <div className="grid gap-4">
+              {filteredRoster.length ? (
+                filteredRoster.map((entry) => (
+                  <article key={entry.id} className={`${ui.surface.card} min-w-0`}>
+                    <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
+                      <div className="grid min-w-0 gap-2">
+                        <div className="flex flex-wrap items-center gap-2 text-sm text-white/58">
+                          <span>
+                            {formatCityProvince(entry.city, entry.province)}
+                          </span>
+                          <span>
+                            {new Date(entry.approvedAt).toLocaleDateString("it-IT")}
+                          </span>
+                          {!entry.applicationId ? (
+                            <span className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.16em] text-white/75">
+                              Manuale
+                            </span>
+                          ) : entry.sourceApplicationEventTitle ? (
+                            <span className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.16em] text-white/75">
+                              Candidatura / {entry.sourceApplicationEventTitle}
+                            </span>
+                          ) : null}
+                        </div>
+                        <h3 className="break-words text-lg font-semibold text-[#f7f3ee]">
+                          {entry.name}
+                        </h3>
+                        <p className="break-words text-sm text-white/70">
+                          {entry.email}
+                        </p>
+                        <p className="break-words text-sm text-white/55">
+                          {entry.phone}
+                        </p>
+                        <p className="break-words text-sm text-white/55">
+                          {entry.instagram}
+                        </p>
+                        <div className="flex flex-wrap gap-2 pt-1">
+                          {entry.membershipCardEnabled ? (
+                            <span className="inline-flex rounded-md bg-emerald-500/15 px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-300">
+                              Card attiva
+                            </span>
+                          ) : (
+                            <span className="inline-flex rounded-md bg-[color:var(--color-brand-12)] px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-white">
+                              Nessuna card
+                            </span>
+                          )}
+                          {entry.membershipCardId ? (
+                            <span className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-white/75">
+                              {entry.membershipCardId}
+                            </span>
+                          ) : null}
+                        </div>
+                      </div>
 
-        <div className="grid gap-4">
-          {filteredRoster.length ? (
-            filteredRoster.map((entry) => (
-              <article key={entry.id} className={`${ui.surface.card} min-w-0`}>
-                <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
-                  <div className="grid min-w-0 gap-2">
-                    <div className="flex flex-wrap items-center gap-2 text-sm text-white/58">
-                      <span>{formatCityProvince(entry.city, entry.province)}</span>
-                      <span>
-                        {new Date(entry.approvedAt).toLocaleDateString("it-IT")}
-                      </span>
-                      {!entry.applicationId ? (
-                        <span className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.16em] text-white/75">
-                          Manuale
-                        </span>
-                      ) : entry.sourceApplicationEventTitle ? (
-                        <span className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.16em] text-white/75">
-                          Candidatura / {entry.sourceApplicationEventTitle}
-                        </span>
-                      ) : null}
+                      <div className="flex flex-wrap gap-3">
+                        <button
+                          type="button"
+                          className={ui.action.secondary}
+                          onClick={() => {
+                            setIsCreateOpen(false);
+                            setCreateMessage("");
+                            setSelectedDj(entry);
+                          }}
+                        >
+                          Dettagli
+                        </button>
+                        <button
+                          type="button"
+                          className={
+                            entry.membershipCardEnabled
+                              ? ui.action.secondary
+                              : ui.action.primary
+                          }
+                          disabled={busyId === entry.id}
+                          onClick={() =>
+                            toggleMembership(entry, !entry.membershipCardEnabled)
+                          }
+                        >
+                          {busyId === entry.id
+                            ? "Invio..."
+                            : entry.membershipCardEnabled
+                              ? "Disattiva card"
+                              : "Abilita card"}
+                        </button>
+                      </div>
                     </div>
-                    <h3 className="break-words text-lg font-semibold text-[#f7f3ee]">
-                      {entry.name}
-                    </h3>
-                    <p className="break-words text-sm text-white/70">
-                      {entry.email}
+                  </article>
+                ))
+              ) : (
+                <div className={ui.surface.card}>
+                  <p className="text-sm text-white/60">
+                    Nessun DJ trovato con i filtri attivi.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      ) : null}
+
+      {selectedDj ? (
+        <div ref={detailPanelRef} className="order-first grid gap-6">
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_360px]">
+            <div className={ui.surface.panel}>
+              <div className="grid gap-5">
+                <div className="grid gap-3 sm:flex sm:items-start sm:justify-between">
+                  <button
+                    type="button"
+                    className={`${ui.action.secondary} gap-2 justify-self-end sm:order-2`}
+                    onClick={() => setSelectedDj(null)}
+                  >
+                    <ArrowLeftIcon />
+                    Torna alla lista
+                  </button>
+                  <div className="grid min-w-0 gap-2 sm:order-1">
+                    <span className={ui.text.eyebrow}>DJ roster</span>
+                    <h2 className="break-words text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
+                      {selectedDj.name}
+                    </h2>
+                    <p className="text-sm leading-7 text-white/68">
+                      Scheda DJ, profilo, membership e storico eventi nello stesso layout admin.
                     </p>
-                    <p className="break-words text-sm text-white/55">
-                      {entry.phone}
-                    </p>
-                    <p className="break-words text-sm text-white/55">
-                      {entry.instagram}
-                    </p>
-                    <div className="flex flex-wrap gap-2 pt-1">
-                      {entry.membershipCardEnabled ? (
-                        <span className="inline-flex rounded-md bg-emerald-500/15 px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-300">
-                          Card attiva
-                        </span>
-                      ) : (
-                        <span className="inline-flex rounded-md bg-[color:var(--color-brand-12)] px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-white">
-                          Nessuna card
-                        </span>
-                      )}
-                      {entry.membershipCardId ? (
-                        <span className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-white/75">
-                          {entry.membershipCardId}
-                        </span>
-                      ) : null}
-                    </div>
                   </div>
+                </div>
 
-                  <div className="flex flex-wrap gap-3">
-                    <button
-                      type="button"
-                      className={ui.action.secondary}
-                      onClick={() => setSelectedDj(entry)}
+                {message ? <p className="text-sm text-white/70">{message}</p> : null}
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <DetailItem
+                    label="Origine candidatura"
+                    value={
+                      selectedDj.applicationId
+                        ? selectedDj.sourceApplicationEventTitle ||
+                          "Evento candidatura non disponibile"
+                        : "Inserimento manuale"
+                    }
+                  />
+                  <DetailItem
+                    label="Origine"
+                    value={
+                      selectedDj.applicationId
+                        ? "Da candidatura approvata"
+                        : "Inserimento manuale"
+                    }
+                  />
+                  <DetailItem
+                    label="Approvato il"
+                    value={new Date(selectedDj.approvedAt).toLocaleString("it-IT")}
+                  />
+                  <DetailItem
+                    label="Membership"
+                    value={
+                      selectedDj.membershipCardEnabled
+                        ? `Attiva / ${selectedDj.membershipCardId || "Card in generazione"}`
+                        : "Non attiva"
+                    }
+                  />
+                </div>
+
+                <div className={ui.surface.card}>
+                  <span className={ui.form.label}>Membership</span>
+                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                    <span
+                      className={`inline-flex rounded-md px-3 py-1.5 text-xs uppercase tracking-[0.12em] ${
+                        selectedDj.membershipCardEnabled
+                          ? "bg-emerald-500/15 text-emerald-300"
+                          : "bg-[color:var(--color-brand-12)] text-white"
+                      }`}
                     >
-                      Dettagli
-                    </button>
+                      {selectedDj.membershipCardEnabled ? "Attiva" : "Non attiva"}
+                    </span>
+                    <span className="text-sm text-white/70">
+                      Card ID: {selectedDj.membershipCardId || "Non emessa"}
+                    </span>
                     <button
                       type="button"
                       className={
-                        entry.membershipCardEnabled
+                        selectedDj.membershipCardEnabled
                           ? ui.action.secondary
                           : ui.action.primary
                       }
-                      disabled={busyId === entry.id}
+                      disabled={busyId === selectedDj.id}
                       onClick={() =>
-                        toggleMembership(entry, !entry.membershipCardEnabled)
+                        toggleMembership(
+                          selectedDj,
+                          !selectedDj.membershipCardEnabled,
+                        )
                       }
                     >
-                      {busyId === entry.id
+                      {busyId === selectedDj.id
                         ? "Invio..."
-                        : entry.membershipCardEnabled
+                        : selectedDj.membershipCardEnabled
                           ? "Disattiva card"
                           : "Abilita card"}
                     </button>
                   </div>
                 </div>
-              </article>
-            ))
-          ) : (
-            <div className={ui.surface.card}>
-              <p className="text-sm text-white/60">
-                Nessun DJ trovato con i filtri attivi.
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
 
-      {selectedDj ? (
-        <div className="fixed inset-0 z-50 grid items-start justify-items-center overflow-x-hidden overflow-y-auto overscroll-contain p-4 sm:items-center">
-          <BodyScrollLock />
-          <div
-            className="absolute inset-0 bg-black/72"
-            onClick={() => setSelectedDj(null)}
-          />
-          <div className={`${ui.surface.modal} max-w-[54rem]`}>
-            <div className="mb-5 flex min-w-0 items-start justify-between gap-4">
-              <div className="grid min-w-0 gap-2">
-                <span className={ui.text.eyebrow}>DJ roster</span>
-                <h3 className="break-words text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
-                  {selectedDj.name}
-                </h3>
+                <div className={ui.surface.card}>
+                  <span className={ui.form.label}>Link set</span>
+                  {selectedDj.setLink ? (
+                    <a
+                      href={selectedDj.setLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-2 block break-all text-sm text-[#f7f3ee] underline decoration-[color:var(--color-brand)] underline-offset-4"
+                    >
+                      {selectedDj.setLink}
+                    </a>
+                  ) : (
+                    <p className="mt-2 text-sm text-white/50">
+                      Nessun link set disponibile.
+                    </p>
+                  )}
+                </div>
+
+                <div className={ui.surface.card}>
+                  <span className={ui.form.label}>Storico eventi</span>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {selectedDjHistory.length ? (
+                      selectedDjHistory.map((event) => (
+                        <Link
+                          key={event.id}
+                          href={`/admin/eventi/${event.slug}`}
+                          className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-white/75"
+                        >
+                          {event.title} /{" "}
+                          {new Date(event.date).toLocaleDateString("it-IT")}
+                        </Link>
+                      ))
+                    ) : (
+                      <span className="text-sm text-white/50">
+                        Nessun evento collegato in storico.
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className={ui.surface.card}>
+                  <span className={ui.form.label}>Bio</span>
+                  <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-white/74">
+                    {selectedDj.bio || "Nessuna bio disponibile."}
+                  </p>
+                </div>
               </div>
-              <ModalCloseButton onClick={() => setSelectedDj(null)} />
             </div>
 
             <div className="grid gap-4">
-              <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
-                <div className={ui.surface.card}>
+              <div className={ui.surface.panel}>
+                <span className={ui.text.eyebrow}>Profilo</span>
+                <div className="mt-4 overflow-hidden rounded-lg border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)]">
                   {selectedDj.photoUrl ? (
-                    <>
-                      <span className={ui.form.label}>Foto profilo</span>
-                      <div className="relative mt-3">
-                        <img
-                          src={selectedDj.photoUrl}
-                          alt={selectedDj.name}
-                          className="h-64 w-full rounded-lg object-cover lg:h-72"
-                        />
-                        <div className="absolute bottom-3 right-3 inline-flex items-center rounded-full border border-white/15 bg-black/72 px-3 py-1.5 text-[0.68rem] font-medium uppercase tracking-[0.18em] text-white shadow-[0_10px_30px_rgba(0,0,0,0.32)] backdrop-blur-sm">
-                          <span className="mr-2 h-2 w-2 rounded-full bg-[color:var(--color-brand)]" />
-                          OpenDecks
-                        </div>
+                    <div className="relative">
+                      <img
+                        src={selectedDj.photoUrl}
+                        alt={selectedDj.name}
+                        className="h-72 w-full object-cover"
+                      />
+                      <div className="absolute bottom-3 right-3 inline-flex items-center rounded-full border border-white/15 bg-black/72 px-3 py-1.5 text-[0.68rem] font-medium uppercase tracking-[0.18em] text-white shadow-[0_10px_30px_rgba(0,0,0,0.32)] backdrop-blur-sm">
+                        <span className="mr-2 h-2 w-2 rounded-full bg-[color:var(--color-brand)]" />
+                        OpenDecks
                       </div>
-                    </>
+                    </div>
                   ) : (
-                    <div className="rounded-lg border border-dashed border-white/12 px-4 py-6 text-sm text-white/45">
+                    <div className="grid h-72 place-items-center bg-white/4 px-6 text-center text-sm text-white/45">
                       Nessuna foto profilo disponibile.
                     </div>
                   )}
-
-                  <div className="mt-5 grid gap-4">
-                    <span className={ui.form.label}>Info anagrafiche</span>
-                    <div className="grid gap-3 text-sm text-[#f7f3ee]">
-                      <InfoRow
-                        icon={<PinIcon />}
-                        label="Citta"
-                        value={formatCityProvince(
-                          selectedDj.city,
-                          selectedDj.province,
-                        )}
-                      />
-                      <InfoRow
-                        icon={<PinIcon />}
-                        label="Regione"
-                        value={selectedDj.region || "Non definita"}
-                      />
-                      <InfoRow
-                        icon={<MailIcon />}
-                        label="Email"
-                        value={selectedDj.email || "Non disponibile"}
-                        href={
-                          selectedDj.email
-                            ? `mailto:${selectedDj.email}`
-                            : undefined
-                        }
-                      />
-                      <InfoRow
-                        icon={<PhoneIcon />}
-                        label="Telefono"
-                        value={selectedDj.phone || "Non disponibile"}
-                        href={
-                          selectedDj.phone
-                            ? `tel:${selectedDj.phone}`
-                            : undefined
-                        }
-                      />
-                      <InfoRow
-                        icon={<InstagramIcon />}
-                        label="Instagram"
-                        value={selectedDj.instagram || "Non disponibile"}
-                        href={normalizeExternalHref(selectedDj.instagram)}
-                      />
-                    </div>
-                  </div>
                 </div>
 
-                <div className="grid gap-4">
-                  <div className="grid gap-3">
-                    <DetailItem
-                      label="Origine candidatura"
-                      value={
-                        selectedDj.applicationId
-                          ? selectedDj.sourceApplicationEventTitle || "Evento candidatura non disponibile"
-                          : "Inserimento manuale"
-                      }
-                    />
-                    <DetailItem
-                      label="Origine"
-                      value={
-                        selectedDj.applicationId
-                          ? "Da candidatura approvata"
-                          : "Inserimento manuale"
-                      }
-                    />
-                    <DetailItem
-                      label="Approvato il"
-                      value={new Date(selectedDj.approvedAt).toLocaleString(
-                        "it-IT",
+                <div className="mt-5 grid gap-4">
+                  <span className={ui.form.label}>Info anagrafiche</span>
+                  <div className="grid gap-3 text-sm text-[#f7f3ee]">
+                    <InfoRow
+                      icon={<PinIcon />}
+                      label="Citta"
+                      value={formatCityProvince(
+                        selectedDj.city,
+                        selectedDj.province,
                       )}
                     />
-                    <div className={ui.surface.card}>
-                      <span className={ui.form.label}>Membership</span>
-                      <div className="mt-3 flex flex-wrap items-center gap-3">
-                        <span
-                          className={`inline-flex rounded-md px-3 py-1.5 text-xs uppercase tracking-[0.12em] ${
-                            selectedDj.membershipCardEnabled
-                              ? "bg-emerald-500/15 text-emerald-300"
-                              : "bg-[color:var(--color-brand-12)] text-white"
-                          }`}
-                        >
-                          {selectedDj.membershipCardEnabled
-                            ? "Attiva"
-                            : "Non attiva"}
-                        </span>
-                        <span className="text-sm text-white/70">
-                          Card ID: {selectedDj.membershipCardId || "Non emessa"}
-                        </span>
-                      </div>
-                    </div>
-                    <div className={ui.surface.card}>
-                      <span className={ui.form.label}>Link set</span>
-                      {selectedDj.setLink ? (
-                        <a
-                          href={selectedDj.setLink}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="mt-2 block break-all text-sm text-[#f7f3ee] underline decoration-[color:var(--color-brand)] underline-offset-4"
-                        >
-                          {selectedDj.setLink}
-                        </a>
-                      ) : (
-                        <p className="mt-2 text-sm text-white/50">
-                          Nessun link set disponibile.
-                        </p>
-                      )}
-                    </div>
-                    <div className={ui.surface.card}>
-                      <span className={ui.form.label}>Storico eventi</span>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {selectedDjHistory.length ? (
-                          selectedDjHistory.map((event) => (
-                            <Link
-                              key={event.id}
-                              href={`/admin/eventi/${event.slug}`}
-                              className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-white/75"
-                            >
-                              {event.title} /{" "}
-                              {new Date(event.date).toLocaleDateString("it-IT")}
-                            </Link>
-                          ))
-                        ) : (
-                          <span className="text-sm text-white/50">
-                            Nessun evento collegato in storico.
-                          </span>
-                        )}
-                      </div>
-                    </div>
+                    <InfoRow
+                      icon={<PinIcon />}
+                      label="Regione"
+                      value={selectedDj.region || "Non definita"}
+                    />
+                    <InfoRow
+                      icon={<MailIcon />}
+                      label="Email"
+                      value={selectedDj.email || "Non disponibile"}
+                      href={
+                        selectedDj.email
+                          ? `mailto:${selectedDj.email}`
+                          : undefined
+                      }
+                    />
+                    <InfoRow
+                      icon={<PhoneIcon />}
+                      label="Telefono"
+                      value={selectedDj.phone || "Non disponibile"}
+                      href={
+                        selectedDj.phone
+                          ? `tel:${selectedDj.phone}`
+                          : undefined
+                      }
+                    />
+                    <InfoRow
+                      icon={<InstagramIcon />}
+                      label="Instagram"
+                      value={selectedDj.instagram || "Non disponibile"}
+                      href={normalizeExternalHref(selectedDj.instagram)}
+                    />
                   </div>
                 </div>
-              </div>
-
-              <div className={ui.surface.card}>
-                <span className={ui.form.label}>Bio</span>
-                <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-white/74">
-                  {selectedDj.bio || "Nessuna bio disponibile."}
-                </p>
               </div>
             </div>
           </div>
@@ -626,53 +706,51 @@ export function AdminDjRosterManager({
       ) : null}
 
       {isCreateOpen ? (
-        <div className="fixed inset-0 z-50 grid items-start justify-items-center overflow-x-hidden overflow-y-auto overscroll-contain p-4 sm:items-center">
-          <BodyScrollLock />
-          <div
-            className="absolute inset-0 bg-black/72"
-            onClick={() => {
-              if (!isCreating) {
-                setIsCreateOpen(false);
-              }
-            }}
-          />
-          <div className={`${ui.surface.modal} max-w-5xl`}>
-            <div className="mb-5 flex min-w-0 flex-wrap items-start justify-between gap-3">
-              <div className="grid min-w-0 gap-2">
-                <span className={ui.text.eyebrow}>Inserimento manuale</span>
-                <h3 className="break-words text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
-                  Aggiungi DJ al roster
-                </h3>
-                <p className="max-w-2xl text-sm leading-7 text-white/70">
-                  Usa questo form per aggiungere nel roster un DJ che non ha
-                  inviato candidatura dal sito.
-                </p>
-              </div>
-              <ModalCloseButton
-                onClick={() => {
-                  if (!isCreating) {
-                    setIsCreateOpen(false);
-                  }
-                }}
-                disabled={isCreating}
-              />
+        <div
+          ref={createPanelRef}
+          className="order-first grid gap-5 rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-4 sm:p-6"
+        >
+          <div className="grid gap-3 sm:flex sm:items-start sm:justify-between">
+            <button
+              type="button"
+              className={`${ui.action.secondary} gap-2 justify-self-end sm:order-2`}
+              onClick={() => {
+                if (!isCreating) {
+                  setIsCreateOpen(false);
+                }
+              }}
+              disabled={isCreating}
+            >
+              <ArrowLeftIcon />
+              Torna alla lista
+            </button>
+            <div className="grid min-w-0 gap-2 sm:order-1">
+              <span className={ui.text.eyebrow}>Inserimento manuale</span>
+              <h3 className="break-words text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
+                Aggiungi DJ al roster
+              </h3>
+              <p className="max-w-2xl text-sm leading-7 text-white/70">
+                Usa questo form per aggiungere nel roster un DJ che non ha
+                inviato candidatura dal sito.
+              </p>
             </div>
+          </div>
 
-            {createMessage ? (
-              <div className="mb-5 rounded-lg border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-100">
-                {createMessage}
-              </div>
-            ) : null}
+          {createMessage ? (
+            <div className="rounded-lg border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+              {createMessage}
+            </div>
+          ) : null}
 
-            {isCreating ? (
-              <GlobalLoader
-                eyebrow="Salvataggio DJ"
-                title="Stiamo inserendo il profilo nel roster"
-                description="Foto, dati e contatti vengono salvati ora. Aspetta un istante."
-              />
-            ) : (
-              <form className="grid gap-5" onSubmit={handleCreateManualDj}>
-                <div className="grid gap-4 md:grid-cols-2">
+          {isCreating ? (
+            <GlobalLoader
+              eyebrow="Salvataggio DJ"
+              title="Stiamo inserendo il profilo nel roster"
+              description="Foto, dati e contatti vengono salvati ora. Aspetta un istante."
+            />
+          ) : (
+            <form className="grid gap-5" onSubmit={handleCreateManualDj}>
+              <div className="grid gap-4 md:grid-cols-2">
                   <Field label="Nome DJ" htmlFor="manual-dj-name">
                     <input
                       id="manual-dj-name"
@@ -801,8 +879,8 @@ export function AdminDjRosterManager({
                       required
                     />
                     <span className="text-xs text-white/45">
-                      Carica una foto chiara del profilo. Formati supportati: JPG,
-                      PNG, WEBP, AVIF.
+                      Carica una foto chiara del profilo. Formati supportati:
+                      JPG, PNG, WEBP, AVIF.
                     </span>
                   </Field>
 
@@ -818,34 +896,42 @@ export function AdminDjRosterManager({
                   </Field>
                 </div>
 
-                <div className="flex flex-wrap gap-3">
-                  <button
-                    type="submit"
-                    className={ui.action.primary}
-                    disabled={isCreating}
-                  >
-                    Salva DJ
-                  </button>
-                  <button
-                    type="button"
-                    className={ui.action.secondary}
-                    onClick={() => {
-                      setManualForm(createInitialManualForm(events));
-                      setCityQuery("");
-                      setCityOptions([]);
-                      setCityMenuOpen(false);
-                      setPhotoFile(null);
-                      setMessage("");
-                      setCreateMessage("");
-                    }}
-                    disabled={isCreating}
-                  >
-                    Reset form
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="submit"
+                  className={ui.action.primary}
+                  disabled={isCreating}
+                >
+                  Salva DJ
+                </button>
+                <button
+                  type="button"
+                  className={ui.action.secondary}
+                  onClick={() => {
+                    setManualForm(createInitialManualForm(events));
+                    setCityQuery("");
+                    setCityOptions([]);
+                    setCityMenuOpen(false);
+                    setPhotoFile(null);
+                    setMessage("");
+                    setCreateMessage("");
+                  }}
+                  disabled={isCreating}
+                >
+                  Reset form
+                </button>
+                <button
+                  type="button"
+                  className={`${ui.action.secondary} gap-2`}
+                  onClick={() => setIsCreateOpen(false)}
+                  disabled={isCreating}
+                >
+                  <ArrowLeftIcon />
+                  Torna alla lista
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       ) : null}
     </div>
@@ -1028,6 +1114,26 @@ function InstagramIcon() {
       />
       <circle cx="12" cy="12" r="3.6" stroke="currentColor" strokeWidth="1.8" />
       <circle cx="17.3" cy="6.7" r="1.05" fill="currentColor" />
+    </svg>
+  );
+}
+
+function ArrowLeftIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M14.5 5.5 8 12l6.5 6.5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }

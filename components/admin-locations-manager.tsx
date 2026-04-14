@@ -29,7 +29,7 @@ const emptyForm: LocationFormState = {
   address: "",
   socialLink: "",
   phone: "",
-  description: ""
+  description: "",
 };
 
 declare global {
@@ -64,14 +64,23 @@ export function AdminLocationsManager({
         return true;
       }
 
-      return [location.name, location.address, location.socialLink, location.phone, location.description]
+      return [
+        location.name,
+        location.address,
+        location.socialLink,
+        location.phone,
+        location.description,
+      ]
         .join(" ")
         .toLowerCase()
         .includes(normalizedQuery);
     });
   }, [locations, query]);
 
-  function updateField<Key extends keyof LocationFormState>(key: Key, value: LocationFormState[Key]) {
+  function updateField<Key extends keyof LocationFormState>(
+    key: Key,
+    value: LocationFormState[Key],
+  ) {
     setForm((current) => ({ ...current, [key]: value }));
   }
 
@@ -93,7 +102,9 @@ export function AdminLocationsManager({
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
     if (!apiKey) {
-      setAutocompleteMessage("Inserisci `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` per attivare i suggerimenti indirizzo.");
+      setAutocompleteMessage(
+        "Inserisci `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` per attivare i suggerimenti indirizzo.",
+      );
       return;
     }
 
@@ -101,15 +112,22 @@ export function AdminLocationsManager({
 
     loadGoogleMapsPlaces(apiKey)
       .then(() => {
-        if (cancelled || !addressInputRef.current || !window.google?.maps?.places) {
+        if (
+          cancelled ||
+          !addressInputRef.current ||
+          !window.google?.maps?.places
+        ) {
           return;
         }
 
-        autocompleteRef.current = new window.google.maps.places.Autocomplete(addressInputRef.current, {
-          types: ["address"],
-          componentRestrictions: { country: "it" },
-          fields: ["formatted_address", "name"]
-        });
+        autocompleteRef.current = new window.google.maps.places.Autocomplete(
+          addressInputRef.current,
+          {
+            types: ["address"],
+            componentRestrictions: { country: "it" },
+            fields: ["formatted_address", "name"],
+          },
+        );
 
         autocompleteRef.current.addListener("place_changed", () => {
           const place = autocompleteRef.current?.getPlace?.();
@@ -126,7 +144,9 @@ export function AdminLocationsManager({
       })
       .catch(() => {
         if (!cancelled) {
-          setAutocompleteMessage("Autocomplete Google non disponibile. Puoi comunque inserire l'indirizzo a mano.");
+          setAutocompleteMessage(
+            "Autocomplete Google non disponibile. Puoi comunque inserire l'indirizzo a mano.",
+          );
         }
       });
 
@@ -134,7 +154,9 @@ export function AdminLocationsManager({
       cancelled = true;
 
       if (autocompleteRef.current && window.google?.maps?.event) {
-        window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
+        window.google.maps.event.clearInstanceListeners(
+          autocompleteRef.current,
+        );
       }
 
       autocompleteRef.current = null;
@@ -150,22 +172,29 @@ export function AdminLocationsManager({
       const response = await fetch("/api/locations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form)
+        body: JSON.stringify(form),
       });
-      const result = (await response.json()) as { location?: LocationRecord; error?: string };
+      const result = (await response.json()) as {
+        location?: LocationRecord;
+        error?: string;
+      };
 
       if (!response.ok || !result.location) {
         throw new Error(result.error || "Salvataggio location non riuscito.");
       }
 
       setLocations((current) =>
-        [...current, result.location!].sort((a, b) => a.name.localeCompare(b.name, "it"))
+        [...current, result.location!].sort((a, b) =>
+          a.name.localeCompare(b.name, "it"),
+        ),
       );
       setForm(emptyForm);
       setOpen(false);
       setMessage("Location aggiunta.");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Errore salvataggio location.");
+      setMessage(
+        error instanceof Error ? error.message : "Errore salvataggio location.",
+      );
     } finally {
       setSaving(false);
     }
@@ -176,8 +205,13 @@ export function AdminLocationsManager({
     setMessage("");
 
     try {
-      const response = await fetch(`/api/locations/${id}`, { method: "DELETE" });
-      const result = (await response.json()) as { success?: boolean; error?: string };
+      const response = await fetch(`/api/locations/${id}`, {
+        method: "DELETE",
+      });
+      const result = (await response.json()) as {
+        success?: boolean;
+        error?: string;
+      };
 
       if (!response.ok) {
         throw new Error(result.error || "Eliminazione location non riuscita.");
@@ -186,7 +220,11 @@ export function AdminLocationsManager({
       setLocations((current) => current.filter((item) => item.id !== id));
       setMessage("Location eliminata.");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Errore eliminazione location.");
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Errore eliminazione location.",
+      );
     } finally {
       setBusyId(null);
     }
@@ -237,11 +275,17 @@ export function AdminLocationsManager({
             <article key={location.id} className={`${ui.surface.card} min-w-0`}>
               <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
                 <div className="grid min-w-0 gap-3">
-                  <h3 className="break-words text-lg font-semibold text-[#f7f3ee]">{location.name}</h3>
-                  <p className="break-words text-sm leading-7 text-white/74">{location.address}</p>
+                  <h3 className="break-words text-lg font-semibold text-[#f7f3ee]">
+                    {location.name}
+                  </h3>
+                  <p className="break-words text-sm leading-7 text-white/74">
+                    {location.address}
+                  </p>
                   <div className="flex flex-wrap gap-2 text-xs text-white/55">
                     {location.phone ? (
-                      <span className="rounded-md bg-white/5 px-3 py-1.5">{location.phone}</span>
+                      <span className="rounded-md bg-white/5 px-3 py-1.5">
+                        {location.phone}
+                      </span>
                     ) : null}
                     {location.socialLink ? (
                       <a
@@ -255,11 +299,16 @@ export function AdminLocationsManager({
                     ) : null}
                   </div>
                   {location.description ? (
-                    <p className="line-clamp-2 text-sm leading-7 text-white/65">{location.description}</p>
+                    <p className="line-clamp-2 text-sm leading-7 text-white/65">
+                      {location.description}
+                    </p>
                   ) : null}
                 </div>
                 <div className="flex flex-wrap gap-3">
-                  <Link href={`/admin/locations/${location.id}` as Route} className={ui.action.secondary}>
+                  <Link
+                    href={`/admin/locations/${location.id}` as Route}
+                    className={ui.action.secondary}
+                  >
                     Apri scheda
                   </Link>
                   <DeleteIconButton
@@ -274,7 +323,9 @@ export function AdminLocationsManager({
           ))}
           {!filteredLocations.length ? (
             <div className={ui.surface.card}>
-              <p className="text-sm text-white/60">Nessuna location disponibile.</p>
+              <p className="text-sm text-white/60">
+                Nessuna location disponibile.
+              </p>
             </div>
           ) : null}
         </div>
@@ -283,11 +334,16 @@ export function AdminLocationsManager({
       {open ? (
         <div className="fixed inset-0 z-50 grid items-start justify-items-center overflow-x-hidden overflow-y-auto overscroll-contain p-4 sm:items-center">
           <BodyScrollLock />
-          <div className="absolute inset-0 bg-black/72" onClick={() => setOpen(false)} />
+          <div
+            className="absolute inset-0 bg-black"
+            onClick={() => setOpen(false)}
+          />
           <div className={`${ui.surface.modal} max-w-3xl`}>
             <div className="mb-5 flex min-w-0 items-start justify-between gap-4">
               <div className="grid min-w-0 gap-2">
-                <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">Nuova location</span>
+                <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
+                  Nuova location
+                </span>
                 <h3 className="break-words text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
                   Inserisci location
                 </h3>
@@ -302,7 +358,9 @@ export function AdminLocationsManager({
                     id="location-name"
                     className={ui.form.field}
                     value={form.name}
-                    onChange={(event) => updateField("name", event.target.value)}
+                    onChange={(event) =>
+                      updateField("name", event.target.value)
+                    }
                     required
                   />
                 </Field>
@@ -312,7 +370,9 @@ export function AdminLocationsManager({
                     ref={addressInputRef}
                     className={ui.form.field}
                     value={form.address}
-                    onChange={(event) => updateField("address", event.target.value)}
+                    onChange={(event) =>
+                      updateField("address", event.target.value)
+                    }
                     placeholder="Inizia a scrivere l'indirizzo..."
                     required
                   />
@@ -322,7 +382,9 @@ export function AdminLocationsManager({
                     id="location-social"
                     className={ui.form.field}
                     value={form.socialLink}
-                    onChange={(event) => updateField("socialLink", event.target.value)}
+                    onChange={(event) =>
+                      updateField("socialLink", event.target.value)
+                    }
                   />
                 </Field>
                 <Field label="Telefono" htmlFor="location-phone">
@@ -330,7 +392,9 @@ export function AdminLocationsManager({
                     id="location-phone"
                     className={ui.form.field}
                     value={form.phone}
-                    onChange={(event) => updateField("phone", event.target.value)}
+                    onChange={(event) =>
+                      updateField("phone", event.target.value)
+                    }
                   />
                 </Field>
                 <Field label="Descrizione" htmlFor="location-description" full>
@@ -338,7 +402,9 @@ export function AdminLocationsManager({
                     id="location-description"
                     className={`${ui.form.field} min-h-28 resize-y`}
                     value={form.description}
-                    onChange={(event) => updateField("description", event.target.value)}
+                    onChange={(event) =>
+                      updateField("description", event.target.value)
+                    }
                   />
                 </Field>
               </div>
@@ -346,7 +412,11 @@ export function AdminLocationsManager({
               <p className="text-sm text-white/60">{autocompleteMessage}</p>
 
               <div className="flex flex-wrap gap-3">
-                <button type="submit" className={ui.action.primary} disabled={saving}>
+                <button
+                  type="submit"
+                  className={ui.action.primary}
+                  disabled={saving}
+                >
                   {saving ? "Salvataggio..." : "Aggiungi location"}
                 </button>
               </div>
@@ -377,7 +447,8 @@ function loadGoogleMapsPlaces(apiKey: string) {
     script.async = true;
     script.defer = true;
     script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Script Google Maps non caricato."));
+    script.onerror = () =>
+      reject(new Error("Script Google Maps non caricato."));
     document.head.appendChild(script);
   });
 
@@ -388,7 +459,7 @@ function Field({
   label,
   htmlFor,
   full = false,
-  children
+  children,
 }: {
   label: string;
   htmlFor: string;
