@@ -281,14 +281,14 @@ export function AdminLocationsManager({
       </div>
 
       {open ? (
-        <div className="fixed inset-0 z-50 grid place-items-center p-4">
+        <div className="fixed inset-0 z-50 grid items-start justify-items-center overflow-x-hidden overflow-y-auto overscroll-contain p-4 sm:items-center">
           <BodyScrollLock />
           <div className="absolute inset-0 bg-black/72" onClick={() => setOpen(false)} />
           <div className={`${ui.surface.modal} max-w-3xl`}>
-            <div className="mb-5 flex items-start justify-between gap-4">
-              <div className="grid gap-2">
+            <div className="mb-5 flex min-w-0 items-start justify-between gap-4">
+              <div className="grid min-w-0 gap-2">
                 <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">Nuova location</span>
-                <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
+                <h3 className="break-words text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
                   Inserisci location
                 </h3>
               </div>

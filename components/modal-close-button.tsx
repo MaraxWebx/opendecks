@@ -15,7 +15,7 @@ export function ModalCloseButton({
       onClick={onClick}
       disabled={disabled}
       aria-label={label}
-      className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#E31F29]/35 text-[#f7f3ee] transition hover:bg-[#E31F29]/10 disabled:cursor-not-allowed disabled:opacity-50"
+      className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[#E31F29]/35 text-[#f7f3ee] transition hover:bg-[#E31F29]/10 disabled:cursor-not-allowed disabled:opacity-50"
     >
       <svg
         width="18"

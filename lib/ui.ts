@@ -43,7 +43,7 @@ export const ui = {
     card:
       "rounded-lg border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] p-5",
     modal:
-      "relative z-10 max-h-[calc(100vh-2rem)] w-full overflow-auto rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-6"
+      "relative z-10 max-h-[calc(100dvh-2rem)] w-full min-w-0 max-w-full overflow-y-auto overflow-x-hidden overscroll-contain rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elevated)] p-4 sm:p-6"
   },
   action: {
     primary:
@@ -57,9 +57,9 @@ export const ui = {
   },
   form: {
     field:
-      "w-full rounded-lg border border-[color:var(--color-brand-20)] bg-[color:var(--color-surface)] px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[color:var(--color-brand-60)]",
+      "min-w-0 w-full rounded-lg border border-[color:var(--color-brand-20)] bg-[color:var(--color-surface)] px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[color:var(--color-brand-60)]",
     select:
-      "select-theme w-full rounded-lg border border-[color:var(--color-brand-20)] bg-[color:var(--color-surface)] px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[color:var(--color-brand-60)]",
+      "select-theme min-w-0 w-full rounded-lg border border-[color:var(--color-brand-20)] bg-[color:var(--color-surface)] px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[color:var(--color-brand-60)]",
     label: "text-xs uppercase tracking-[0.18em] text-white/70"
   },
   nav: {

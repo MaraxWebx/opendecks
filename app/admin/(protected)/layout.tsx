@@ -44,14 +44,14 @@ export default function ProtectedAdminLayout({
       <div
         className={`${ui.layout.page} grid min-w-0 gap-6 overflow-x-clip py-8 lg:grid-cols-[280px_minmax(0,1fr)]`}
       >
-        <div className="flex min-w-0 items-center justify-between gap-3 rounded-xl px-4 py-3 lg:hidden">
-          <div className="min-w-0 flex-1">
+        <div className="flex min-w-0 items-center justify-between gap-3 rounded-xl px-0 py-3 lg:hidden">
+          <div className="min-w-0  flex-1">
             <Image
               src="/img/loghi/LOGO-OPEN-DECKS_bianco.png"
               alt="OpenDecks Italia"
               width={260}
               height={68}
-              className="h-auto w-full max-w-[10.5rem] object-contain sm:max-w-[12rem]"
+              className="h-auto w-full max-w-[8rem] object-contain sm:max-w-[8rem]"
             />
           </div>
           <button
@@ -85,7 +85,7 @@ export default function ProtectedAdminLayout({
               : "-translate-x-[105%] lg:translate-x-0"
           }`}
         >
-          <div className="flex min-w-0 items-start justify-between gap-3">
+          <div className="flex min-w-0 items-center justify-between gap-3">
             <div className="min-w-0">
               <Image
                 src="/img/loghi/LOGO-OPEN-DECKS_bianco.png"
@@ -93,7 +93,7 @@ export default function ProtectedAdminLayout({
                 width={260}
                 height={68}
                 priority
-                className="h-auto w-full max-w-[12rem] object-contain md:max-w-[14rem]"
+                className="h-auto w-full max-w-[8rem] object-contain md:max-w-[8rem]"
               />
               <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
                 Area admin

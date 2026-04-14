@@ -49,10 +49,16 @@
     overflow-x: hidden;
   }
 
+  html.modal-open {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
   body.menu-open,
-body.modal-open {
-  overflow: hidden;
-}
+  body.modal-open {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
 
 .cc--darkmode {
   --cc-font-family: inherit;

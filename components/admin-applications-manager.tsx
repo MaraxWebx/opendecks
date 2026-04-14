@@ -295,17 +295,17 @@ export function AdminApplicationsManager({
       </div>
 
       {selectedApplication ? (
-        <div className="fixed inset-0 z-50 grid place-items-center p-4">
+        <div className="fixed inset-0 z-50 grid items-start justify-items-center overflow-x-hidden overflow-y-auto overscroll-contain p-4 sm:items-center">
           <BodyScrollLock />
           <div
             className="absolute inset-0 bg-black/72"
             onClick={() => setSelectedApplication(null)}
           />
           <div className={`${ui.surface.modal} max-w-[54rem]`}>
-            <div className="mb-5 flex items-start justify-between gap-4">
-              <div className="grid gap-2">
+            <div className="mb-5 flex min-w-0 items-start justify-between gap-4">
+              <div className="grid min-w-0 gap-2">
                 <span className={ui.text.eyebrow}>Candidatura</span>
-                <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
+                <h3 className="break-words text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
                   {selectedApplication.name}
                 </h3>
               </div>
@@ -473,7 +473,7 @@ export function AdminApplicationsManager({
       ) : null}
 
       {deleteTarget ? (
-        <div className="fixed inset-0 z-[60] grid place-items-center p-4">
+        <div className="fixed inset-0 z-[60] grid items-start justify-items-center overflow-x-hidden overflow-y-auto overscroll-contain p-4 sm:items-center">
           <BodyScrollLock />
           <button
             type="button"
@@ -537,7 +537,9 @@ function DetailItem({ label, value }: { label: string; value: string }) {
   return (
     <div className={ui.surface.card}>
       <span className={ui.form.label}>{label}</span>
-      <p className="mt-2 text-sm leading-7 text-[#f7f3ee]">{value}</p>
+      <p className="mt-2 break-words text-sm leading-7 text-[#f7f3ee]">
+        {value}
+      </p>
     </div>
   );
 }
@@ -554,9 +556,9 @@ function InfoRow({
   href?: string;
 }) {
   return (
-    <div className="flex items-start gap-3">
-      <span className="mt-0.5 text-[#E31F29]">{icon}</span>
-      <div className="grid gap-1">
+    <div className="flex min-w-0 items-start gap-3">
+      <span className="mt-0.5 shrink-0 text-[#E31F29]">{icon}</span>
+      <div className="grid min-w-0 gap-1">
         <span className="text-[0.68rem] uppercase tracking-[0.18em] text-white/48">
           {label}
         </span>
@@ -570,7 +572,7 @@ function InfoRow({
             {value}
           </a>
         ) : (
-          <p className="leading-6 text-[#f7f3ee]">{value}</p>
+          <p className="break-words leading-6 text-[#f7f3ee]">{value}</p>
         )}
       </div>
     </div>
