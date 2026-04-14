@@ -256,7 +256,7 @@ export function AdminLocationsManager({
         </p>
       ) : null}
 
-      <div className={`${ui.surface.panel} min-w-0`}>
+      <div className={`${ui.surface.panel} min-w-0 p-0 sm:p-6`}>
         <div className="mb-4 grid gap-2">
           <label htmlFor="locations-query" className={ui.form.label}>
             Cerca location

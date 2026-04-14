@@ -252,7 +252,7 @@ export function AdminApplicationsManager({
             </div>
           </div>
 
-          <div className={`${ui.surface.panel} min-w-0`}>
+          <div className={`${ui.surface.panel} min-w-0 p-0 sm:p-6`}>
             <div className="mb-4 flex items-center justify-between gap-3">
               <p className="text-sm text-white/65">
                 {filteredApplications.length} candidature trovate

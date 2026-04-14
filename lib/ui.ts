@@ -39,7 +39,7 @@ export const ui = {
   },
   surface: {
     panel:
-      "rounded-xl p-6",
+      "rounded-xl ",
     card:
       "rounded-lg border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] p-5",
     modal:

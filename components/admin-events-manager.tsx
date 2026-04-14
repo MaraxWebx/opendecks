@@ -297,7 +297,7 @@ export function AdminEventsManager({
             </p>
           ) : null}
 
-          <div className={`${ui.surface.panel} min-w-0`}>
+          <div className={`${ui.surface.panel} min-w-0 p-0 sm:p-6`}>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap gap-2">
                 <button
