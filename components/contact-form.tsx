@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 import { GlobalLoader } from "@/components/global-loader";
 import { ui } from "@/lib/ui";
@@ -10,6 +11,7 @@ type FormState = {
   email: string;
   phone: string;
   message: string;
+  privacyAccepted: boolean;
 };
 
 const initialState: FormState = {
@@ -17,6 +19,7 @@ const initialState: FormState = {
   email: "",
   phone: "",
   message: "",
+  privacyAccepted: false,
 };
 
 export function ContactForm() {
@@ -37,7 +40,13 @@ export function ContactForm() {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form)
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          message: form.message,
+          privacyAccepted: form.privacyAccepted,
+        })
       });
 
       const result = (await response.json().catch(() => null)) as { error?: string } | null;
@@ -123,6 +132,29 @@ export function ContactForm() {
               required
             />
           </div>
+
+          <label className="flex items-start gap-3 rounded-lg border border-[#E31F29]/16 bg-white/[0.02] px-4 py-3 text-sm leading-6 text-white/72">
+            <input
+              type="checkbox"
+              checked={form.privacyAccepted}
+              onChange={(event) =>
+                updateField("privacyAccepted", event.target.checked)
+              }
+              className="mt-1 h-4 w-4 rounded border-[#E31F29]/30 bg-black"
+              required
+            />
+            <span>
+              Ho letto e accetto la{" "}
+              <Link
+                href="/privacy-policy"
+                target="_blank"
+                className="underline decoration-[#E31F29] underline-offset-4"
+              >
+                Privacy Policy
+              </Link>
+              .
+            </span>
+          </label>
 
           <div className="flex flex-wrap items-center gap-3">
             <button type="submit" className={ui.action.primary} disabled={sending}>

@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk } from "next/font/google";
+import "vanilla-cookieconsent/dist/cookieconsent.css";
 
+import { CookieConsentManager } from "@/components/cookie-consent-manager";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { buildMetadata } from "@/lib/seo";
@@ -32,6 +34,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <main>{children}</main>
           <Footer />
         </div>
+        <CookieConsentManager />
       </body>
     </html>
   );

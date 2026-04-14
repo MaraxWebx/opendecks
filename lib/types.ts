@@ -48,7 +48,21 @@ export type ApplicationRecord = {
   setLink: string;
   bio: string;
   submittedAt: string;
+  privacyPolicyVersion: string;
+  privacyAcceptedAt: string;
   status: "new" | "reviewing" | "selected";
+};
+
+export type ContactSubmissionRecord = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+  submittedAt: string;
+  privacyPolicyVersion: string;
+  privacyAcceptedAt: string;
+  source: "contact_form";
 };
 
 export type DjRosterRecord = {

@@ -6,6 +6,7 @@ import {
   sendApplicationNotificationEmail,
 } from "@/lib/email";
 import { getItalianProvince, italianProvinceCodes } from "@/lib/italian-provinces";
+import { buildPrivacyConsentRecord } from "@/lib/privacy";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -23,6 +24,13 @@ export async function POST(request: NextRequest) {
   if (!italianProvinceCodes.includes(body.province)) {
     return NextResponse.json(
       { error: "Provincia non valida." },
+      { status: 400 }
+    );
+  }
+
+  if (!body?.privacyAccepted) {
+    return NextResponse.json(
+      { error: "Devi accettare la Privacy Policy." },
       { status: 400 }
     );
   }
@@ -55,7 +63,8 @@ export async function POST(request: NextRequest) {
     photoUrl: body.photoUrl,
     instagram: body.instagram,
     setLink: body.setLink,
-    bio: body.bio || ""
+    bio: body.bio || "",
+    ...buildPrivacyConsentRecord()
   });
 
   try {

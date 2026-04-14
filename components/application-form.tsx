@@ -26,6 +26,7 @@ type FormState = {
   instagram: string;
   setLink: string;
   bio: string;
+  privacyAccepted: boolean;
 };
 
 type MunicipalityOption = {
@@ -49,6 +50,7 @@ const initialState: FormState = {
   instagram: "",
   setLink: "",
   bio: "",
+  privacyAccepted: false,
 };
 
 const fieldClass =
@@ -226,6 +228,7 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
           instagram: form.instagram,
           setLink: form.setLink,
           bio: form.bio,
+          privacyAccepted: form.privacyAccepted,
         }),
       });
 
@@ -625,6 +628,29 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
               {applicationFormCopy.requiredFields}
             </span>
           </div>
+
+          <label className="flex items-start gap-3 rounded-lg border border-[#E31F29]/16 bg-white/[0.02] px-4 py-3 text-sm leading-6 text-white/72">
+            <input
+              type="checkbox"
+              checked={form.privacyAccepted}
+              onChange={(event) =>
+                updateField("privacyAccepted", event.target.checked)
+              }
+              className="mt-1 h-4 w-4 rounded border-[#E31F29]/30 bg-black"
+              required
+            />
+            <span>
+              Ho letto e accetto la{" "}
+              <Link
+                href="/privacy-policy"
+                target="_blank"
+                className="underline decoration-[#E31F29] underline-offset-4"
+              >
+                Privacy Policy
+              </Link>
+              .
+            </span>
+          </label>
         </form>
       )}
     </div>

@@ -1,0 +1,135 @@
+OPENDECKS RELEASE CHECKLIST
+
+Priorita
+P1 = bloccante per rilascio serio
+P2 = da chiudere prima della consegna finale
+P3 = rifinitura utile ma non bloccante
+
+P1. Sicurezza
+- Rigenerare tutti i segreti esposti:
+  - MONGODB_URI
+  - SMTP_PASS
+  - BLOB_READ_WRITE_TOKEN
+  - NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+- Verificare che .env.local non sia tracciato da git
+- Verificare environment variables reali su Vercel
+- Rimuovere placeholder e credenziali provvisorie dagli ambienti live
+
+P1. Ambienti
+- Separare Production / Preview / Development
+- Usare database diversi per ogni ambiente
+- Target consigliato:
+  - Production -> opendecks_prod
+  - Preview -> opendecks_stage
+  - Development -> opendecks_dev
+- Se possibile, separare anche:
+  - SMTP produzione vs test
+  - Blob produzione vs test
+- Verificare che Preview e Development non tocchino dati reali cliente
+
+P1. Build e rilascio
+- Chiudere eventuali processi che tengono .next aperta
+- Eliminare .next
+- Eseguire npm run build
+- Eseguire npm start
+- Fare smoke test sul build production locale
+- Fare smoke test sul deploy Vercel live
+
+P1. Auth e protezione admin
+- Verificare login admin
+- Verificare logout admin
+- Verificare redirect corretto se non autenticato
+- Verificare che tutte le API mutative siano protette:
+  - events
+  - applications
+  - dj-roster
+  - archive
+  - locations
+  - membership
+
+P1. Mobile usability
+- Test reale su iPhone
+- Test reale su Android
+- Verificare:
+  - nessun overflow orizzontale
+  - menu mobile
+  - modali con body lock
+  - hero video
+  - carosello eventi
+  - form candidatura
+  - sidebar admin mobile
+  - dettaglio evento pubblico
+  - dashboard admin
+
+P2. Flusso eventi
+- Creazione evento
+- Modifica evento
+- Eliminazione evento
+- Verificare chiusura automatica candidature su evento passato
+- Verificare line up pubblica solo con flag attivo
+- Verificare click calendario admin verso dettaglio evento
+
+P2. Flusso candidature
+- Invio candidatura pubblica completa
+- Verificare upload foto personale
+- Verificare validazioni campi
+- Approvazione candidatura su evento futuro
+- Approvazione candidatura su evento passato
+- Ritorno candidatura da approvata a review/new
+- Eliminazione candidatura
+- Verificare che candidatura evento passato:
+  - entri nel roster
+  - non entri nella lineup evento passato
+
+P2. Flusso DJ roster
+- Inserimento DJ manuale
+- Modifica DJ
+- Eliminazione DJ se prevista
+- Verificare che il roster sia indipendente dagli eventi
+- Verificare storico evento origine candidatura
+- Associazione manuale DJ a un evento
+- Verificare mail inviata quando un DJ roster viene aggiunto a lineup evento
+
+P2. Gallery
+- Upload file su Blob
+- Modifica contenuto
+- Eliminazione contenuto
+- Verificare link esterno opzionale
+- Verificare resa card e modali su mobile
+
+P2. Membership
+- Abilitazione membership card
+- Verificare ID univoco
+- Verificare PDF generato
+- Verificare invio email SMTP
+- Verificare salvataggio campi nel DB:
+  - membershipCardEnabled
+  - membershipCardId
+  - membershipCardIssuedAt
+  - membershipCardEmailSentAt
+
+P2. Email
+- Verificare email approvazione candidatura evento futuro
+- Verificare email roster-only per candidatura su evento passato
+- Verificare email assegnazione lineup da roster a evento
+- Verificare mittente SMTP corretto
+- Verificare che stage/dev non mandino email reali
+
+P3. Performance
+- Ridurre noStore dove non serve
+- Tenere live solo admin e dati davvero dinamici
+- Ridurre query Mongo sulle pagine pubbliche
+- Monitorare alert Atlas sulle connessioni
+- Verificare tempi di navigazione tra pagine admin/pubbliche
+
+P3. Osservabilita
+- Aggiungere logging minimo per errori API
+- Verificare messaggi errore chiari lato admin
+- Valutare monitoraggio base produzione
+
+Esito finale richiesto prima della consegna
+- Build production pulita
+- Flussi core verificati
+- Mobile usabile senza attriti
+- Ambienti separati
+- Sicurezza segreti riallineata

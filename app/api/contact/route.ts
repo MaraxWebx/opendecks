@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { createContactSubmission } from "@/lib/data";
 import { sendContactEmail } from "@/lib/email";
+import { buildPrivacyConsentRecord } from "@/lib/privacy";
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,6 +17,22 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    if (!body?.privacyAccepted) {
+      return NextResponse.json(
+        { error: "Devi accettare la Privacy Policy." },
+        { status: 400 }
+      );
+    }
+
+    await createContactSubmission({
+      name: body.name,
+      email: body.email,
+      phone: body.phone || "",
+      message: body.message,
+      source: "contact_form",
+      ...buildPrivacyConsentRecord()
+    });
 
     await sendContactEmail({
       name: body.name,

@@ -79,6 +79,12 @@ export async function Footer() {
               <SoundCloudIcon />
             </a>
           </div>
+          <Link
+            href="/privacy-policy"
+            className="w-fit text-sm text-white/66 underline decoration-[#E31F29]/55 underline-offset-4 transition hover:text-white"
+          >
+            Privacy Policy
+          </Link>
         </div>
 
         <div className="grid content-start gap-4">

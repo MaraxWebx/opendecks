@@ -3,9 +3,10 @@ import { unstable_noStore as noStore } from "next/cache";
 
 import { canAttemptMongo, getDatabase, isMongoConfigured } from "@/lib/mongodb";
 import { mockApplications, mockArchive, mockDjRoster, mockEvents, mockLocations, mockTags } from "@/lib/mock-data";
-import { ApplicationRecord, ArchiveRecord, DjRosterRecord, EventRecord, LocationRecord, TagRecord } from "@/lib/types";
+import { ApplicationRecord, ArchiveRecord, ContactSubmissionRecord, DjRosterRecord, EventRecord, LocationRecord, TagRecord } from "@/lib/types";
 
 type NewApplication = Omit<ApplicationRecord, "id" | "submittedAt" | "status">;
+type NewContactSubmission = Omit<ContactSubmissionRecord, "id" | "submittedAt">;
 type NewEvent = Omit<EventRecord, "id" | "status">;
 type UpdateEventInput = Partial<Omit<EventRecord, "id">>;
 type NewArchiveEntry = Omit<ArchiveRecord, "id">;
@@ -29,6 +30,7 @@ type UpdateDjRosterMembershipInput = {
 type NewTag = Omit<TagRecord, "id">;
 type NewLocation = Omit<LocationRecord, "id">;
 type UpdateLocationInput = Partial<NewLocation>;
+const mockContactSubmissions: ContactSubmissionRecord[] = [];
 
 function sortEvents(events: EventRecord[]) {
   return [...events].sort(
@@ -381,6 +383,31 @@ export async function createApplication(input: NewApplication) {
     },
     () => {
       mockApplications.unshift(record);
+      return record;
+    }
+  );
+}
+
+export async function createContactSubmission(input: NewContactSubmission) {
+  const record: ContactSubmissionRecord = {
+    id: new ObjectId().toHexString(),
+    submittedAt: new Date().toISOString(),
+    ...input
+  };
+
+  if (!isMongoConfigured()) {
+    mockContactSubmissions.unshift(record);
+    return record;
+  }
+
+  return withMongoFallback(
+    async () => {
+      const db = await getDatabase();
+      await db.collection<ContactSubmissionRecord>("contact_submissions").insertOne(record);
+      return record;
+    },
+    () => {
+      mockContactSubmissions.unshift(record);
       return record;
     }
   );
@@ -791,6 +818,8 @@ function normalizeApplication(record: ApplicationRecord & { _id?: ObjectId }) {
     email: application.email || "",
     phone: application.phone || "",
     photoUrl: application.photoUrl || "",
+    privacyPolicyVersion: application.privacyPolicyVersion || "",
+    privacyAcceptedAt: application.privacyAcceptedAt || "",
     id: application.id || _id?.toHexString() || new ObjectId().toHexString()
   };
 }
