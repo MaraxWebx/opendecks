@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 const FALLBACK_SITE_URL = "https://www.opendecksitalia.it";
-const DEFAULT_OG_IMAGE = "/img/home/shots/shot-1.jpeg";
+const DEFAULT_OG_IMAGE = "/public/icons/icon-512.png";
 
 export const siteMetadata = {
   name: "OpenDecks Italia",
