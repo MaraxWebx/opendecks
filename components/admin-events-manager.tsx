@@ -38,6 +38,8 @@ type EventFormState = {
   tagIds: string[];
 };
 
+type FieldErrors = Partial<Record<keyof EventFormState, string>>;
+
 const emptyForm: EventFormState = {
   title: "",
   locationId: "",
@@ -65,6 +67,7 @@ export function AdminEventsManager({
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
   const [query, setQuery] = useState("");
   const [locationFilter, setLocationFilter] = useState("all");
@@ -159,6 +162,8 @@ export function AdminEventsManager({
     if (createSignal !== previousCreateSignal.current) {
       previousCreateSignal.current = createSignal;
       setForm(emptyForm);
+      setFieldErrors({});
+      setStatus("");
       setImageFile(null);
       setOpen(true);
     }
@@ -188,6 +193,15 @@ export function AdminEventsManager({
     value: EventFormState[Key],
   ) {
     setForm((current) => ({ ...current, [key]: value }));
+    setFieldErrors((current) => {
+      if (!current[key]) {
+        return current;
+      }
+
+      const nextErrors = { ...current };
+      delete nextErrors[key];
+      return nextErrors;
+    });
   }
 
   function shiftCalendarMonth(direction: -1 | 1) {
@@ -208,6 +222,7 @@ export function AdminEventsManager({
     event.preventDefault();
     setSaving(true);
     setStatus("");
+    setFieldErrors({});
 
     try {
       let coverImage = form.coverImage;
@@ -248,7 +263,14 @@ export function AdminEventsManager({
       if (!response.ok) {
         const errorPayload = (await response.json().catch(() => null)) as {
           error?: string;
+          field?: keyof EventFormState;
         } | null;
+        if (errorPayload?.field) {
+          setFieldErrors({
+            [errorPayload.field]:
+              errorPayload.error || "Controlla questo campo.",
+          });
+        }
         throw new Error(
           errorPayload?.error || "Salvataggio evento non riuscito.",
         );
@@ -280,6 +302,7 @@ export function AdminEventsManager({
                 className={ui.action.primary}
                 onClick={() => {
                   setForm(emptyForm);
+                  setFieldErrors({});
                   setImageFile(null);
                   setStatus("");
                   setOpen(true);
@@ -604,13 +627,29 @@ export function AdminEventsManager({
                       <Field label="Titolo" htmlFor="event-title">
                         <input
                           id="event-title"
-                          className={ui.form.field}
+                          className={`${ui.form.field} ${
+                            fieldErrors.title
+                              ? "border-red-400 bg-red-500/10 focus:border-red-300"
+                              : ""
+                          }`}
                           value={form.title}
                           onChange={(event) =>
                             updateField("title", event.target.value)
                           }
+                          aria-invalid={Boolean(fieldErrors.title)}
+                          aria-describedby={
+                            fieldErrors.title ? "event-title-error" : undefined
+                          }
                           required
                         />
+                        {fieldErrors.title ? (
+                          <p
+                            id="event-title-error"
+                            className="text-sm leading-6 text-red-200"
+                          >
+                            {fieldErrors.title}
+                          </p>
+                        ) : null}
                       </Field>
                       <Field label="Location" htmlFor="event-location">
                         <select

@@ -39,6 +39,8 @@ type EventFormState = {
   tagIds: string[];
 };
 
+type FieldErrors = Partial<Record<keyof EventFormState, string>>;
+
 type DeleteState = {
   open: boolean;
   requiresForce: boolean;
@@ -78,6 +80,7 @@ export function AdminEventDetailEditor({
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [status, setStatus] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [deleteState, setDeleteState] = useState<DeleteState>({
     open: false,
     requiresForce: false,
@@ -133,12 +136,22 @@ export function AdminEventDetailEditor({
     value: EventFormState[Key],
   ) {
     setForm((current) => ({ ...current, [key]: value }));
+    setFieldErrors((current) => {
+      if (!current[key]) {
+        return current;
+      }
+
+      const nextErrors = { ...current };
+      delete nextErrors[key];
+      return nextErrors;
+    });
   }
 
   async function handleSubmit(eventSubmit: React.FormEvent<HTMLFormElement>) {
     eventSubmit.preventDefault();
     setSaving(true);
     setStatus("");
+    setFieldErrors({});
 
     try {
       let coverImage = form.coverImage;
@@ -178,7 +191,14 @@ export function AdminEventDetailEditor({
       if (!response.ok) {
         const errorPayload = (await response.json().catch(() => null)) as {
           error?: string;
+          field?: keyof EventFormState;
         } | null;
+        if (errorPayload?.field) {
+          setFieldErrors({
+            [errorPayload.field]:
+              errorPayload.error || "Controlla questo campo.",
+          });
+        }
         throw new Error(
           errorPayload?.error || "Aggiornamento evento non riuscito.",
         );
@@ -197,6 +217,7 @@ export function AdminEventDetailEditor({
         lineupDjIds: result.event.lineupDjIds || [],
         tagIds: result.event.tagIds || [],
       });
+      setFieldErrors({});
       setOriginalLineupDjIds(result.event.lineupDjIds || []);
       setImageFile(null);
       setOpen(false);
@@ -517,13 +538,29 @@ export function AdminEventDetailEditor({
                     <Field label="Titolo" htmlFor="detail-title">
                       <input
                         id="detail-title"
-                        className={ui.form.field}
+                        className={`${ui.form.field} ${
+                          fieldErrors.title
+                            ? "border-red-400 bg-red-500/10 focus:border-red-300"
+                            : ""
+                        }`}
                         value={form.title}
                         onChange={(event) =>
                           updateField("title", event.target.value)
                         }
+                        aria-invalid={Boolean(fieldErrors.title)}
+                        aria-describedby={
+                          fieldErrors.title ? "detail-title-error" : undefined
+                        }
                         required
                       />
+                      {fieldErrors.title ? (
+                        <p
+                          id="detail-title-error"
+                          className="text-sm leading-6 text-red-200"
+                        >
+                          {fieldErrors.title}
+                        </p>
+                      ) : null}
                     </Field>
                     <Field label="Location" htmlFor="detail-location">
                       <select

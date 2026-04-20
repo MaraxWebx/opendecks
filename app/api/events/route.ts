@@ -55,6 +55,18 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ event }, { status: 201 });
   } catch (error) {
+    if (isDuplicateEventSlugError(error)) {
+      return NextResponse.json(
+        {
+          error:
+            "Esiste gia un evento con questo titolo. Modifica il titolo per generare uno slug diverso.",
+          field: "title",
+          code: "duplicate_event_slug",
+        },
+        { status: 409 }
+      );
+    }
+
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Salvataggio evento non riuscito." },
       { status: 409 }
@@ -74,4 +86,22 @@ function createSlug(value: string) {
 
 function buildEventCoverAlt(title: string, locationName: string) {
   return [title, locationName].filter(Boolean).join(" - ") || "Copertina evento";
+}
+
+function isDuplicateEventSlugError(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const mongoError = error as {
+    code?: number;
+    keyPattern?: Record<string, unknown>;
+    message?: string;
+  };
+
+  return (
+    mongoError.code === 11000 &&
+    (mongoError.keyPattern?.slug === 1 ||
+      mongoError.message?.includes("index: slug_1"))
+  );
 }
