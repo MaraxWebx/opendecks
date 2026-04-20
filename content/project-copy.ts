@@ -6,12 +6,12 @@ export const projectPageCopy = {
     "OpenDecks Italia nasce a Napoli, cresce tra spazi, collaborazioni e call aperte, e oggi lavora per costruire una rete fatta di ricerca, contenuto, member e memoria condivisa.",
   seoTitle: "Il progetto",
   seoDescription:
-    "Manifesto, visione e posizionamento di OpenDecks Italia: da format itinerante nato a Napoli a hub culturale della scena elettronica.",
+    "Manifesto, visione e posizionamento di OpenDecks Italia: da format itinerante nato a Napoli a hub culturale della scena musicale.",
 };
 
 export const manifestoParagraphs = [
   "OpenDecks Italia nasce come spazio aperto e cresce come rete culturale itinerante. La base operativa e Napoli, la natura resta mobile: eventi, call aperte, archivio e connessioni tra citta diverse.",
-  "Non costruiamo solo lineup. Costruiamo selezione, memoria, contenuto e opportunita. L'obiettivo e dare continuita alla scena elettronica e far emergere talenti con una direzione chiara.",
+  "Non costruiamo solo lineup. Costruiamo selezione, memoria, contenuto e opportunita. L'obiettivo e dare continuita alla scena musicale e far emergere talenti con una direzione chiara.",
 ];
 
 export const hubPillars = [

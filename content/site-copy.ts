@@ -7,7 +7,7 @@ export const homeCopy = {
   eyebrow: brandClaim.lines,
   title: "OpenDecks Italia",
   description:
-    "Non solo serate. OpenDecks costruisce una rete fatta di selezione, archivio, contenuto e opportunita per la scena elettronica.",
+    "Non solo serate. OpenDecks costruisce una rete fatta di selezione, archivio, contenuto e opportunita per la scena musicale.",
   primaryCta: "Scopri gli eventi",
   secondaryCta: "Leggi il manifesto",
   latestSetTitle: "Ascolta l'ultimo set della community.",
