@@ -32,21 +32,26 @@
   }
 
   html {
+    background: var(--color-bg);
     scroll-behavior: smooth;
     scrollbar-width: thin;
     scrollbar-color: var(--color-brand) var(--color-bg);
     overflow-x: hidden;
+    overscroll-behavior-y: none;
   }
 
   body {
     margin: 0;
+    min-height: 100vh;
     background:
       radial-gradient(circle at top center, rgba(227, 31, 41, 0.14), transparent 26%),
       linear-gradient(180deg, var(--color-bg) 0%, #090909 100%);
+    background-color: var(--color-bg);
     color: var(--color-text);
     font-family: inherit;
     max-width: 100%;
     overflow-x: hidden;
+    overscroll-behavior-y: none;
   }
 
   html.modal-open {

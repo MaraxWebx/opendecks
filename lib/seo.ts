@@ -54,7 +54,7 @@ export function buildMetadata({
     keywords,
     appleWebApp: {
       capable: true,
-      statusBarStyle: "black-translucent",
+      statusBarStyle: "black",
       title: siteMetadata.shortName,
     },
     icons: {
