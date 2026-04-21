@@ -6,6 +6,7 @@ import { canAttemptMongo, getDatabase } from "@/lib/mongodb";
 
 const ADMIN_COOKIE = "opendecks_admin_session";
 const ADMIN_USERNAME_COOKIE = "opendecks_admin_username";
+export const ADMIN_SESSION_MAX_AGE = 60 * 60 * 24 * 30;
 
 export function getAdminSeedCredentials() {
   return {
@@ -68,7 +69,7 @@ export async function createAdminSession() {
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: 60 * 60 * 12
+    maxAge: ADMIN_SESSION_MAX_AGE
   });
 }
 

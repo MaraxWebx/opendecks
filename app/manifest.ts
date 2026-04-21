@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: siteMetadata.name,
     short_name: siteMetadata.shortName,
     description: siteMetadata.description,
-    start_url: "/",
+    start_url: "/admin",
     scope: "/",
     display: "standalone",
     orientation: "portrait",

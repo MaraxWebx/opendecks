@@ -87,6 +87,7 @@ export async function POST(request: NextRequest) {
 
   try {
     await sendApplicationNotificationEmail({
+      applicationId: application.id,
       applicantName: application.name,
       applicantEmail: application.email,
       phone: application.phone,

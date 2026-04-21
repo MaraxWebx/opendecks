@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { verifyAdminCredentials } from "@/lib/admin-auth";
+import { ADMIN_SESSION_MAX_AGE, verifyAdminCredentials } from "@/lib/admin-auth";
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
@@ -19,14 +19,14 @@ export async function POST(request: NextRequest) {
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: 60 * 60 * 12
+    maxAge: ADMIN_SESSION_MAX_AGE
   });
   response.cookies.set("opendecks_admin_username", encodeURIComponent(username), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: 60 * 60 * 12
+    maxAge: ADMIN_SESSION_MAX_AGE
   });
 
   return response;

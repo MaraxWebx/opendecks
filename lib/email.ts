@@ -3,6 +3,7 @@ import path from "node:path";
 import nodemailer from "nodemailer";
 
 import { emailCopy } from "@/content/site-copy";
+import { getSiteUrl } from "@/lib/seo";
 
 const ADMIN_CC_EMAIL = "antoniomarino942@gmail.com";
 
@@ -35,6 +36,7 @@ type ApplicationConfirmationEmailInput = {
 };
 
 type ApplicationNotificationEmailInput = {
+  applicationId: string;
   applicantName: string;
   applicantEmail: string;
   phone: string;
@@ -203,6 +205,10 @@ export async function sendApplicationNotificationEmail(
   const { transporter, from } = getMailClient();
   const notificationRecipient =
     process.env.APPLICATION_EMAIL_TO || "info@opendecksitalia.it";
+  const adminApplicationUrl = new URL(
+    `/admin/candidature?applicationId=${encodeURIComponent(input.applicationId)}`,
+    getSiteUrl(),
+  ).toString();
   const locationLabel = [
     input.city,
     input.province ? `(${input.province})` : "",
@@ -233,6 +239,9 @@ export async function sendApplicationNotificationEmail(
         <p style="margin:0 0 12px"><strong>Localita:</strong> ${escapeHtml(locationLabel || "-")}</p>
         <p style="margin:0 0 12px"><strong>Set:</strong> ${escapeHtml(input.setLink)}</p>
         <p style="margin:0">Invio: ${escapeHtml(new Date(input.submittedAt).toLocaleString("it-IT"))}</p>
+        <div style="margin-top:18px">
+          <a href="${escapeHtml(adminApplicationUrl)}" style="display:inline-block;border-radius:10px;background:#E31F29;color:#ffffff;font-size:14px;font-weight:700;line-height:1;text-decoration:none;padding:14px 18px">Apri candidatura</a>
+        </div>
       `,
     }),
     text: [
@@ -254,6 +263,8 @@ export async function sendApplicationNotificationEmail(
       `Localita: ${locationLabel || "-"}`,
       `Set: ${input.setLink}`,
       `Invio: ${new Date(input.submittedAt).toLocaleString("it-IT")}`,
+      "",
+      `Apri candidatura: ${adminApplicationUrl}`,
     ].join("\n"),
     attachments: [buildLogoAttachment()],
   });
