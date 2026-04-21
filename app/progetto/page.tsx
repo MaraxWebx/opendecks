@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { membershipInfoSections } from "@/content/membership-copy";
 import {
   hubPillars,
   manifestoParagraphs,
@@ -91,6 +92,32 @@ export default async function ProjectPage() {
         </div>
       </section>
 
+      <section id="membership-card" className="scroll-mt-24 pb-14 md:pb-16">
+        <SectionHeading
+          eyebrow="Membership Card"
+          title="Accesso alla community attiva Open Decks."
+          description="La card digitale non e una classifica: e lo strumento con cui il progetto riconosce chi partecipa, resta in contatto con la rete e puo essere coinvolto nelle prossime tappe."
+        />
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {membershipInfoSections.map((section) => (
+            <article
+              key={section.title}
+              className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.03] p-5"
+            >
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#E31F29]/35 bg-[#E31F29]/12 text-sm font-semibold text-[#ff7e86]">
+                {membershipInfoSections.indexOf(section) + 1}
+              </span>
+              <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
+                {section.title}
+              </h3>
+              <p className="mt-3 text-sm leading-7 text-white/72">
+                {section.body}
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="pb-14 md:pb-16">
         <SectionHeading
           eyebrow="Hub"
@@ -103,8 +130,8 @@ export default async function ProjectPage() {
               key={pillar.title}
               className="rounded-2xl border border-[#E31F29]/18 bg-white/[0.03] p-5"
             >
-              <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
-                OpenDecks
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#E31F29]/35 bg-[#E31F29]/12 text-[#ff7e86]">
+                <HubPillarIcon title={pillar.title} />
               </span>
               <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
                 {pillar.title}
@@ -206,6 +233,85 @@ export default async function ProjectPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+function HubPillarIcon({ title }: { title: string }) {
+  const className = "h-5 w-5";
+
+  if (title.includes("talenti")) {
+    return (
+      <svg
+        className={className}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M12 14.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+        <path d="M4.5 20.5a7.5 7.5 0 0 1 15 0" />
+        <path d="M18.5 5.5h2" />
+        <path d="M19.5 4.5v2" />
+      </svg>
+    );
+  }
+
+  if (title.includes("contenuto")) {
+    return (
+      <svg
+        className={className}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M6 5.5h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2Z" />
+        <path d="m10.5 9 4 3-4 3V9Z" />
+      </svg>
+    );
+  }
+
+  if (title.includes("collaborazioni")) {
+    return (
+      <svg
+        className={className}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M8.5 12.5 6.8 14a2.8 2.8 0 0 1-4-4l3.4-3.4a3.2 3.2 0 0 1 4.3-.2l.8.6" />
+        <path d="m15.5 11.5 1.7-1.5a2.8 2.8 0 0 1 4 4l-3.4 3.4a3.2 3.2 0 0 1-4.3.2l-.8-.6" />
+        <path d="m8.5 15.5 7-7" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M4.5 12a7.5 7.5 0 0 1 12.8-5.3" />
+      <path d="M17.5 4.5v4h-4" />
+      <path d="M19.5 12a7.5 7.5 0 0 1-12.8 5.3" />
+      <path d="M6.5 19.5v-4h4" />
+    </svg>
   );
 }
 

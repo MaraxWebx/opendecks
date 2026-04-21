@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { membershipHomeCopy } from "@/content/membership-copy";
 import { brandClaim, homeCopy } from "@/content/site-copy";
 import { HomeEventsCarousel } from "@/components/home-events-carousel";
 import { HomeHeroVideo } from "@/components/home-hero-video";
@@ -213,11 +214,76 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <section className="px-4 py-6 md:px-6 md:py-8">
+        <div className="mx-auto grid max-w-[1240px] gap-6 border-y border-[#E31F29]/18 py-8 md:grid-cols-[minmax(0,1fr)_minmax(280px,420px)] md:items-center md:gap-10">
+          <div className="grid gap-4">
+            <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
+              {membershipHomeCopy.eyebrow}
+            </span>
+            <h2 className="max-w-2xl text-[clamp(1.5rem,3vw,2.5rem)] font-semibold leading-none tracking-[-0.04em] text-[#f7f2e8]">
+              {membershipHomeCopy.title}
+            </h2>
+            <p className="max-w-2xl text-sm leading-7 text-white/72 md:text-base">
+              {membershipHomeCopy.description}
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/progetto#membership-card"
+                className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[#E31F29] bg-[#E31F29] px-5 py-3 text-sm font-medium text-white transition hover:border-[#c91922] hover:bg-[#c91922]"
+              >
+                {membershipHomeCopy.cta}
+              </Link>
+            </div>
+          </div>
+
+          <MembershipCardPreview />
+        </div>
+      </section>
       <section className="px-4 py-4 pb-12 md:px-6">
         <div className="mx-auto min-w-0 max-w-[1240px]">
           <HomeEventsCarousel events={events.slice(0, 6)} />
         </div>
       </section>
+    </div>
+  );
+}
+
+function MembershipCardPreview() {
+  return (
+    <div className="relative mx-auto aspect-[1.58/1] w-full max-w-[420px] overflow-hidden rounded-xl border border-[#E31F29]/35 bg-[#0d0d0d] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.34)]">
+      <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(227,31,41,0.28),transparent_42%),radial-gradient(circle_at_88%_16%,rgba(255,255,255,0.13),transparent_24%)]" />
+      <div className="relative flex h-full flex-col justify-between">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <span className="text-[0.66rem] uppercase tracking-[0.26em] text-[#ff7e86]">
+              Open Decks Italia
+            </span>
+            <h3 className="mt-3 text-2xl font-semibold uppercase leading-none tracking-[-0.04em] text-[#f7f2e8]">
+              Membership Card
+            </h3>
+          </div>
+          <span className="rounded-md border border-white/14 bg-white/8 px-2.5 py-1 text-[0.66rem] uppercase tracking-[0.18em] text-white/78">
+            Digital
+          </span>
+        </div>
+
+        <div className="grid gap-3">
+          <div className="h-px bg-[#E31F29]/45" />
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <p className="text-[0.68rem] uppercase tracking-[0.2em] text-white/50">
+                Community access
+              </p>
+              <p className="mt-1 text-sm font-medium text-white/88">
+                Slot / eventi / showcase
+              </p>
+            </div>
+            <p className="text-right text-[0.68rem] uppercase tracking-[0.18em] text-white/52">
+              OD-2026
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

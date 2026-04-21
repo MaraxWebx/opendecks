@@ -2,6 +2,7 @@ import path from "node:path";
 
 import nodemailer from "nodemailer";
 
+import { membershipRegulationSections } from "@/content/membership-copy";
 import { emailCopy } from "@/content/site-copy";
 import { getSiteUrl } from "@/lib/seo";
 
@@ -76,6 +77,7 @@ type DjEventAssignmentEmailInput = {
 
 export async function sendMembershipCardEmail(input: MembershipEmailInput) {
   const { transporter, from, user } = getMailClient();
+  const membershipRegulationText = buildMembershipRegulationText();
 
   await transporter.sendMail({
     from,
@@ -88,10 +90,11 @@ export async function sendMembershipCardEmail(input: MembershipEmailInput) {
         <p style="margin:0 0 12px">Ciao ${escapeHtml(input.djName)},</p>
         <p style="margin:0 0 12px">In allegato trovi la tua membership card ufficiale.</p>
         <p style="margin:0 0 12px"><strong>ID card:</strong> ${escapeHtml(input.membershipCardId)}</p>
-        <p style="margin:0">Conservala come riferimento per il roster OpenDecks.</p>
+        <p style="margin:0 0 18px">Conservala come riferimento per il roster OpenDecks.</p>
+        ${buildMembershipRegulationHtml()}
       `,
     }),
-    text: `OpenDecks Italia\n\nCiao ${input.djName},\n\nin allegato trovi la tua membership card ufficiale.\nID card: ${input.membershipCardId}\n\nConserva questo PDF come riferimento.`,
+    text: `OpenDecks Italia\n\nCiao ${input.djName},\n\nin allegato trovi la tua membership card ufficiale.\nID card: ${input.membershipCardId}\n\nConserva questo PDF come riferimento.\n\n${membershipRegulationText}`,
     attachments: [
       buildLogoAttachment(),
       {
@@ -468,6 +471,51 @@ function buildLogoAttachment() {
     ),
     cid: "opendecks-logo",
   };
+}
+
+function buildMembershipRegulationHtml() {
+  const sections = membershipRegulationSections
+    .map((section) => {
+      const items = section.items?.length
+        ? `<ul style="margin:8px 0 0;padding-left:18px">${section.items
+            .map((item) => `<li style="margin:0 0 6px">${escapeHtml(item)}</li>`)
+            .join("")}</ul>`
+        : "";
+      const note = section.note
+        ? `<p style="margin:8px 0 0;color:rgba(247,243,238,0.72)">${escapeHtml(section.note)}</p>`
+        : "";
+
+      return `
+        <div style="margin:0 0 16px">
+          <h3 style="margin:0 0 7px;font-size:16px;line-height:1.25;color:#f7f2e8">${escapeHtml(section.title)}</h3>
+          <p style="margin:0;color:#e8e2da">${escapeHtml(section.body)}</p>
+          ${items}
+          ${note}
+        </div>
+      `;
+    })
+    .join("");
+
+  return `
+    <div style="margin-top:18px;border-top:1px solid rgba(227,31,41,0.22);padding-top:18px">
+      <h2 style="margin:0 0 14px;font-size:20px;line-height:1.1;color:#f7f2e8">Regolamento Membership Card</h2>
+      ${sections}
+    </div>
+  `;
+}
+
+function buildMembershipRegulationText() {
+  return [
+    "Regolamento Membership Card",
+    "",
+    ...membershipRegulationSections.flatMap((section) => [
+      section.title,
+      section.body,
+      ...(section.items?.length ? section.items.map((item) => `- ${item}`) : []),
+      ...(section.note ? [section.note] : []),
+      "",
+    ]),
+  ].join("\n");
 }
 
 function escapeHtml(value: string) {
