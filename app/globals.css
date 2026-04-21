@@ -37,7 +37,6 @@
     scrollbar-width: thin;
     scrollbar-color: var(--color-brand) var(--color-bg);
     overflow-x: hidden;
-    overscroll-behavior-y: none;
   }
 
   body {
@@ -51,7 +50,6 @@
     font-family: inherit;
     max-width: 100%;
     overflow-x: hidden;
-    overscroll-behavior-y: none;
   }
 
   html.modal-open {
