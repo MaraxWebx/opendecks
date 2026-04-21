@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { getAuthenticatedAdminUsername } from "@/lib/admin-auth";
+import { getAuthenticatedAdminName } from "@/lib/admin-auth";
 import {
   getApplications,
   getArchiveEntries,
@@ -26,7 +26,7 @@ export default async function AdminPage() {
     getArchiveEntries(),
     getDjRosterEntries(),
   ]);
-  const adminUsername = await getAuthenticatedAdminUsername();
+  const adminName = await getAuthenticatedAdminName();
   const newApplications = applications.filter(
     (application) => application.status === "new",
   );
@@ -63,7 +63,7 @@ export default async function AdminPage() {
           Admin
         </span>
         <h1 className="mt-3 text-[clamp(1.9rem,4vw,3.1rem)] font-semibold leading-none tracking-[-0.03em] text-[#f7f3ee]">
-          Ciao, {adminUsername} 👋
+          Benvenuto, {adminName}
         </h1>
       </section>
 

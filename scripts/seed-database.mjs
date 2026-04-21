@@ -6,6 +6,7 @@ const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB || "opendecks";
 const adminUsername = process.env.ADMIN_USERNAME || "admin";
 const adminPassword = process.env.ADMIN_PASSWORD || "opendecks123";
+const adminName = process.env.ADMIN_NAME || adminUsername;
 
 if (!uri) {
   throw new Error("MONGODB_URI non configurato.");
@@ -35,6 +36,7 @@ try {
     [
       {
         username: adminUsername,
+        name: adminName,
         passwordHash: createHash("sha256").update(adminPassword).digest("hex"),
         role: "admin"
       }

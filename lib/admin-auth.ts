@@ -6,12 +6,14 @@ import { canAttemptMongo, getDatabase } from "@/lib/mongodb";
 
 const ADMIN_COOKIE = "opendecks_admin_session";
 const ADMIN_USERNAME_COOKIE = "opendecks_admin_username";
+const ADMIN_DISPLAY_NAME_COOKIE = "opendecks_admin_display_name";
 export const ADMIN_SESSION_MAX_AGE = 60 * 60 * 24 * 30;
 
 export function getAdminSeedCredentials() {
   return {
     username: process.env.ADMIN_USERNAME || "admin",
-    password: process.env.ADMIN_PASSWORD || "opendecks123"
+    password: process.env.ADMIN_PASSWORD || "opendecks123",
+    name: process.env.ADMIN_NAME || "Admin"
   };
 }
 
@@ -42,23 +44,62 @@ export async function verifyAdminCredentials(username: string, password: string)
   }
 }
 
+export async function getAdminDisplayName(username: string) {
+  const fallback = getAdminSeedCredentials();
+
+  if (!canAttemptMongo()) {
+    return username === fallback.username ? fallback.name : username;
+  }
+
+  try {
+    const db = await getDatabase();
+    const adminUser = await db.collection("admin_users").findOne<{
+      username: string;
+      name?: string;
+      displayName?: string;
+      fullName?: string;
+    }>({
+      username
+    });
+
+    return (
+      adminUser?.name ||
+      adminUser?.displayName ||
+      adminUser?.fullName ||
+      (username === fallback.username ? fallback.name : username)
+    );
+  } catch {
+    return username === fallback.username ? fallback.name : username;
+  }
+}
+
 export async function isAdminAuthenticated() {
   const store = await cookies();
   return store.get(ADMIN_COOKIE)?.value === "authenticated";
 }
 
-export async function getAuthenticatedAdminUsername() {
+export async function getAuthenticatedAdminName() {
   const store = await cookies();
-  const rawValue = store.get(ADMIN_USERNAME_COOKIE)?.value;
+  const rawDisplayName = store.get(ADMIN_DISPLAY_NAME_COOKIE)?.value;
 
-  if (!rawValue) {
-    return getAdminSeedCredentials().username;
+  if (rawDisplayName) {
+    return decodeCookieValue(rawDisplayName);
   }
 
+  const rawUsername = store.get(ADMIN_USERNAME_COOKIE)?.value;
+
+  if (!rawUsername) {
+    return getAdminSeedCredentials().name;
+  }
+
+  return getAdminDisplayName(decodeCookieValue(rawUsername));
+}
+
+function decodeCookieValue(value: string) {
   try {
-    return decodeURIComponent(rawValue);
+    return decodeURIComponent(value);
   } catch {
-    return rawValue;
+    return value;
   }
 }
 
@@ -83,6 +124,13 @@ export async function clearAdminSession() {
     maxAge: 0
   });
   store.set(ADMIN_USERNAME_COOKIE, "", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 0
+  });
+  store.set(ADMIN_DISPLAY_NAME_COOKIE, "", {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",

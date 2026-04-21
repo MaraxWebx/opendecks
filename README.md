@@ -25,6 +25,7 @@ Copia `.env.example` in `.env.local` e configura:
 MONGODB_URI=
 MONGODB_DB=opendecks
 ADMIN_USERNAME=admin
+ADMIN_NAME=Admin
 ADMIN_PASSWORD=
 SMTP_HOST=
 SMTP_PORT=587
@@ -49,6 +50,7 @@ Per il deploy su Vercel configura queste env nel progetto:
 MONGODB_URI=
 MONGODB_DB=opendecks
 ADMIN_USERNAME=admin
+ADMIN_NAME=Admin
 ADMIN_PASSWORD=
 SMTP_HOST=
 SMTP_PORT=587
