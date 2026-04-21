@@ -31,7 +31,7 @@ export default function PrivacyPolicyPage() {
         <div className="grid gap-5">
           <PolicyBlock
             title="Titolare del trattamento"
-            content="OpenDecks Italia. Per richieste privacy o gestione dati puoi scrivere a info@opendecks.it."
+            content="OpenDecks Italia. Per richieste privacy o gestione dati puoi scrivere a info@opendecksitalia.it."
           />
           <PolicyBlock
             title="Dati raccolti"
@@ -59,7 +59,7 @@ export default function PrivacyPolicyPage() {
           />
           <PolicyBlock
             title="Diritti dell'utente"
-            content="Puoi chiedere accesso, rettifica, aggiornamento o cancellazione dei dati scrivendo a info@opendecks.it, nei limiti previsti dalla normativa applicabile."
+            content="Puoi chiedere accesso, rettifica, aggiornamento o cancellazione dei dati scrivendo a info@opendecksitalia.it, nei limiti previsti dalla normativa applicabile."
           />
         </div>
 
@@ -76,13 +76,7 @@ export default function PrivacyPolicyPage() {
   );
 }
 
-function PolicyBlock({
-  title,
-  content,
-}: {
-  title: string;
-  content: string;
-}) {
+function PolicyBlock({ title, content }: { title: string; content: string }) {
   return (
     <div className="rounded-xl border border-[#E31F29]/16 bg-white/[0.03] p-6">
       <h2 className="text-lg font-semibold tracking-[-0.02em] text-[#f7f3ee]">

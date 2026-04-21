@@ -34,8 +34,8 @@ export default function ContactPage() {
         <div className="grid gap-4 content-start">
           <ContactCard
             title="Email"
-            value="info@opendecks.it"
-            href="mailto:info@opendecks.it"
+            value="info@opendecksitalia.it"
+            href="mailto:info@opendecksitalia.it"
             icon={<MailIcon />}
           />
           <ContactCard

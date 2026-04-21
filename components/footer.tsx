@@ -42,9 +42,9 @@ export async function Footer() {
           <div className="grid gap-3 text-sm text-white/80">
             <a
               className="transition hover:text-white"
-              href="mailto:info@opendecks.it"
+              href="mailto:info@opendecksitalia.it"
             >
-              info@opendecks.it
+              info@opendecksitalia.it
             </a>
             <a className="transition hover:text-white" href="tel:+393343461942">
               +39 334 346 1942
