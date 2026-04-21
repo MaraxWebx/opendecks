@@ -54,7 +54,6 @@ export default async function AdminPage() {
   const recentPerformance = buildRecentEventPerformance(
     events,
     applications,
-    djRoster,
   );
 
   return (
@@ -166,7 +165,7 @@ export default async function AdminPage() {
         <div className="gap-4 flex flex-col">
           <div className="grid gap-4 xl:grid-cols-2">
             <DualStatsChart
-              title="Candidature e DJ selezionati per evento"
+              title="Candidature e approvate per evento"
               subtitle={`Eventi nell'ultimo mese disponibile: ${recentPerformance.rangeLabel}.`}
               items={recentPerformance.events}
             />
@@ -280,8 +279,7 @@ function DualStatsChart({
   items: DualChartItem[];
 }) {
   const max = items.reduce(
-    (currentMax, item) =>
-      Math.max(currentMax, item.applications + item.selectedDjs),
+    (currentMax, item) => Math.max(currentMax, item.applications),
     1,
   );
 
@@ -300,7 +298,7 @@ function DualStatsChart({
         </span>
         <span className="inline-flex items-center gap-2">
           <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-          DJ selezionati
+          Approvate
         </span>
       </div>
 
@@ -313,26 +311,26 @@ function DualStatsChart({
                   {item.label}
                 </span>
                 <span className="shrink-0 text-right text-white/58">
-                  {item.applications} candidature / {item.selectedDjs} DJ
+                  {item.applications} candidature / {item.selectedDjs} approvate
                 </span>
               </div>
               <div className="h-4 overflow-hidden rounded-full bg-white/8">
                 <div
                   className="flex h-full overflow-hidden rounded-full"
                   style={{
-                    width: `${Math.max(((item.applications + item.selectedDjs) / max) * 100, item.applications || item.selectedDjs ? 8 : 0)}%`,
+                    width: `${Math.max((item.applications / max) * 100, item.applications ? 8 : 0)}%`,
                   }}
                 >
                   <div
                     className="h-full shrink-0 bg-[linear-gradient(90deg,#ff676f_0%,#E31F29_100%)]"
                     style={{
-                      width: `${(item.applications / Math.max(item.applications + item.selectedDjs, 1)) * 100}%`,
+                      width: `${((item.applications - item.selectedDjs) / Math.max(item.applications, 1)) * 100}%`,
                     }}
                   />
                   <div
                     className="h-full shrink-0 bg-[linear-gradient(90deg,#6ee7b7_0%,#10b981_100%)]"
                     style={{
-                      width: `${(item.selectedDjs / Math.max(item.applications + item.selectedDjs, 1)) * 100}%`,
+                      width: `${(item.selectedDjs / Math.max(item.applications, 1)) * 100}%`,
                     }}
                   />
                 </div>
@@ -364,7 +362,6 @@ function buildCounts(values: string[]) {
 function buildRecentEventPerformance(
   events: Awaited<ReturnType<typeof getEvents>>,
   applications: Awaited<ReturnType<typeof getApplications>>,
-  djRoster: Awaited<ReturnType<typeof getDjRosterEntries>>,
 ) {
   if (!events.length) {
     return {
@@ -388,13 +385,19 @@ function buildRecentEventPerformance(
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, 8);
 
-  const chartEvents = recentEvents.map((event) => ({
-    label: buildEventChartLabel(event),
-    applications: applications.filter(
+  const chartEvents = recentEvents.map((event) => {
+    const eventApplications = applications.filter(
       (application) => application.eventId === event.id,
-    ).length,
-    selectedDjs: event.lineupDjIds.length,
-  }));
+    );
+
+    return {
+      label: buildEventChartLabel(event),
+      applications: eventApplications.length,
+      selectedDjs: eventApplications.filter(
+        (application) => application.status === "selected",
+      ).length,
+    };
+  });
 
   return {
     rangeLabel: `${rangeStart.toLocaleDateString("it-IT")} - ${latestDate.toLocaleDateString("it-IT")}`,
