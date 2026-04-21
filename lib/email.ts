@@ -4,6 +4,8 @@ import nodemailer from "nodemailer";
 
 import { emailCopy } from "@/content/site-copy";
 
+const ADMIN_CC_EMAIL = "antoniomarino942@gmail.com";
+
 type MembershipEmailInput = {
   to: string;
   djName: string;
@@ -106,6 +108,7 @@ export async function sendContactEmail(input: ContactEmailInput) {
   await transporter.sendMail({
     from,
     to: contactRecipient,
+    cc: ADMIN_CC_EMAIL,
     replyTo: input.email,
     subject: `Nuovo messaggio contatti da ${input.name}`,
     html: buildEmailTemplate({
@@ -161,6 +164,7 @@ export async function sendApplicationConfirmationEmail(
   await transporter.sendMail({
     from,
     to: input.to,
+    cc: ADMIN_CC_EMAIL,
     replyTo: user,
     subject: `Candidatura ricevuta - ${input.eventTitle}`,
     html: buildEmailTemplate({
@@ -210,6 +214,7 @@ export async function sendApplicationNotificationEmail(
   await transporter.sendMail({
     from,
     to: notificationRecipient,
+    cc: ADMIN_CC_EMAIL,
     replyTo: input.applicantEmail,
     subject: `Nuova candidatura OpenDecks - ${input.applicantName}`,
     html: buildEmailTemplate({
@@ -279,6 +284,7 @@ export async function sendApplicationApprovedEmail(
   await transporter.sendMail({
     from,
     to: input.to,
+    cc: ADMIN_CC_EMAIL,
     replyTo: user,
     subject: hasEventContext
       ? `Candidatura approvata - ${input.eventTitle}`
