@@ -25,12 +25,12 @@ export const membershipInfoSections = [
   {
     title: "Vantaggi",
     body:
-      "La Membership consente prenotazione anticipata degli slot, accesso alle tappe Open Decks in diverse citta, possibilita di essere coinvolti in eventi e showcase e maggiore visibilita all'interno del progetto.",
+      "La Membership consente prenotazione anticipata degli slot, accesso alle tappe Open Decks in diverse città, possibilità di essere coinvolti in eventi e showcase e maggiore visibilità all'interno del progetto.",
   },
   {
     title: "Responsabilita",
     body:
-      "La Membership si basa su rispetto, puntualita e partecipazione. Chi prenota uno slot deve presentarsi, rispettare la durata assegnata e mantenere un comportamento corretto verso staff, pubblico e altri partecipanti.",
+      "La Membership si basa su rispetto, puntualità e partecipazione. Chi prenota uno slot deve presentarsi, rispettare la durata assegnata e mantenere un comportamento corretto verso staff, pubblico e altri partecipanti.",
   },
   {
     title: "Continuita",
