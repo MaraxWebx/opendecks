@@ -16,12 +16,21 @@ P1. Sicurezza
 - Rimuovere placeholder e credenziali provvisorie dagli ambienti live
 
 P1. Ambienti
-- Separare Production / Preview / Development
-- Usare database diversi per ogni ambiente
+- Separare Production e Preview
+- Usare database diversi per produzione e staging
 - Target consigliato:
   - Production -> opendecks_prod
-  - Preview -> opendecks_stage
-  - Development -> opendecks_dev
+  - Preview/Staging -> opendecks_stage
+- Verificare branch Vercel:
+  - Production branch -> main
+  - Preview/Staging branch -> staging
+- Configurare su Vercel variabili diverse per Production e Preview:
+  - MONGODB_URI
+  - MONGODB_DB
+- Eseguire seed solo sul database corretto:
+  - staging -> opendecks_stage
+  - production -> opendecks_prod
+- In locale usare .env.local separato e non puntare al database production
 - Se possibile, separare anche:
   - SMTP produzione vs test
   - Blob produzione vs test
