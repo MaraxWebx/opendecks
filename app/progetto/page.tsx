@@ -32,6 +32,7 @@ const provincePositions: Array<{
   { label: "RM", displayName: "Roma", keywords: [" roma ", " rm "], top: "50%", left: "46%" },
   { label: "NA", displayName: "Napoli", keywords: [" napoli ", " napli ", " na "], top: "65%", left: "50%" },
   { label: "BA", displayName: "Bari", keywords: [" bari ", " ba "], top: "64%", left: "64%" },
+  { label: "TA", displayName: "Taranto", keywords: [" taranto ", " ta "], top: "72%", left: "60%" },
   { label: "LE", displayName: "Lecce", keywords: [" lecce ", " le "], top: "79%", left: "61%" },
   { label: "CZ", displayName: "Catanzaro", keywords: [" catanzaro ", " cz "], top: "81%", left: "54%" },
   { label: "RC", displayName: "Reggio Calabria", keywords: [" reggio calabria ", " rc "], top: "86%", left: "53%" },
