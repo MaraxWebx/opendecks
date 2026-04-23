@@ -35,7 +35,7 @@ export function Header() {
   }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#E31F29]/25 bg-black/90 backdrop-blur-xl">
+    <header className="safe-top-padding sticky top-0 z-40 border-b border-[#E31F29]/25 bg-black/90 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-[1240px] items-center justify-between gap-4 px-4 py-4 md:px-6">
         <div className="flex w-auto flex-none items-center justify-between gap-4 max-md:w-full">
           <Link
@@ -93,7 +93,7 @@ export function Header() {
       {menuOpen ? (
         <div
           id="site-nav"
-          className="menu-overlay-enter fixed inset-0 z-50 flex min-h-screen w-full flex-col overflow-hidden bg-black px-4 py-4 md:hidden"
+          className="menu-overlay-enter safe-top-padding safe-bottom-padding fixed inset-0 z-50 flex min-h-screen w-full flex-col overflow-hidden bg-black px-4 py-4 md:hidden"
           aria-label="Navigazione principale"
         >
           <div className="menu-panel-enter relative mb-4 flex items-center justify-between gap-4 border-b border-[#E31F29]/20 pb-4">
