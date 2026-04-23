@@ -20,7 +20,7 @@ export const membershipInfoSections = [
   {
     title: "Come viene assegnata",
     body:
-      "La card viene assegnata dallo staff a chi ha partecipato ad almeno un evento Open Decks oppure e stato inserito nel circuito tramite selezione interna. Serve a identificare chi fa parte della community attiva.",
+      "La card non viene assegnata automaticamente alla prima partecipazione. È un riconoscimento che si conquista nel tempo, attraverso presenza, impegno e contributo reale al progetto. Viene attribuita dallo staff a chi, dopo aver preso parte agli Open Decks o essere entrato tramite selezione interna, dimostra continuità e partecipazione attiva nella community.",
   },
   {
     title: "Vantaggi",

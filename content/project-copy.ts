@@ -16,7 +16,7 @@ export const manifestoParagraphs = [
 
 export const hubPillars = [
   {
-    title: "Hub di talenti",
+    title: "Hub di dj e selectors",
     description:
       "Member card, database attivo e rete interna per creare connessioni, scambi e nuove opportunita di booking.",
   },

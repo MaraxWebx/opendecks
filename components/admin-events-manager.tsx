@@ -664,7 +664,7 @@ export function AdminEventsManager({
                           <option value="">Seleziona location</option>
                           {locations.map((location) => (
                             <option key={location.id} value={location.id}>
-                              {location.name} / {location.address}
+                              {location.name}
                             </option>
                           ))}
                         </select>
