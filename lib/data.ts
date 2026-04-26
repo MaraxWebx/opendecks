@@ -21,6 +21,20 @@ type NewDjRosterEntry = Omit<
   | "membershipCardIssuedAt"
   | "membershipCardEmailSentAt"
 >;
+type UpdateDjRosterEntryInput = Partial<
+  Omit<
+    DjRosterRecord,
+    | "id"
+    | "applicationId"
+    | "sourceApplicationEventId"
+    | "sourceApplicationEventTitle"
+    | "approvedAt"
+    | "membershipCardEnabled"
+    | "membershipCardId"
+    | "membershipCardIssuedAt"
+    | "membershipCardEmailSentAt"
+  >
+>;
 type UpdateDjRosterMembershipInput = {
   membershipCardEnabled: boolean;
   membershipCardId?: string;
@@ -329,6 +343,43 @@ export async function createDjRosterEntry(input: NewDjRosterEntry) {
   return record;
 }
 
+export async function updateDjRosterEntry(id: string, input: UpdateDjRosterEntryInput) {
+  if (!isMongoConfigured()) {
+    return updateDjRosterEntryMock(id, input);
+  }
+
+  const db = await getDatabase();
+  await db.collection<DjRosterRecord>("dj_roster").updateOne({ id }, { $set: input });
+  const updated = await db.collection<DjRosterRecord>("dj_roster").findOne({ id });
+  return updated ? normalizeDjRoster(updated) : null;
+}
+
+export async function deleteDjRosterEntry(id: string) {
+  if (!isMongoConfigured()) {
+    return deleteDjRosterEntryMock(id);
+  }
+
+  const db = await getDatabase();
+  const result = await db.collection<DjRosterRecord>("dj_roster").deleteOne({ id });
+
+  if (!result.deletedCount) {
+    return false;
+  }
+
+  const events = await db.collection<EventRecord>("events").find({ lineupDjIds: id }).toArray();
+
+  await Promise.all(
+    events.map((event) =>
+      db.collection<EventRecord>("events").updateOne(
+        { id: event.id },
+        { $set: { lineupDjIds: (event.lineupDjIds || []).filter((djId) => djId !== id) } }
+      )
+    )
+  );
+
+  return true;
+}
+
 export async function createApplication(input: NewApplication) {
   const record: ApplicationRecord = {
     id: new ObjectId().toHexString(),
@@ -609,6 +660,44 @@ function updateDjRosterMembershipMock(id: string, input: UpdateDjRosterMembershi
   };
 
   return mockDjRoster[index];
+}
+
+function updateDjRosterEntryMock(id: string, input: UpdateDjRosterEntryInput) {
+  const index = mockDjRoster.findIndex((item) => item.id === id);
+
+  if (index === -1) {
+    return null;
+  }
+
+  mockDjRoster[index] = {
+    ...mockDjRoster[index],
+    ...input
+  };
+
+  return mockDjRoster[index];
+}
+
+function deleteDjRosterEntryMock(id: string) {
+  const index = mockDjRoster.findIndex((item) => item.id === id);
+
+  if (index === -1) {
+    return false;
+  }
+
+  mockDjRoster.splice(index, 1);
+
+  mockEvents.forEach((event, eventIndex) => {
+    if (!event.lineupDjIds?.includes(id)) {
+      return;
+    }
+
+    mockEvents[eventIndex] = {
+      ...event,
+      lineupDjIds: event.lineupDjIds.filter((djId) => djId !== id)
+    };
+  });
+
+  return true;
 }
 
 function createTagMock(input: NewTag) {

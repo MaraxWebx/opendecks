@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
+import { DeleteIconButton } from "@/components/delete-icon-button";
 import { GlobalLoader } from "@/components/global-loader";
 import { getDjEventHistory } from "@/lib/dj-roster";
 import { DjRosterRecord, EventRecord } from "@/lib/types";
@@ -35,6 +36,19 @@ type MunicipalityOption = {
   label: string;
 };
 
+type SelectedDjFormState = {
+  name: string;
+  city: string;
+  province: string;
+  region: string;
+  email: string;
+  phone: string;
+  instagram: string;
+  setLink: string;
+  photoUrl: string;
+  bio: string;
+};
+
 const fieldClass =
   "min-w-0 w-full rounded-lg border border-[#E31F29]/20 bg-white/[0.04] px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[#E31F29]/60";
 
@@ -59,6 +73,17 @@ export function AdminDjRosterManager({
   const [cityOptions, setCityOptions] = useState<MunicipalityOption[]>([]);
   const [cityMenuOpen, setCityMenuOpen] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [selectedForm, setSelectedForm] = useState<SelectedDjFormState | null>(
+    null,
+  );
+  const [selectedCityQuery, setSelectedCityQuery] = useState("");
+  const [selectedCityOptions, setSelectedCityOptions] = useState<
+    MunicipalityOption[]
+  >([]);
+  const [selectedCityMenuOpen, setSelectedCityMenuOpen] = useState(false);
+  const [selectedPhotoFile, setSelectedPhotoFile] = useState<File | null>(null);
+  const [isSavingSelected, setIsSavingSelected] = useState(false);
+  const [isDeletingSelected, setIsDeletingSelected] = useState(false);
 
   const filteredRoster = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -200,6 +225,36 @@ export function AdminDjRosterManager({
   }, [selectedDj]);
 
   useEffect(() => {
+    if (!selectedDj) {
+      setSelectedForm(null);
+      setSelectedCityQuery("");
+      setSelectedCityOptions([]);
+      setSelectedCityMenuOpen(false);
+      setSelectedPhotoFile(null);
+      return;
+    }
+
+    setSelectedForm({
+      name: selectedDj.name,
+      city: selectedDj.city,
+      province: selectedDj.province || "",
+      region: selectedDj.region || "",
+      email: selectedDj.email,
+      phone: selectedDj.phone,
+      instagram: selectedDj.instagram,
+      setLink: selectedDj.setLink,
+      photoUrl: selectedDj.photoUrl,
+      bio: selectedDj.bio,
+    });
+    setSelectedCityQuery(
+      formatCityProvince(selectedDj.city, selectedDj.province || ""),
+    );
+    setSelectedCityOptions([]);
+    setSelectedCityMenuOpen(false);
+    setSelectedPhotoFile(null);
+  }, [selectedDj]);
+
+  useEffect(() => {
     if (!isCreateOpen) {
       return;
     }
@@ -236,6 +291,73 @@ export function AdminDjRosterManager({
 
     const result = (await uploadResponse.json()) as { url: string };
     return result.url;
+  }
+
+  async function resolveSelectedMunicipalityFromQuery(label: string) {
+    const normalizedLabel = label.trim();
+
+    if (!normalizedLabel) {
+      if (selectedForm) {
+        setSelectedForm({
+          ...selectedForm,
+          city: "",
+          province: "",
+          region: "",
+        });
+      }
+      return null;
+    }
+
+    const localMatch =
+      selectedCityOptions.find(
+        (municipality) => municipality.label === normalizedLabel,
+      ) || null;
+
+    if (localMatch) {
+      applySelectedMunicipalitySelection(localMatch);
+      return localMatch;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/municipalities?q=${encodeURIComponent(normalizedLabel)}&exact=1`,
+      );
+      const result = (await response.json()) as {
+        municipality?: MunicipalityOption | null;
+      };
+      const municipality = result.municipality || null;
+      applySelectedMunicipalitySelection(municipality);
+      return municipality;
+    } catch {
+      applySelectedMunicipalitySelection(null);
+      return null;
+    }
+  }
+
+  function applySelectedMunicipalitySelection(
+    municipality: MunicipalityOption | null,
+  ) {
+    if (!selectedForm) {
+      return;
+    }
+
+    if (!municipality) {
+      setSelectedForm({
+        ...selectedForm,
+        city: "",
+        province: "",
+        region: "",
+      });
+      return;
+    }
+
+    setSelectedCityQuery(municipality.label);
+    setSelectedForm({
+      ...selectedForm,
+      city: municipality.city,
+      province: municipality.provinceCode,
+      region: municipality.region,
+    });
   }
 
   async function toggleMembership(entry: DjRosterRecord, enabled: boolean) {
@@ -337,12 +459,158 @@ export function AdminDjRosterManager({
     }
   }
 
+  async function handleUpdateSelectedDj(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!selectedDj || !selectedForm) {
+      return;
+    }
+
+    setIsSavingSelected(true);
+    setMessage("");
+
+    try {
+      let nextPhotoUrl = selectedForm.photoUrl;
+
+      if (!selectedForm.province) {
+        const resolvedMunicipality =
+          await resolveSelectedMunicipalityFromQuery(selectedCityQuery);
+
+        if (!resolvedMunicipality) {
+          throw new Error("Seleziona una città valida dall'autocomplete.");
+        }
+      }
+
+      if (selectedPhotoFile) {
+        nextPhotoUrl = await uploadPhoto(selectedPhotoFile);
+      }
+
+      const response = await fetch(`/api/dj-roster/${selectedDj.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...selectedForm,
+          photoUrl: nextPhotoUrl,
+        }),
+      });
+
+      const result = (await response.json().catch(() => null)) as {
+        rosterEntry?: DjRosterRecord;
+        error?: string;
+      } | null;
+
+      if (!response.ok || !result?.rosterEntry) {
+        throw new Error(result?.error || "Aggiornamento DJ non riuscito.");
+      }
+
+      setRoster((current) =>
+        current.map((item) =>
+          item.id === result.rosterEntry?.id ? result.rosterEntry : item,
+        ),
+      );
+      setSelectedDj(result.rosterEntry);
+      setMessage("DJ aggiornato.");
+      setSelectedPhotoFile(null);
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : "Errore aggiornamento DJ.",
+      );
+    } finally {
+      setIsSavingSelected(false);
+    }
+  }
+
+  async function handleDeleteSelectedDj() {
+    if (!selectedDj) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Confermi di voler eliminare ${selectedDj.name} dal roster?`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setIsDeletingSelected(true);
+    setMessage("");
+
+    try {
+      const response = await fetch(`/api/dj-roster/${selectedDj.id}`, {
+        method: "DELETE",
+      });
+      const result = (await response.json().catch(() => null)) as {
+        success?: boolean;
+        error?: string;
+      } | null;
+
+      if (!response.ok) {
+        throw new Error(result?.error || "Eliminazione DJ non riuscita.");
+      }
+
+      setRoster((current) => current.filter((item) => item.id !== selectedDj.id));
+      setSelectedDj(null);
+      setMessage("DJ eliminato dal roster.");
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : "Errore eliminazione DJ.",
+      );
+      setIsDeletingSelected(false);
+    }
+  }
+
   function updateManualForm<K extends keyof ManualDjFormState>(
     key: K,
     value: ManualDjFormState[K],
   ) {
     setManualForm((current) => ({ ...current, [key]: value }));
   }
+
+  function updateSelectedForm<K extends keyof SelectedDjFormState>(
+    key: K,
+    value: SelectedDjFormState[K],
+  ) {
+    setSelectedForm((current) => (current ? { ...current, [key]: value } : current));
+  }
+
+  useEffect(() => {
+    const normalizedQuery = selectedCityQuery.trim();
+
+    if (!selectedDj || normalizedQuery.length < 2) {
+      setSelectedCityOptions([]);
+      return;
+    }
+
+    let active = true;
+    const timeoutId = window.setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `/api/municipalities?q=${encodeURIComponent(normalizedQuery)}`,
+        );
+        const result = (await response.json()) as {
+          municipalities?: MunicipalityOption[];
+        };
+
+        if (!active) {
+          return;
+        }
+
+        setSelectedCityOptions(result.municipalities || []);
+        setSelectedCityMenuOpen(Boolean((result.municipalities || []).length));
+      } catch {
+        if (active) {
+          setSelectedCityOptions([]);
+          setSelectedCityMenuOpen(false);
+        }
+      }
+    }, 150);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timeoutId);
+    };
+  }, [selectedCityQuery, selectedDj]);
 
   return (
     <div className="grid min-w-0 gap-4">
@@ -646,6 +914,176 @@ export function AdminDjRosterManager({
                     {selectedDj.bio || "Nessuna bio disponibile."}
                   </p>
                 </div>
+
+                {selectedForm ? (
+                  <form
+                    className={`${ui.surface.card} grid gap-4`}
+                    onSubmit={handleUpdateSelectedDj}
+                  >
+                    <span className={ui.form.label}>Modifica DJ</span>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <Field label="Nome DJ" htmlFor="selected-dj-name">
+                        <input
+                          id="selected-dj-name"
+                          className={fieldClass}
+                          value={selectedForm.name}
+                          onChange={(event) =>
+                            updateSelectedForm("name", event.target.value)
+                          }
+                          required
+                        />
+                      </Field>
+
+                      <Field label="Città" htmlFor="selected-dj-city">
+                        <div className="relative">
+                          <input
+                            id="selected-dj-city"
+                            className={fieldClass}
+                            value={selectedCityQuery}
+                            onChange={(event) => {
+                              const nextQuery = event.target.value;
+                              setSelectedCityQuery(nextQuery);
+                              setSelectedCityMenuOpen(true);
+                              void resolveSelectedMunicipalityFromQuery(nextQuery);
+                            }}
+                            onFocus={() => {
+                              if (selectedCityOptions.length) {
+                                setSelectedCityMenuOpen(true);
+                              }
+                            }}
+                            onBlur={() => {
+                              window.setTimeout(() => {
+                                setSelectedCityMenuOpen(false);
+                                void resolveSelectedMunicipalityFromQuery(
+                                  selectedCityQuery,
+                                );
+                              }, 120);
+                            }}
+                            placeholder="Scrivi e seleziona il comune"
+                            autoComplete="off"
+                            required
+                          />
+                          {selectedCityMenuOpen && selectedCityOptions.length ? (
+                            <div className="absolute z-20 mt-2 max-h-64 w-full overflow-auto rounded-lg border border-[#E31F29]/20 bg-[#0b0b0c] p-2 shadow-[0_18px_50px_rgba(0,0,0,0.45)]">
+                              {selectedCityOptions.map((municipality) => (
+                                <button
+                                  key={municipality.code}
+                                  type="button"
+                                  className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-white/82 transition hover:bg-white/6"
+                                  onMouseDown={(event) => {
+                                    event.preventDefault();
+                                    applySelectedMunicipalitySelection(
+                                      municipality,
+                                    );
+                                    setSelectedCityMenuOpen(false);
+                                  }}
+                                >
+                                  <span>{municipality.label}</span>
+                                  <span className="text-xs uppercase tracking-[0.14em] text-white/45">
+                                    {municipality.region}
+                                  </span>
+                                </button>
+                              ))}
+                            </div>
+                          ) : null}
+                        </div>
+                      </Field>
+
+                      <Field label="Email" htmlFor="selected-dj-email">
+                        <input
+                          id="selected-dj-email"
+                          type="email"
+                          className={fieldClass}
+                          value={selectedForm.email}
+                          onChange={(event) =>
+                            updateSelectedForm("email", event.target.value)
+                          }
+                          required
+                        />
+                      </Field>
+
+                      <Field label="Telefono" htmlFor="selected-dj-phone">
+                        <input
+                          id="selected-dj-phone"
+                          type="tel"
+                          className={fieldClass}
+                          value={selectedForm.phone}
+                          onChange={(event) =>
+                            updateSelectedForm("phone", event.target.value)
+                          }
+                          required
+                        />
+                      </Field>
+
+                      <Field label="Instagram" htmlFor="selected-dj-instagram">
+                        <input
+                          id="selected-dj-instagram"
+                          className={fieldClass}
+                          value={selectedForm.instagram}
+                          onChange={(event) =>
+                            updateSelectedForm("instagram", event.target.value)
+                          }
+                          required
+                        />
+                      </Field>
+
+                      <Field label="Link set" htmlFor="selected-dj-set-link">
+                        <input
+                          id="selected-dj-set-link"
+                          type="url"
+                          className={fieldClass}
+                          value={selectedForm.setLink}
+                          onChange={(event) =>
+                            updateSelectedForm("setLink", event.target.value)
+                          }
+                          required
+                        />
+                      </Field>
+
+                      <Field label="Nuova foto profilo" htmlFor="selected-dj-photo">
+                        <input
+                          id="selected-dj-photo"
+                          type="file"
+                          accept="image/png,image/jpeg,image/webp,image/avif"
+                          className={fieldClass}
+                          onChange={(event) =>
+                            setSelectedPhotoFile(event.target.files?.[0] || null)
+                          }
+                        />
+                        <span className="text-xs text-white/45">
+                          Lascia vuoto per mantenere la foto attuale.
+                        </span>
+                      </Field>
+
+                      <Field label="Bio" htmlFor="selected-dj-bio" full>
+                        <textarea
+                          id="selected-dj-bio"
+                          className={`${fieldClass} min-h-32 resize-y`}
+                          value={selectedForm.bio}
+                          onChange={(event) =>
+                            updateSelectedForm("bio", event.target.value)
+                          }
+                        />
+                      </Field>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3">
+                      <button
+                        type="submit"
+                        className={ui.action.primary}
+                        disabled={isSavingSelected || isDeletingSelected}
+                      >
+                        {isSavingSelected ? "Salvataggio..." : "Salva modifiche"}
+                      </button>
+                      <DeleteIconButton
+                        onClick={handleDeleteSelectedDj}
+                        disabled={isSavingSelected || isDeletingSelected}
+                        busy={isDeletingSelected}
+                        label={`Elimina DJ ${selectedDj.name}`}
+                      />
+                    </div>
+                  </form>
+                ) : null}
               </div>
             </div>
 

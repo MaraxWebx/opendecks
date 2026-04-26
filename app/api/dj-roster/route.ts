@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { requireAdminApiAuth } from "@/lib/admin-auth";
 import { createDjRosterEntry, getDjRosterEntries } from "@/lib/data";
 import { getItalianProvince, italianProvinceCodes } from "@/lib/italian-provinces";
 
 export async function POST(request: NextRequest) {
+  const unauthorized = await requireAdminApiAuth();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   try {
     const body = await request.json();
 

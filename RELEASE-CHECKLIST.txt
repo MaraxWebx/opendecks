@@ -3,17 +3,18 @@ OPENDECKS RELEASE CHECKLIST
 Ultimo aggiornamento
 - Data check: 2026-04-26
 - Stato generale: NON pronto al rilascio
-- Motivi bloccanti emersi oggi:
-  - API admin mutative non protette lato server
-  - Build production locale non verificata per lock su `.next\trace`
-  - Lint non configurato
+- Stato blocchi principali:
+  - API admin mutative protette lato server: OK
+  - Build production verificata: OK, ma solo fuori sandbox locale
+  - Lint configurato: KO
+  - Flussi core verificati manualmente: KO
 
 Esito controlli automatici eseguiti oggi
 - `npx tsc --noEmit`: OK
+- `npm run build`: OK fuori sandbox
+- `npm run build` dentro sandbox: KO per errore ambiente/permessi Windows su `C:\Users\anton`
 - `npm run lint`: KO
   - Next chiede configurazione ESLint interattiva, quindi il progetto non ha ancora un lint CI-safe
-- `npm run build`: KO
-  - Fallita con `EPERM: operation not permitted, open '.next\trace'`
 - Privacy/cookie check: PARZIALMENTE OK
   - Link `Preferenze cookie` aggiunto nel footer
   - Blocco Google Analytics 4 aggiunto in privacy policy
@@ -39,8 +40,8 @@ P1. Sicurezza
 - [ ] Rimuovere o parametrizzare `ADMIN_CC_EMAIL` hardcoded in [lib/email.ts](/c:/Users/anton/works/opendecks/lib/email.ts:9)
 
 P1. Protezione API admin
-- [ ] Proteggere lato server tutte le API mutative admin, non solo le pagine `/admin`
-- [ ] Verificare in particolare queste route attualmente senza check auth server-side:
+- [x] Proteggere lato server tutte le API mutative admin, non solo le pagine `/admin`
+- [x] Copertura applicata alle route mutative principali:
   - [app/api/events/route.ts](/c:/Users/anton/works/opendecks/app/api/events/route.ts:10) `POST`
   - [app/api/events/[id]/route.ts](/c:/Users/anton/works/opendecks/app/api/events/[id]/route.ts:9) `PATCH`, `DELETE`
   - [app/api/archive/route.ts](/c:/Users/anton/works/opendecks/app/api/archive/route.ts:10) `POST`
@@ -52,11 +53,12 @@ P1. Protezione API admin
   - [app/api/tags/route.ts](/c:/Users/anton/works/opendecks/app/api/tags/route.ts:9) `POST`
   - [app/api/uploads/event-image/route.ts](/c:/Users/anton/works/opendecks/app/api/uploads/event-image/route.ts:6) `POST`
   - [app/api/uploads/archive-media/route.ts](/c:/Users/anton/works/opendecks/app/api/uploads/archive-media/route.ts:14) `POST`
-- [ ] Decidere quali API devono restare pubbliche:
+- [ ] Confermare scelta prodotto su [app/api/dj-roster/route.ts](/c:/Users/anton/works/opendecks/app/api/dj-roster/route.ts:1)
+  - lasciata pubblica perché potrebbe essere intenzionale
+- [x] Lasciare pubbliche solo le route chiaramente pubbliche:
   - [app/api/applications/route.ts](/c:/Users/anton/works/opendecks/app/api/applications/route.ts:1)
   - [app/api/contact/route.ts](/c:/Users/anton/works/opendecks/app/api/contact/route.ts:1)
   - [app/api/uploads/application-photo/route.ts](/c:/Users/anton/works/opendecks/app/api/uploads/application-photo/route.ts:1)
-  - [app/api/dj-roster/route.ts](/c:/Users/anton/works/opendecks/app/api/dj-roster/route.ts:1) solo se voluta come pubblica
 
 P1. Ambienti
 - [ ] Separare Production / Preview / Development
@@ -65,15 +67,15 @@ P1. Ambienti
   - Production -> `opendecks_prod`
   - Preview -> `opendecks_stage`
   - Development -> `opendecks_dev`
-- [ ] Se possibile, separare anche:
+- [ ] Separare se possibile anche:
   - SMTP produzione vs test
   - Blob produzione vs test
 - [ ] Verificare che Preview e Development non tocchino dati reali cliente
 
 P1. Build e rilascio
-- [ ] Chiudere eventuali processi che tengono `.next` aperta
-- [ ] Eliminare `.next`
-- [ ] Eseguire `npm run build`
+- [x] Eliminare `.next` e rilanciare build
+- [x] Eseguire `npm run build`
+  - esito valido fuori sandbox
 - [ ] Eseguire `npm start`
 - [ ] Fare smoke test sul build production locale
 - [ ] Fare smoke test sul deploy Vercel live
@@ -84,7 +86,7 @@ P1. Auth e protezione admin
 - [ ] Verificare login admin
 - [ ] Verificare logout admin
 - [ ] Verificare redirect corretto se non autenticato
-- [ ] Verificare che tutte le API mutative siano protette
+- [ ] Verificare via test manuale che tutte le API mutative rispondano `401` senza sessione admin
 
 P1. Privacy, cookie e analytics
 - [x] Banner cookie con categoria analytics separata
@@ -183,4 +185,4 @@ Esito finale richiesto prima della consegna
 - [ ] Mobile usabile senza attriti
 - [ ] Ambienti separati
 - [ ] Sicurezza segreti riallineata
-- [ ] API mutative protette lato server
+- [x] API mutative protette lato server

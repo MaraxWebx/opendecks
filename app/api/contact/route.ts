@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createContactSubmission } from "@/lib/data";
 import { sendContactEmail } from "@/lib/email";
 import { buildPrivacyConsentRecord } from "@/lib/privacy";
+import { verifyRecaptchaToken } from "@/lib/recaptcha";
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,6 +23,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: "Devi accettare la Privacy Policy." },
         { status: 400 }
+      );
+    }
+
+    const remoteIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+    const recaptchaValid = await verifyRecaptchaToken(body?.recaptchaToken, remoteIp);
+
+    if (!recaptchaValid) {
+      return NextResponse.json(
+        { error: "Verifica reCAPTCHA non valida. Riprova." },
+        { status: 400 },
       );
     }
 

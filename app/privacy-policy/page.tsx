@@ -31,6 +31,22 @@ const cookieRows = [
     duration: "Fino a 2 anni, secondo la configurazione di Google Analytics",
   },
   {
+    name: "Nessun cookie lato utente",
+    provider: "Google Search Console",
+    category: "Nessuno",
+    purpose:
+      "Search Console è usato dal titolare del sito per monitorare indicizzazione, copertura e performance organica nei risultati di ricerca. Non installa cookie sul browser dell'utente solo per la presenza del sito nella piattaforma.",
+    duration: "Non applicabile",
+  },
+  {
+    name: "Google reCAPTCHA / identificatori tecnici associati",
+    provider: "Google",
+    category: "Necessari",
+    purpose:
+      "Protezione anti-spam e anti-abuso dei form pubblici del sito tramite verifica automatizzata del traffico.",
+    duration: "Variabile secondo il servizio Google",
+  },
+  {
     name: "opendecks_admin_session, opendecks_admin_username, opendecks_admin_display_name",
     provider: "OpenDecks Italia",
     category: "Necessari",
@@ -75,11 +91,19 @@ export default function PrivacyPolicyPage() {
           />
           <PolicyBlock
             title="Servizi tecnici utilizzati"
-            content="Il sito utilizza infrastruttura Vercel, database MongoDB Atlas, Vercel Blob per upload file, SMTP per invio email operative e, in ambiente di produzione e solo previo consenso, Google Analytics 4."
+            content="Il sito utilizza infrastruttura Vercel, database MongoDB Atlas, Vercel Blob per upload file, SMTP per invio email operative, Google Search Console per monitoraggio indicizzazione e performance organica del sito, Google reCAPTCHA Invisible per la protezione dei form pubblici e, in ambiente di produzione e solo previo consenso, Google Analytics 4."
+          />
+          <PolicyBlock
+            title="Google reCAPTCHA Invisible"
+            content="I form pubblici del sito possono utilizzare Google reCAPTCHA Invisible come misura tecnica di sicurezza per ridurre spam, invii automatici e abusi. Il servizio viene attivato al momento dell'invio dei form pubblici e può comportare trattamento di dati tecnici del browser o dispositivo e altri segnali necessari alla verifica anti-bot da parte di Google. La base giuridica del relativo trattamento è il legittimo interesse del titolare alla sicurezza del sito e alla prevenzione degli abusi."
           />
           <PolicyBlock
             title="Google Analytics 4"
             content={`Se l'utente presta il consenso alla categoria analytics, il sito pu\u00f2 attivare Google Analytics 4 (Google LLC) esclusivamente in ambiente di produzione${gaMeasurementId ? ` con ID di misurazione ${gaMeasurementId}` : ""}. Lo strumento viene usato per raccogliere statistiche aggregate su visite, pagine visualizzate, utilizzo del sito e prestazioni tecniche. La base giuridica \u00e8 il consenso. Il servizio pu\u00f2 comportare trattamento di identificativi online, dati tecnici del browser o dispositivo, pagine visitate, interazioni e indirizzo IP in forma trattata dal servizio. L'utente pu\u00f2 revocare o modificare il consenso in qualsiasi momento dal link Preferenze cookie presente nel footer.`}
+          />
+          <PolicyBlock
+            title="Google Search Console"
+            content="OpenDecks Italia utilizza anche Google Search Console come strumento di monitoraggio tecnico SEO e indicizzazione del sito. Search Console, di per sé, non comporta l'installazione di cookie sul browser dell'utente per il solo fatto che il sito sia registrato o verificato nella piattaforma. Per questo motivo non viene trattato come strumento analytics/cookie lato utente al pari di Google Analytics 4."
           />
           <PolicyBlock
             title="Cookie"

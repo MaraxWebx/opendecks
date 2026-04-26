@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 
 import { GlobalLoader } from "@/components/global-loader";
+import { useInvisibleRecaptcha } from "@/components/use-invisible-recaptcha";
 import { ui } from "@/lib/ui";
 
 type FormState = {
@@ -26,6 +27,11 @@ export function ContactForm() {
   const [form, setForm] = useState<FormState>(initialState);
   const [status, setStatus] = useState("");
   const [sending, setSending] = useState(false);
+  const {
+    recaptchaContainerRef,
+    executeRecaptcha,
+    isRecaptchaReady,
+  } = useInvisibleRecaptcha();
 
   function updateField<Key extends keyof FormState>(key: Key, value: FormState[Key]) {
     setForm((current) => ({ ...current, [key]: value }));
@@ -33,10 +39,12 @@ export function ContactForm() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSending(true);
     setStatus("");
 
     try {
+      const recaptchaToken = await executeRecaptcha();
+      setSending(true);
+
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -46,6 +54,7 @@ export function ContactForm() {
           phone: form.phone,
           message: form.message,
           privacyAccepted: form.privacyAccepted,
+          recaptchaToken,
         })
       });
 
@@ -162,6 +171,12 @@ export function ContactForm() {
             </button>
             <span className="text-sm text-white/55">{status}</span>
           </div>
+          <div ref={recaptchaContainerRef} />
+          {!isRecaptchaReady ? (
+            <span className="text-xs text-white/45">
+              Verifica sicurezza in caricamento.
+            </span>
+          ) : null}
         </form>
       )}
 

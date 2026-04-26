@@ -8,6 +8,7 @@ import { applicationFormCopy } from "@/content/site-copy";
 import { EventRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
 import { GlobalLoader } from "@/components/global-loader";
+import { useInvisibleRecaptcha } from "@/components/use-invisible-recaptcha";
 
 type ApplicationFormProps = {
   events: EventRecord[];
@@ -73,6 +74,11 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
     message: "",
   });
   const [loading, setLoading] = useState(false);
+  const {
+    recaptchaContainerRef,
+    executeRecaptcha,
+    isRecaptchaReady,
+  } = useInvisibleRecaptcha();
 
   function applyMunicipalitySelection(municipality: MunicipalityOption | null) {
     if (!municipality) {
@@ -192,7 +198,6 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setLoading(true);
     setStatus({ type: "idle", message: "" });
 
     try {
@@ -212,6 +217,8 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
       }
 
       const photoUrl = await uploadPhoto(photoFile);
+      const recaptchaToken = await executeRecaptcha();
+      setLoading(true);
 
       const response = await fetch("/api/applications", {
         method: "POST",
@@ -232,6 +239,7 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
           setLink: form.setLink,
           bio: form.bio,
           privacyAccepted: form.privacyAccepted,
+          recaptchaToken,
         }),
       });
 
@@ -631,6 +639,12 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
               {applicationFormCopy.requiredFields}
             </span>
           </div>
+          <div ref={recaptchaContainerRef} />
+          {!isRecaptchaReady ? (
+            <span className="text-xs text-white/45">
+              Verifica sicurezza in caricamento.
+            </span>
+          ) : null}
 
           <label className="flex items-start gap-3 rounded-lg border border-[#E31F29]/16 bg-white/[0.02] px-4 py-3 text-sm leading-6 text-white/72">
             <input
