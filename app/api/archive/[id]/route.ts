@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { requireAdminApiAuth } from "@/lib/admin-auth";
 import { deleteArchiveEntry, updateArchiveEntry } from "@/lib/data";
 
 type RouteProps = {
@@ -7,6 +8,12 @@ type RouteProps = {
 };
 
 export async function PATCH(request: NextRequest, { params }: RouteProps) {
+  const unauthorized = await requireAdminApiAuth();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   const body = await request.json();
   const { id } = await params;
 
@@ -32,6 +39,12 @@ export async function PATCH(request: NextRequest, { params }: RouteProps) {
 }
 
 export async function DELETE(_: NextRequest, { params }: RouteProps) {
+  const unauthorized = await requireAdminApiAuth();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   const { id } = await params;
   const deleted = await deleteArchiveEntry(id);
 

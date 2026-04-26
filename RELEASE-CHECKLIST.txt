@@ -1,56 +1,106 @@
 OPENDECKS RELEASE CHECKLIST
 
+Ultimo aggiornamento
+- Data check: 2026-04-26
+- Stato generale: NON pronto al rilascio
+- Motivi bloccanti emersi oggi:
+  - API admin mutative non protette lato server
+  - Build production locale non verificata per lock su `.next\trace`
+  - Lint non configurato
+
+Esito controlli automatici eseguiti oggi
+- `npx tsc --noEmit`: OK
+- `npm run lint`: KO
+  - Next chiede configurazione ESLint interattiva, quindi il progetto non ha ancora un lint CI-safe
+- `npm run build`: KO
+  - Fallita con `EPERM: operation not permitted, open '.next\trace'`
+- Privacy/cookie check: PARZIALMENTE OK
+  - Link `Preferenze cookie` aggiunto nel footer
+  - Blocco Google Analytics 4 aggiunto in privacy policy
+  - Tabella cookie/strumenti aggiunta in privacy policy
+
 Priorita
 P1 = bloccante per rilascio serio
 P2 = da chiudere prima della consegna finale
 P3 = rifinitura utile ma non bloccante
 
 P1. Sicurezza
-- Rigenerare tutti i segreti esposti:
+- [ ] Rigenerare tutti i segreti esposti:
   - MONGODB_URI
   - SMTP_PASS
   - BLOB_READ_WRITE_TOKEN
   - NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-- Verificare che .env.local non sia tracciato da git
-- Verificare environment variables reali su Vercel
-- Rimuovere placeholder e credenziali provvisorie dagli ambienti live
+- [x] Verificare che `.env.local` non sia tracciato da git
+- [ ] Verificare environment variables reali su Vercel
+- [ ] Rimuovere placeholder e credenziali provvisorie dagli ambienti live
+- [ ] Rimuovere o sostituire fallback credenziali admin di sviluppo in produzione:
+  - `ADMIN_USERNAME || "admin"`
+  - `ADMIN_PASSWORD || "opendecks123"`
+- [ ] Rimuovere o parametrizzare `ADMIN_CC_EMAIL` hardcoded in [lib/email.ts](/c:/Users/anton/works/opendecks/lib/email.ts:9)
+
+P1. Protezione API admin
+- [ ] Proteggere lato server tutte le API mutative admin, non solo le pagine `/admin`
+- [ ] Verificare in particolare queste route attualmente senza check auth server-side:
+  - [app/api/events/route.ts](/c:/Users/anton/works/opendecks/app/api/events/route.ts:10) `POST`
+  - [app/api/events/[id]/route.ts](/c:/Users/anton/works/opendecks/app/api/events/[id]/route.ts:9) `PATCH`, `DELETE`
+  - [app/api/archive/route.ts](/c:/Users/anton/works/opendecks/app/api/archive/route.ts:10) `POST`
+  - [app/api/archive/[id]/route.ts](/c:/Users/anton/works/opendecks/app/api/archive/[id]/route.ts:8) `PATCH`, `DELETE`
+  - [app/api/locations/route.ts](/c:/Users/anton/works/opendecks/app/api/locations/route.ts:9) `POST`
+  - [app/api/locations/[id]/route.ts](/c:/Users/anton/works/opendecks/app/api/locations/[id]/route.ts:8) `PATCH`, `DELETE`
+  - [app/api/applications/[id]/route.ts](/c:/Users/anton/works/opendecks/app/api/applications/[id]/route.ts:11) `PATCH`, `DELETE`
+  - [app/api/dj-roster/[id]/membership/route.ts](/c:/Users/anton/works/opendecks/app/api/dj-roster/[id]/membership/route.ts:10) `PATCH`
+  - [app/api/tags/route.ts](/c:/Users/anton/works/opendecks/app/api/tags/route.ts:9) `POST`
+  - [app/api/uploads/event-image/route.ts](/c:/Users/anton/works/opendecks/app/api/uploads/event-image/route.ts:6) `POST`
+  - [app/api/uploads/archive-media/route.ts](/c:/Users/anton/works/opendecks/app/api/uploads/archive-media/route.ts:14) `POST`
+- [ ] Decidere quali API devono restare pubbliche:
+  - [app/api/applications/route.ts](/c:/Users/anton/works/opendecks/app/api/applications/route.ts:1)
+  - [app/api/contact/route.ts](/c:/Users/anton/works/opendecks/app/api/contact/route.ts:1)
+  - [app/api/uploads/application-photo/route.ts](/c:/Users/anton/works/opendecks/app/api/uploads/application-photo/route.ts:1)
+  - [app/api/dj-roster/route.ts](/c:/Users/anton/works/opendecks/app/api/dj-roster/route.ts:1) solo se voluta come pubblica
 
 P1. Ambienti
-- Separare Production / Preview / Development
-- Usare database diversi per ogni ambiente
-- Target consigliato:
-  - Production -> opendecks_prod
-  - Preview -> opendecks_stage
-  - Development -> opendecks_dev
-- Se possibile, separare anche:
+- [ ] Separare Production / Preview / Development
+- [ ] Usare database diversi per ogni ambiente
+- [ ] Target consigliato:
+  - Production -> `opendecks_prod`
+  - Preview -> `opendecks_stage`
+  - Development -> `opendecks_dev`
+- [ ] Se possibile, separare anche:
   - SMTP produzione vs test
   - Blob produzione vs test
-- Verificare che Preview e Development non tocchino dati reali cliente
+- [ ] Verificare che Preview e Development non tocchino dati reali cliente
 
 P1. Build e rilascio
-- Chiudere eventuali processi che tengono .next aperta
-- Eliminare .next
-- Eseguire npm run build
-- Eseguire npm start
-- Fare smoke test sul build production locale
-- Fare smoke test sul deploy Vercel live
+- [ ] Chiudere eventuali processi che tengono `.next` aperta
+- [ ] Eliminare `.next`
+- [ ] Eseguire `npm run build`
+- [ ] Eseguire `npm start`
+- [ ] Fare smoke test sul build production locale
+- [ ] Fare smoke test sul deploy Vercel live
+- [ ] Configurare lint non interattivo
+  - oggi `npm run lint` non è usabile in CI
 
 P1. Auth e protezione admin
-- Verificare login admin
-- Verificare logout admin
-- Verificare redirect corretto se non autenticato
-- Verificare che tutte le API mutative siano protette:
-  - events
-  - applications
-  - dj-roster
-  - archive
-  - locations
-  - membership
+- [ ] Verificare login admin
+- [ ] Verificare logout admin
+- [ ] Verificare redirect corretto se non autenticato
+- [ ] Verificare che tutte le API mutative siano protette
+
+P1. Privacy, cookie e analytics
+- [x] Banner cookie con categoria analytics separata
+- [x] GA4 attivato solo in produzione
+- [x] GA4 attivato solo previo consenso
+- [x] Link `Preferenze cookie` nel footer
+- [x] Sezione privacy con blocco specifico Google Analytics 4
+- [x] Tabella cookie/strumenti usati
+- [ ] Verificare in produzione che senza consenso analytics non partano request verso Google
+- [ ] Verificare in produzione che con consenso analytics compaiano hit in Realtime GA4
+- [ ] Valutare aggiunta link diretti a documentazione/privacy Google nella policy
 
 P1. Mobile usability
-- Test reale su iPhone
-- Test reale su Android
-- Verificare:
+- [ ] Test reale su iPhone
+- [ ] Test reale su Android
+- [ ] Verificare:
   - nessun overflow orizzontale
   - menu mobile
   - modali con body lock
@@ -62,74 +112,75 @@ P1. Mobile usability
   - dashboard admin
 
 P2. Flusso eventi
-- Creazione evento
-- Modifica evento
-- Eliminazione evento
-- Verificare chiusura automatica candidature su evento passato
-- Verificare line up pubblica solo con flag attivo
-- Verificare click calendario admin verso dettaglio evento
+- [ ] Creazione evento
+- [ ] Modifica evento
+- [ ] Eliminazione evento
+- [ ] Verificare chiusura automatica candidature su evento passato
+- [ ] Verificare line up pubblica solo con flag attivo
+- [ ] Verificare click calendario admin verso dettaglio evento
 
 P2. Flusso candidature
-- Invio candidatura pubblica completa
-- Verificare upload foto personale
-- Verificare validazioni campi
-- Approvazione candidatura su evento futuro
-- Approvazione candidatura su evento passato
-- Ritorno candidatura da approvata a review/new
-- Eliminazione candidatura
-- Verificare che candidatura evento passato:
+- [ ] Invio candidatura pubblica completa
+- [ ] Verificare upload foto personale
+- [ ] Verificare validazioni campi
+- [ ] Approvazione candidatura su evento futuro
+- [ ] Approvazione candidatura su evento passato
+- [ ] Ritorno candidatura da approvata a review/new
+- [ ] Eliminazione candidatura
+- [ ] Verificare che candidatura evento passato:
   - entri nel roster
-  - Non èntri nella lineup evento passato
+  - non entri nella lineup evento passato
 
 P2. Flusso DJ roster
-- Inserimento DJ manuale
-- Modifica DJ
-- Eliminazione DJ se prevista
-- Verificare che il roster sia indipendente dagli eventi
-- Verificare storico evento origine candidatura
-- Associazione manuale DJ a un evento
-- Verificare mail inviata quando un DJ roster viene aggiunto a lineup evento
+- [ ] Inserimento DJ manuale
+- [ ] Modifica DJ
+- [ ] Eliminazione DJ se prevista
+- [ ] Verificare che il roster sia indipendente dagli eventi
+- [ ] Verificare storico evento origine candidatura
+- [ ] Associazione manuale DJ a un evento
+- [ ] Verificare mail inviata quando un DJ roster viene aggiunto a lineup evento
 
 P2. Gallery
-- Upload file su Blob
-- Modifica contenuto
-- Eliminazione contenuto
-- Verificare link esterno opzionale
-- Verificare resa card e modali su mobile
+- [ ] Upload file su Blob
+- [ ] Modifica contenuto
+- [ ] Eliminazione contenuto
+- [ ] Verificare link esterno opzionale
+- [ ] Verificare resa card e modali su mobile
 
 P2. Membership
-- Abilitazione membership card
-- Verificare ID univoco
-- Verificare PDF generato
-- Verificare invio email SMTP
-- Verificare salvataggio campi nel DB:
+- [ ] Abilitazione membership card
+- [ ] Verificare ID univoco
+- [ ] Verificare PDF generato
+- [ ] Verificare invio email SMTP
+- [ ] Verificare salvataggio campi nel DB:
   - membershipCardEnabled
   - membershipCardId
   - membershipCardIssuedAt
   - membershipCardEmailSentAt
 
 P2. Email
-- Verificare email approvazione candidatura evento futuro
-- Verificare email roster-only per candidatura su evento passato
-- Verificare email assegnazione lineup da roster a evento
-- Verificare mittente SMTP corretto
-- Verificare che stage/dev non mandino email reali
+- [ ] Verificare email approvazione candidatura evento futuro
+- [ ] Verificare email roster-only per candidatura su evento passato
+- [ ] Verificare email assegnazione lineup da roster a evento
+- [ ] Verificare mittente SMTP corretto
+- [ ] Verificare che stage/dev non mandino email reali
 
 P3. Performance
-- Ridurre noStore dove non serve
-- Tenere live solo admin e dati davvero dinamici
-- Ridurre query Mongo sulle pagine pubbliche
-- Monitorare alert Atlas sulle connessioni
-- Verificare tempi di navigazione tra pagine admin/pubbliche
+- [ ] Ridurre `noStore` dove non serve
+- [ ] Tenere live solo admin e dati davvero dinamici
+- [ ] Ridurre query Mongo sulle pagine pubbliche
+- [ ] Monitorare alert Atlas sulle connessioni
+- [ ] Verificare tempi di navigazione tra pagine admin/pubbliche
 
 P3. Osservabilita
-- Aggiungere logging minimo per errori API
-- Verificare messaggi errore chiari lato admin
-- Valutare monitoraggio base produzione
+- [ ] Aggiungere logging minimo per errori API
+- [ ] Verificare messaggi errore chiari lato admin
+- [ ] Valutare monitoraggio base produzione
 
 Esito finale richiesto prima della consegna
-- Build production pulita
-- Flussi core verificati
-- Mobile usabile senza attriti
-- Ambienti separati
-- Sicurezza segreti riallineata
+- [ ] Build production pulita
+- [ ] Flussi core verificati
+- [ ] Mobile usabile senza attriti
+- [ ] Ambienti separati
+- [ ] Sicurezza segreti riallineata
+- [ ] API mutative protette lato server

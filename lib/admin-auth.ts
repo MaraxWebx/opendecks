@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 import { canAttemptMongo, getDatabase } from "@/lib/mongodb";
 
@@ -76,6 +77,16 @@ export async function getAdminDisplayName(username: string) {
 export async function isAdminAuthenticated() {
   const store = await cookies();
   return store.get(ADMIN_COOKIE)?.value === "authenticated";
+}
+
+export async function requireAdminApiAuth() {
+  const authenticated = await isAdminAuthenticated();
+
+  if (authenticated) {
+    return null;
+  }
+
+  return NextResponse.json({ error: "Non autorizzato." }, { status: 401 });
 }
 
 export async function getAuthenticatedAdminName() {

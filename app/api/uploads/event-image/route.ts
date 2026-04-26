@@ -1,9 +1,17 @@
 import { put } from "@vercel/blob";
 import { NextRequest, NextResponse } from "next/server";
 
+import { requireAdminApiAuth } from "@/lib/admin-auth";
+
 const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
 
 export async function POST(request: NextRequest) {
+  const unauthorized = await requireAdminApiAuth();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   const formData = await request.formData();
   const file = formData.get("file");
 

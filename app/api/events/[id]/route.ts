@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { requireAdminApiAuth } from "@/lib/admin-auth";
 import { deleteEvent, getApplications, getDjRosterEntries, getEvents, getLocations, updateEvent } from "@/lib/data";
 import { sendDjEventAssignmentEmail } from "@/lib/email";
 
@@ -8,6 +9,12 @@ type RouteContext = {
 };
 
 export async function PATCH(request: NextRequest, context: RouteContext) {
+  const unauthorized = await requireAdminApiAuth();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   try {
     const { id } = await context.params;
     const body = await request.json();
@@ -95,6 +102,12 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 }
 
 export async function DELETE(request: NextRequest, context: RouteContext) {
+  const unauthorized = await requireAdminApiAuth();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   const { id } = await context.params;
   const force = request.nextUrl.searchParams.get("force") === "true";
 

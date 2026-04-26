@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { CookiePreferencesButton } from "@/components/cookie-preferences-button";
 import { getEvents } from "@/lib/data";
 
 export async function Footer() {
@@ -85,6 +86,7 @@ export async function Footer() {
           >
             Privacy Policy
           </Link>
+          <CookiePreferencesButton />
         </div>
 
         <div className="grid content-start gap-4">
@@ -106,13 +108,13 @@ export async function Footer() {
       </div>
 
       <div className="mx-auto flex w-full max-w-[1240px] flex-col items-start justify-between gap-3 border-t border-[#E31F29]/20 px-4 py-5 text-sm text-white/55 md:flex-row md:items-center md:px-6">
-        <p>Copyright © 2026 OpenDecks Italia.</p>
+        <p>Copyright 2026 OpenDecks Italia.</p>
         <Link
           href="https://www.instagram.com/marettax_/"
           className="transition hover:text-white/80"
           target="_blank"
         >
-          ❤️ ☠️ 🧠by Marettax
+          ❤️☠️🧠by Marettax
         </Link>
       </div>
     </footer>

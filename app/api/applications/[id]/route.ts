@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { requireAdminApiAuth } from "@/lib/admin-auth";
 import { deleteApplication, getApplications, getEvents, updateApplication } from "@/lib/data";
 import { sendApplicationApprovedEmail } from "@/lib/email";
 import { ApplicationRecord } from "@/lib/types";
@@ -9,6 +10,12 @@ type RouteContext = {
 };
 
 export async function PATCH(request: NextRequest, context: RouteContext) {
+  const unauthorized = await requireAdminApiAuth();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   const { id } = await context.params;
   const body = (await request.json()) as Partial<Pick<ApplicationRecord, "status">>;
 
@@ -54,6 +61,12 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 }
 
 export async function DELETE(_request: NextRequest, context: RouteContext) {
+  const unauthorized = await requireAdminApiAuth();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   const { id } = await context.params;
   const deleted = await deleteApplication(id);
 

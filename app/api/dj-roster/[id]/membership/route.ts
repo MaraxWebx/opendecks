@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { requireAdminApiAuth } from "@/lib/admin-auth";
 import { sendMembershipCardEmail } from "@/lib/email";
 import { getDjRosterEntries, updateDjRosterMembership } from "@/lib/data";
 import { buildMembershipCardPdf, createMembershipCardId } from "@/lib/membership-card";
@@ -9,6 +10,12 @@ type RouteContext = {
 };
 
 export async function PATCH(request: NextRequest, context: RouteContext) {
+  const unauthorized = await requireAdminApiAuth();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   const { id } = await context.params;
   const body = (await request.json()) as { enabled?: boolean };
 
