@@ -263,67 +263,89 @@ export function AdminApplicationsManager({
               {filteredApplications.map((application) => (
                 <article
                   key={application.id}
-                  className={`${ui.surface.card} min-w-0`}
+                  className="group rounded-2xl border border-[#E31F29]/14 bg-[linear-gradient(180deg,rgba(255,255,255,0.03)_0%,rgba(255,255,255,0.015)_100%)] p-4 transition hover:border-[#E31F29]/30 hover:bg-[linear-gradient(180deg,rgba(227,31,41,0.09)_0%,rgba(255,255,255,0.03)_100%)]"
                 >
-                  <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-white/58">
-                    <span
-                      className={`inline-flex rounded-md px-2 py-1 text-xs uppercase tracking-[0.12em] ${
-                        application.status === "selected"
-                          ? "bg-emerald-500/15 text-emerald-300"
-                          : application.status === "reviewing"
-                            ? "bg-amber-500/15 text-amber-200"
-                            : "bg-[color:var(--color-brand-12)] text-white"
-                      }`}
-                    >
-                      {formatApplicationStatus(application.status)}
-                    </span>
-                  </div>
-
-                  <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-white/58">
-                    <span>{application.eventTitle}</span>
-
-                    <span>
-                      {new Date(application.submittedAt).toLocaleDateString(
-                        "it-IT",
-                      )}
-                    </span>
-                  </div>
                   <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
-                    <div className="grid min-w-0 gap-2">
-                      <h3 className="break-words text-lg font-semibold text-[#f7f3ee]">
-                        {application.name}
-                      </h3>
-                      <p className={`${ui.text.body} break-words`}>
-                        {formatCityProvince(
-                          application.city,
-                          application.province,
-                        )}{" "}
-                        / {application.instagram}
-                      </p>
-                      <p className="break-words text-sm text-white/55">
-                        {application.email}
-                      </p>
-                      <p className="break-words text-sm text-white/55">
-                        {application.phone}
-                      </p>
-                      <p className="line-clamp-2 text-sm leading-7 text-white/68">
-                        {application.bio}
-                      </p>
-                    </div>
+                    <button
+                      type="button"
+                      className="flex min-w-0 items-start gap-4 text-left"
+                      onClick={() => {
+                        setDeleteTarget(null);
+                        setSelectedApplication(application);
+                        setDraftStatus(application.status);
+                        setStatusMessage("");
+                      }}
+                    >
+                      <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+                        {application.photoUrl ? (
+                          <img
+                            src={application.photoUrl}
+                            alt={application.name}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="grid h-full w-full place-items-center text-sm font-semibold uppercase tracking-[0.16em] text-white/72">
+                            {buildInitials(application.name)}
+                          </div>
+                        )}
+                        <span className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-[#120d0d] bg-[#E31F29]" />
+                      </div>
 
-                    <div className="flex flex-wrap gap-3">
-                      <button
-                        type="button"
-                        className={ui.action.secondary}
-                        onClick={() => {
-                          setDeleteTarget(null);
-                          setSelectedApplication(application);
-                          setDraftStatus(application.status);
-                          setStatusMessage("");
-                        }}
-                      >
-                        Dettagli
-                      </button>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.18em] text-white/44">
+                          <span
+                            className={`inline-flex rounded-md px-2 py-1 text-[0.62rem] ${
+                              application.status === "selected"
+                                ? "bg-emerald-500/15 text-emerald-300"
+                                : application.status === "reviewing"
+                                  ? "bg-amber-500/15 text-amber-200"
+                                  : "bg-[color:var(--color-brand-12)] text-white"
+                            }`}
+                          >
+                            {formatApplicationStatus(application.status)}
+                          </span>
+                          <span className="truncate">
+                            {application.eventTitle}
+                          </span>
+                          <span className="text-white/28">•</span>
+                          <span>
+                            {new Date(application.submittedAt).toLocaleString(
+                              "it-IT",
+                              {
+                                day: "2-digit",
+                                month: "2-digit",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              },
+                            )}
+                          </span>
+                        </div>
+
+                        <div className="mt-3 grid gap-1">
+                          <h3 className="truncate text-lg font-semibold text-[#f7f3ee] transition group-hover:text-white">
+                            {application.name}
+                          </h3>
+                          <p className="truncate text-sm text-white/68">
+                            {formatCityProvince(
+                              application.city,
+                              application.province,
+                            )}
+                          </p>
+                          <p className="truncate text-sm text-white/52">
+                            {application.email}
+                          </p>
+                          <p className="truncate text-sm text-white/46">
+                            {application.instagram}
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+
+                    <div className="flex items-center gap-3">
+                      <span className="hidden text-[#E31F29] md:inline-flex">
+                        <ArrowRightIcon />
+                      </span>
                       <DeleteIconButton
                         onClick={() => {
                           setDeleteTarget(application);
@@ -749,6 +771,26 @@ function ArrowLeftIcon() {
   );
 }
 
+function ArrowRightIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M9.5 5.5 16 12l-6.5 6.5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function formatApplicationStatus(status: ApplicationRecord["status"]) {
   if (status === "new") {
     return "Nuova";
@@ -763,4 +805,13 @@ function formatApplicationStatus(status: ApplicationRecord["status"]) {
 
 function formatCityProvince(city: string, province?: string) {
   return province ? `${city} (${province})` : city;
+}
+
+function buildInitials(name: string) {
+  return name
+    .split(" ")
+    .map((part) => part.trim()[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("");
 }

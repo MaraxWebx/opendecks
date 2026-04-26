@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { getAuthenticatedAdminName } from "@/lib/admin-auth";
@@ -95,52 +96,82 @@ export default async function AdminPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
           {newApplications.slice(0, 5).map((application) => (
-            <article
+            <Link
               key={application.id}
-              className="rounded-xl border border-[#E31F29]/18 bg-white/[0.04] p-5"
+              href={`/admin/candidature?applicationId=${application.id}`}
+              className="group rounded-2xl border border-[#E31F29]/14 bg-[linear-gradient(180deg,rgba(255,255,255,0.03)_0%,rgba(255,255,255,0.015)_100%)] p-4 transition hover:border-[#E31F29]/30 hover:bg-[linear-gradient(180deg,rgba(227,31,41,0.09)_0%,rgba(255,255,255,0.03)_100%)]"
             >
-              <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-white/58">
-                <span
-                  className={`inline-flex rounded-md px-2 py-1 text-xs uppercase tracking-[0.12em] ${
-                    application.status === "selected"
-                      ? "bg-emerald-500/15 text-emerald-300"
-                      : application.status === "reviewing"
-                        ? "bg-amber-500/15 text-amber-200"
-                        : "bg-[#E31F29]/14 text-white"
-                  }`}
-                >
-                  {formatApplicationStatus(application.status)}
-                </span>
-              </div>
-              <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-white/58">
-                <span>{application.eventTitle}</span>
+              <div className="flex items-start gap-4">
+                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+                  {application.photoUrl ? (
+                    <Image
+                      src={application.photoUrl}
+                      alt={application.name}
+                      fill
+                      className="object-cover"
+                      sizes="56px"
+                    />
+                  ) : (
+                    <div className="grid h-full w-full place-items-center text-sm font-semibold uppercase tracking-[0.16em] text-white/72">
+                      {buildInitials(application.name)}
+                    </div>
+                  )}
+                  <span className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-[#120d0d] bg-[#E31F29]" />
+                </div>
 
-                <span>
-                  {new Date(application.submittedAt).toLocaleString("it-IT")}
-                </span>
-              </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.18em] text-white/44">
+                    <span
+                      className={`inline-flex rounded-md px-2 py-1 text-[0.62rem] ${
+                        application.status === "selected"
+                          ? "bg-emerald-500/15 text-emerald-300"
+                          : application.status === "reviewing"
+                            ? "bg-amber-500/15 text-amber-200"
+                            : "bg-[#E31F29]/14 text-white"
+                      }`}
+                    >
+                      {formatApplicationStatus(application.status)}
+                    </span>
+                    <span className="truncate">{application.eventTitle}</span>
+                    <span className="text-white/28">•</span>
+                    <span>
+                      {new Date(application.submittedAt).toLocaleString(
+                        "it-IT",
+                        {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        },
+                      )}
+                    </span>
+                  </div>
 
-              <div className="grid gap-2">
-                <h3 className="text-lg font-semibold text-[#f7f3ee]">
-                  {application.name}
-                </h3>
-                <p className="text-sm text-white/70">
-                  {formatCityProvince(application.city, application.province)} /{" "}
-                  {application.instagram}
-                </p>
-                <p className="text-sm text-white/55">{application.email}</p>
+                  <div className="mt-3 grid gap-1">
+                    <h3 className="truncate text-lg font-semibold text-[#f7f3ee] transition group-hover:text-white">
+                      {application.name}
+                    </h3>
+                    <p className="truncate text-sm text-white/68">
+                      {formatCityProvince(application.city, application.province)}
+                    </p>
+                    <p className="truncate text-sm text-white/52">
+                      {application.email}
+                    </p>
+                    <p className="truncate text-sm text-white/46">
+                      {application.instagram}
+                    </p>
+                  </div>
+
+                  <div className="mt-3 flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-[#E31F29]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#E31F29]" />
+                    Apri candidatura
+                  </div>
+                </div>
               </div>
-              <div className="mt-4 flex flex-wrap gap-3">
-                <Link
-                  href={`/admin/candidature?applicationId=${application.id}`}
-                  className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[#E31F29]/35 px-4 py-3 text-sm font-medium text-[#f7f3ee] transition hover:bg-[#E31F29]/10"
-                >
-                  Dettagli
-                </Link>
-              </div>
-            </article>
+            </Link>
           ))}
           {!newApplications.length ? (
             <article className="rounded-xl border border-[#E31F29]/18 bg-white/[0.04] p-5">
@@ -518,6 +549,15 @@ function formatApplicationStatus(status: "new" | "reviewing" | "selected") {
 
 function formatCityProvince(city: string, province?: string) {
   return province ? `${city} (${province})` : city;
+}
+
+function buildInitials(name: string) {
+  return name
+    .split(" ")
+    .map((part) => part.trim()[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("");
 }
 
 const ignoredGeoLabels = new Set(["italia", "italy"]);

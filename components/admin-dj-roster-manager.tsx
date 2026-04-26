@@ -12,6 +12,7 @@ import { ui } from "@/lib/ui";
 type AdminDjRosterManagerProps = {
   initialRoster: DjRosterRecord[];
   events: EventRecord[];
+  initialSelectedId?: string;
 };
 
 type ManualDjFormState = {
@@ -55,6 +56,7 @@ const fieldClass =
 export function AdminDjRosterManager({
   initialRoster,
   events,
+  initialSelectedId,
 }: AdminDjRosterManagerProps) {
   const detailPanelRef = useRef<HTMLDivElement | null>(null);
   const createPanelRef = useRef<HTMLDivElement | null>(null);
@@ -66,6 +68,7 @@ export function AdminDjRosterManager({
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [createMessage, setCreateMessage] = useState("");
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [manualForm, setManualForm] = useState<ManualDjFormState>(() =>
     createInitialManualForm(events),
   );
@@ -84,6 +87,24 @@ export function AdminDjRosterManager({
   const [selectedPhotoFile, setSelectedPhotoFile] = useState<File | null>(null);
   const [isSavingSelected, setIsSavingSelected] = useState(false);
   const [isDeletingSelected, setIsDeletingSelected] = useState(false);
+
+  useEffect(() => {
+    if (!initialSelectedId) {
+      return;
+    }
+
+    const selected = initialRoster.find(
+      (entry) => entry.id === initialSelectedId,
+    );
+
+    if (!selected) {
+      return;
+    }
+
+    setIsCreateOpen(false);
+    setCreateMessage("");
+    setSelectedDj(selected);
+  }, [initialRoster, initialSelectedId]);
 
   const filteredRoster = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -231,6 +252,7 @@ export function AdminDjRosterManager({
       setSelectedCityOptions([]);
       setSelectedCityMenuOpen(false);
       setSelectedPhotoFile(null);
+      setIsEditOpen(false);
       return;
     }
 
@@ -459,7 +481,9 @@ export function AdminDjRosterManager({
     }
   }
 
-  async function handleUpdateSelectedDj(event: React.FormEvent<HTMLFormElement>) {
+  async function handleUpdateSelectedDj(
+    event: React.FormEvent<HTMLFormElement>,
+  ) {
     event.preventDefault();
 
     if (!selectedDj || !selectedForm) {
@@ -549,7 +573,9 @@ export function AdminDjRosterManager({
         throw new Error(result?.error || "Eliminazione DJ non riuscita.");
       }
 
-      setRoster((current) => current.filter((item) => item.id !== selectedDj.id));
+      setRoster((current) =>
+        current.filter((item) => item.id !== selectedDj.id),
+      );
       setSelectedDj(null);
       setMessage("DJ eliminato dal roster.");
     } catch (error) {
@@ -571,7 +597,9 @@ export function AdminDjRosterManager({
     key: K,
     value: SelectedDjFormState[K],
   ) {
-    setSelectedForm((current) => (current ? { ...current, [key]: value } : current));
+    setSelectedForm((current) =>
+      current ? { ...current, [key]: value } : current,
+    );
   }
 
   useEffect(() => {
@@ -656,99 +684,110 @@ export function AdminDjRosterManager({
               </p>
             </div>
 
-            <div className="grid gap-4">
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {filteredRoster.length ? (
                 filteredRoster.map((entry) => (
                   <article
                     key={entry.id}
-                    className={`${ui.surface.card} min-w-0`}
+                    className="group flex h-full flex-col overflow-hidden rounded-lg border border-[#E31F29]/14 bg-[linear-gradient(180deg,rgba(255,255,255,0.03)_0%,rgba(255,255,255,0.015)_100%)] transition hover:border-[#E31F29]/30 hover:bg-[linear-gradient(180deg,rgba(227,31,41,0.09)_0%,rgba(255,255,255,0.04)_100%)]"
                   >
-                    <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
-                      <div className="grid min-w-0 gap-2">
-                        <div className="flex flex-wrap items-center gap-2 text-sm text-white/58">
-                          <span>
-                            {formatCityProvince(entry.city, entry.province)}
-                          </span>
-                          <span>
-                            {new Date(entry.approvedAt).toLocaleDateString(
-                              "it-IT",
-                            )}
-                          </span>
+                    <button
+                      type="button"
+                      className="flex flex-col items-stretch text-left"
+                      onClick={() => {
+                        setIsCreateOpen(false);
+                        setCreateMessage("");
+                        setSelectedDj(entry);
+                      }}
+                    >
+                      <div className="relative h-56 overflow-hidden bg-white/5">
+                        {entry.photoUrl ? (
+                          <img
+                            src={entry.photoUrl}
+                            alt={entry.name}
+                            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="grid h-full w-full place-items-center text-sm font-semibold uppercase tracking-[0.16em] text-white/72">
+                            {buildInitials(entry.name)}
+                          </div>
+                        )}
+                        <span className="absolute -bottom-2 -right-2 h-5 w-5 rounded-full border-2 border-[#120d0d] bg-[#E31F29]" />
+                      </div>
+
+                      <div className="grid gap-3 p-5">
+                        <div className="flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.18em] text-white/44">
                           {!entry.applicationId ? (
-                            <span className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.16em] text-white/75">
+                            <span className="inline-flex rounded-full border border-[color:var(--color-brand-20)] px-2 py-1 text-[0.62rem] text-white/75">
                               Manuale
                             </span>
                           ) : entry.sourceApplicationEventTitle ? (
-                            <span className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.16em] text-white/75">
-                              Candidatura / {entry.sourceApplicationEventTitle}
+                            <span className="inline-flex rounded-full border border-[color:var(--color-brand-20)] px-2 py-1 text-[0.62rem] text-white/75">
+                              {entry.sourceApplicationEventTitle}
                             </span>
                           ) : null}
-                        </div>
-                        <h3 className="break-words text-lg font-semibold text-[#f7f3ee]">
-                          {entry.name}
-                        </h3>
-                        <p className="break-words text-sm text-white/70">
-                          {entry.email}
-                        </p>
-                        <p className="break-words text-sm text-white/55">
-                          {entry.phone}
-                        </p>
-                        <p className="break-words text-sm text-white/55">
-                          {entry.instagram}
-                        </p>
-                        <div className="flex flex-wrap gap-2 pt-1">
                           {entry.membershipCardEnabled ? (
-                            <span className="inline-flex rounded-md bg-emerald-500/15 px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-300">
-                              Card attiva
-                            </span>
-                          ) : (
-                            <span className="inline-flex rounded-md bg-[color:var(--color-brand-12)] px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-white">
-                              Nessuna card
-                            </span>
-                          )}
-                          {entry.membershipCardId ? (
-                            <span className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-white/75">
-                              {entry.membershipCardId}
+                            <span className="inline-flex rounded-full bg-emerald-500/15 px-2 py-1 text-[0.62rem] text-emerald-300">
+                              Membership
                             </span>
                           ) : null}
                         </div>
-                      </div>
 
-                      <div className="flex flex-wrap gap-3">
-                        <button
-                          type="button"
-                          className={ui.action.secondary}
-                          onClick={() => {
-                            setIsCreateOpen(false);
-                            setCreateMessage("");
-                            setSelectedDj(entry);
-                          }}
-                        >
-                          Dettagli
-                        </button>
-                        <button
-                          type="button"
-                          className={
-                            entry.membershipCardEnabled
-                              ? ui.action.secondary
-                              : ui.action.primary
-                          }
-                          disabled={busyId === entry.id}
-                          onClick={() =>
-                            toggleMembership(
-                              entry,
-                              !entry.membershipCardEnabled,
-                            )
-                          }
-                        >
-                          {busyId === entry.id
-                            ? "Invio..."
-                            : entry.membershipCardEnabled
-                              ? "Disattiva card"
-                              : "Abilita card"}
-                        </button>
+                        <div className="grid gap-1">
+                          <h3 className="text-xl font-semibold text-[#f7f3ee] transition group-hover:text-white">
+                            {entry.name}
+                          </h3>
+                          {/*   <p className="truncate text-sm text-white/52">
+                            {entry.email}
+                          </p>
+                          <p className="truncate text-sm text-white/46">
+                            {entry.instagram}
+                          </p> */}
+                          {entry.membershipCardId ? (
+                            <p className="truncate text-xs uppercase tracking-[0.16em] text-white/34">
+                              {entry.membershipCardId}
+                            </p>
+                          ) : null}
+                        </div>
+                        {/* 
+                        <div className="grid gap-1 text-sm text-white/65">
+                          <p>
+                            {formatCityProvince(entry.city, entry.province)}
+                          </p>
+                          <p>
+                            {new Date(entry.approvedAt).toLocaleDateString(
+                              "it-IT",
+                              {
+                                day: "2-digit",
+                                month: "2-digit",
+                                year: "numeric",
+                              },
+                            )}
+                          </p>
+                        </div> */}
                       </div>
-                    </div>
+                    </button>
+
+                    {/* <div className="border-t border-white/10 bg-[#0000000d] px-5 py-4">
+                      <button
+                        type="button"
+                        className={
+                          entry.membershipCardEnabled
+                            ? ui.action.secondary
+                            : ui.action.primary
+                        }
+                        disabled={busyId === entry.id}
+                        onClick={() =>
+                          toggleMembership(entry, !entry.membershipCardEnabled)
+                        }
+                      >
+                        {busyId === entry.id
+                          ? "Invio..."
+                          : entry.membershipCardEnabled
+                            ? "Disattiva card"
+                            : "Abilita card"}
+                      </button>
+                    </div> */}
                   </article>
                 ))
               ) : (
@@ -769,14 +808,6 @@ export function AdminDjRosterManager({
             <div className={ui.surface.panel}>
               <div className="grid gap-5">
                 <div className="grid gap-3 sm:flex sm:items-start sm:justify-between">
-                  <button
-                    type="button"
-                    className={`${ui.action.secondary} gap-2 justify-self-end sm:order-2`}
-                    onClick={() => setSelectedDj(null)}
-                  >
-                    <ArrowLeftIcon />
-                    Torna alla lista
-                  </button>
                   <div className="grid min-w-0 gap-2 sm:order-1">
                     <span className={ui.text.eyebrow}>DJ roster</span>
                     <h2 className="break-words text-2xl font-semibold tracking-[-0.03em] text-[#f7f3ee]">
@@ -787,140 +818,161 @@ export function AdminDjRosterManager({
                       stesso layout admin.
                     </p>
                   </div>
-                </div>
-
-                {message ? (
-                  <p className="text-sm text-white/70">{message}</p>
-                ) : null}
-
-                <div className="grid gap-4 md:grid-cols-2">
-                  <DetailItem
-                    label="Origine candidatura"
-                    value={
-                      selectedDj.applicationId
-                        ? selectedDj.sourceApplicationEventTitle ||
-                          "Evento candidatura non disponibile"
-                        : "Inserimento manuale"
-                    }
-                  />
-                  <DetailItem
-                    label="Origine"
-                    value={
-                      selectedDj.applicationId
-                        ? "Da candidatura approvata"
-                        : "Inserimento manuale"
-                    }
-                  />
-                  <DetailItem
-                    label="Approvato il"
-                    value={new Date(selectedDj.approvedAt).toLocaleString(
-                      "it-IT",
-                    )}
-                  />
-                  <DetailItem
-                    label="Membership"
-                    value={
-                      selectedDj.membershipCardEnabled
-                        ? `Attiva / ${selectedDj.membershipCardId || "Card in generazione"}`
-                        : "Non attiva"
-                    }
-                  />
-                </div>
-
-                <div className={ui.surface.card}>
-                  <span className={ui.form.label}>Membership</span>
-                  <div className="mt-3 flex flex-wrap items-center gap-3">
-                    <span
-                      className={`inline-flex rounded-md px-3 py-1.5 text-xs uppercase tracking-[0.12em] ${
-                        selectedDj.membershipCardEnabled
-                          ? "bg-emerald-500/15 text-emerald-300"
-                          : "bg-[color:var(--color-brand-12)] text-white"
-                      }`}
-                    >
-                      {selectedDj.membershipCardEnabled
-                        ? "Attiva"
-                        : "Non attiva"}
-                    </span>
-                    <span className="text-sm text-white/70">
-                      Card ID: {selectedDj.membershipCardId || "Non èmessa"}
-                    </span>
+                  <div className="flex flex-wrap items-center gap-3 sm:order-2">
                     <button
                       type="button"
-                      className={
-                        selectedDj.membershipCardEnabled
-                          ? ui.action.secondary
-                          : ui.action.primary
-                      }
-                      disabled={busyId === selectedDj.id}
-                      onClick={() =>
-                        toggleMembership(
-                          selectedDj,
-                          !selectedDj.membershipCardEnabled,
-                        )
-                      }
+                      className={ui.action.secondary}
+                      onClick={() => setSelectedDj(null)}
                     >
-                      {busyId === selectedDj.id
-                        ? "Invio..."
-                        : selectedDj.membershipCardEnabled
-                          ? "Disattiva card"
-                          : "Abilita card"}
+                      <ArrowLeftIcon />
+                      Torna alla lista
+                    </button>
+                    <button
+                      type="button"
+                      className={ui.action.primary}
+                      onClick={() => setIsEditOpen((current) => !current)}
+                    >
+                      {isEditOpen ? "Chiudi editor" : "Modifica DJ"}
                     </button>
                   </div>
                 </div>
 
-                <div className={ui.surface.card}>
-                  <span className={ui.form.label}>Link set</span>
-                  {selectedDj.setLink ? (
-                    <a
-                      href={selectedDj.setLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-2 block break-all text-sm text-[#f7f3ee] underline decoration-[color:var(--color-brand)] underline-offset-4"
-                    >
-                      {selectedDj.setLink}
-                    </a>
-                  ) : (
-                    <p className="mt-2 text-sm text-white/50">
-                      Nessun link set disponibile.
-                    </p>
-                  )}
-                </div>
+                {!isEditOpen ? (
+                  <>
+                    {message ? (
+                      <p className="text-sm text-white/70">{message}</p>
+                    ) : null}
 
-                <div className={ui.surface.card}>
-                  <span className={ui.form.label}>Storico eventi</span>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {selectedDjHistory.length ? (
-                      selectedDjHistory.map((event) => (
-                        <Link
-                          key={event.id}
-                          href={`/admin/eventi/${event.slug}`}
-                          className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-white/75"
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <DetailItem
+                        label="Origine candidatura"
+                        value={
+                          selectedDj.applicationId
+                            ? selectedDj.sourceApplicationEventTitle ||
+                              "Evento candidatura non disponibile"
+                            : "Inserimento manuale"
+                        }
+                      />
+                      <DetailItem
+                        label="Origine"
+                        value={
+                          selectedDj.applicationId
+                            ? "Da candidatura approvata"
+                            : "Inserimento manuale"
+                        }
+                      />
+                      <DetailItem
+                        label="Approvato il"
+                        value={new Date(selectedDj.approvedAt).toLocaleString(
+                          "it-IT",
+                        )}
+                      />
+                      <DetailItem
+                        label="Membership"
+                        value={
+                          selectedDj.membershipCardEnabled
+                            ? `Attiva / ${selectedDj.membershipCardId || "Card in generazione"}`
+                            : "Non attiva"
+                        }
+                      />
+                    </div>
+
+                    <div className={ui.surface.card}>
+                      <span className={ui.form.label}>Membership</span>
+                      <div className="mt-3 flex flex-wrap items-center gap-3">
+                        <span
+                          className={`inline-flex rounded-md px-3 py-1.5 text-xs uppercase tracking-[0.12em] ${
+                            selectedDj.membershipCardEnabled
+                              ? "bg-emerald-500/15 text-emerald-300"
+                              : "bg-[color:var(--color-brand-12)] text-white"
+                          }`}
                         >
-                          {event.title} /{" "}
-                          {new Date(event.date).toLocaleDateString("it-IT")}
-                        </Link>
-                      ))
-                    ) : (
-                      <span className="text-sm text-white/50">
-                        Nessun evento collegato in storico.
-                      </span>
-                    )}
-                  </div>
-                </div>
+                          {selectedDj.membershipCardEnabled
+                            ? "Attiva"
+                            : "Non attiva"}
+                        </span>
+                        <span className="text-sm text-white/70">
+                          Card ID: {selectedDj.membershipCardId || "Non èmessa"}
+                        </span>
+                        <button
+                          type="button"
+                          className={
+                            selectedDj.membershipCardEnabled
+                              ? ui.action.secondary
+                              : ui.action.primary
+                          }
+                          disabled={busyId === selectedDj.id}
+                          onClick={() =>
+                            toggleMembership(
+                              selectedDj,
+                              !selectedDj.membershipCardEnabled,
+                            )
+                          }
+                        >
+                          {busyId === selectedDj.id
+                            ? "Invio..."
+                            : selectedDj.membershipCardEnabled
+                              ? "Disattiva card"
+                              : "Abilita card"}
+                        </button>
+                      </div>
+                    </div>
 
-                <div className={ui.surface.card}>
-                  <span className={ui.form.label}>Bio</span>
-                  <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-white/74">
-                    {selectedDj.bio || "Nessuna bio disponibile."}
-                  </p>
-                </div>
+                    <div className={ui.surface.card}>
+                      <span className={ui.form.label}>Link set</span>
+                      {selectedDj.setLink ? (
+                        <a
+                          href={selectedDj.setLink}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-2 block break-all text-sm text-[#f7f3ee] underline decoration-[color:var(--color-brand)] underline-offset-4"
+                        >
+                          {selectedDj.setLink}
+                        </a>
+                      ) : (
+                        <p className="mt-2 text-sm text-white/50">
+                          Nessun link set disponibile.
+                        </p>
+                      )}
+                    </div>
 
-                {selectedForm ? (
+                    <div className={ui.surface.card}>
+                      <span className={ui.form.label}>Storico eventi</span>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {selectedDjHistory.length ? (
+                          selectedDjHistory.map((event) => (
+                            <Link
+                              key={event.id}
+                              href={`/admin/eventi/${event.slug}`}
+                              className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-white/75"
+                            >
+                              {event.title} /{" "}
+                              {new Date(event.date).toLocaleDateString("it-IT")}
+                            </Link>
+                          ))
+                        ) : (
+                          <span className="text-sm text-white/50">
+                            Nessun evento collegato in storico.
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className={ui.surface.card}>
+                      <span className={ui.form.label}>Bio</span>
+                      <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-white/74">
+                        {selectedDj.bio || "Nessuna bio disponibile."}
+                      </p>
+                    </div>
+                  </>
+                ) : null}
+
+                {selectedForm && isEditOpen ? (
                   <form
                     className={`${ui.surface.card} grid gap-4`}
                     onSubmit={handleUpdateSelectedDj}
                   >
-                    <span className={ui.form.label}>Modifica DJ</span>
+                    <span className={ui.form.label}>Editor DJ</span>
                     <div className="grid gap-4 md:grid-cols-2">
                       <Field label="Nome DJ" htmlFor="selected-dj-name">
                         <input
@@ -944,7 +996,9 @@ export function AdminDjRosterManager({
                               const nextQuery = event.target.value;
                               setSelectedCityQuery(nextQuery);
                               setSelectedCityMenuOpen(true);
-                              void resolveSelectedMunicipalityFromQuery(nextQuery);
+                              void resolveSelectedMunicipalityFromQuery(
+                                nextQuery,
+                              );
                             }}
                             onFocus={() => {
                               if (selectedCityOptions.length) {
@@ -963,7 +1017,8 @@ export function AdminDjRosterManager({
                             autoComplete="off"
                             required
                           />
-                          {selectedCityMenuOpen && selectedCityOptions.length ? (
+                          {selectedCityMenuOpen &&
+                          selectedCityOptions.length ? (
                             <div className="absolute z-20 mt-2 max-h-64 w-full overflow-auto rounded-lg border border-[#E31F29]/20 bg-[#0b0b0c] p-2 shadow-[0_18px_50px_rgba(0,0,0,0.45)]">
                               {selectedCityOptions.map((municipality) => (
                                 <button
@@ -1040,14 +1095,19 @@ export function AdminDjRosterManager({
                         />
                       </Field>
 
-                      <Field label="Nuova foto profilo" htmlFor="selected-dj-photo">
+                      <Field
+                        label="Nuova foto profilo"
+                        htmlFor="selected-dj-photo"
+                      >
                         <input
                           id="selected-dj-photo"
                           type="file"
                           accept="image/png,image/jpeg,image/webp,image/avif"
                           className={fieldClass}
                           onChange={(event) =>
-                            setSelectedPhotoFile(event.target.files?.[0] || null)
+                            setSelectedPhotoFile(
+                              event.target.files?.[0] || null,
+                            )
                           }
                         />
                         <span className="text-xs text-white/45">
@@ -1073,7 +1133,9 @@ export function AdminDjRosterManager({
                         className={ui.action.primary}
                         disabled={isSavingSelected || isDeletingSelected}
                       >
-                        {isSavingSelected ? "Salvataggio..." : "Salva modifiche"}
+                        {isSavingSelected
+                          ? "Salvataggio..."
+                          : "Salva modifiche"}
                       </button>
                       <DeleteIconButton
                         onClick={handleDeleteSelectedDj}
@@ -1591,6 +1653,35 @@ function ArrowLeftIcon() {
   );
 }
 
+function ArrowRightIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M9.5 5.5 16 12l-6.5 6.5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function formatCityProvince(city: string, province?: string) {
   return province ? `${city} (${province})` : city;
+}
+
+function buildInitials(name: string) {
+  return name
+    .split(" ")
+    .map((part) => part.trim()[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("");
 }

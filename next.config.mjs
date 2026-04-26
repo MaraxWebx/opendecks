@@ -4,6 +4,14 @@ import path from "node:path";
 const nextConfig = {
   typedRoutes: true,
   outputFileTracingRoot: path.join(process.cwd()),
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+      },
+    ],
+  },
   async headers() {
     return [
       {

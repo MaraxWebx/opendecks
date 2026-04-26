@@ -486,12 +486,27 @@ export function AdminEventDetailEditor({
                 <div className="mt-4 flex flex-wrap gap-2">
                   {lineupDjs.length ? (
                     lineupDjs.map((record) => (
-                      <span
+                      <button
                         key={record.id}
-                        className="inline-flex rounded-md bg-emerald-500/15 px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-300"
+                        type="button"
+                        onClick={() => router.push(`/admin/dj?djId=${record.id}`)}
+                        className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/12 px-2.5 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-200 transition hover:border-emerald-400/40 hover:bg-emerald-500/18"
                       >
-                        {record.name}
-                      </span>
+                        <span className="relative h-6 w-6 shrink-0 overflow-hidden rounded-full border border-white/10 bg-black/25">
+                          {record.photoUrl ? (
+                            <img
+                              src={record.photoUrl}
+                              alt={record.name}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <span className="grid h-full w-full place-items-center text-[10px] font-semibold text-white/80">
+                              {buildInitials(record.name)}
+                            </span>
+                          )}
+                        </span>
+                        <span>{record.name}</span>
+                      </button>
                     ))
                   ) : (
                     <span className="text-sm text-white/45">
@@ -749,12 +764,27 @@ export function AdminEventDetailEditor({
                   <div className="mt-4 flex flex-wrap gap-2">
                     {lineupDjs.length ? (
                       lineupDjs.map((record) => (
-                        <span
+                        <button
                           key={record.id}
-                          className="inline-flex rounded-md bg-emerald-500/15 px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-300"
+                          type="button"
+                          onClick={() => router.push(`/admin/dj?djId=${record.id}`)}
+                          className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/12 px-2.5 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-200 transition hover:border-emerald-400/40 hover:bg-emerald-500/18"
                         >
-                          {record.name}
-                        </span>
+                          <span className="relative h-6 w-6 shrink-0 overflow-hidden rounded-full border border-white/10 bg-black/25">
+                            {record.photoUrl ? (
+                              <img
+                                src={record.photoUrl}
+                                alt={record.name}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <span className="grid h-full w-full place-items-center text-[10px] font-semibold text-white/80">
+                                {buildInitials(record.name)}
+                              </span>
+                            )}
+                          </span>
+                          <span>{record.name}</span>
+                        </button>
                       ))
                     ) : (
                       <span className="text-sm text-white/45">
@@ -878,6 +908,15 @@ function createSlug(value: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function buildInitials(name: string) {
+  return name
+    .split(" ")
+    .map((part) => part.trim()[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("");
 }
 
 function buildEventCoverAlt(
