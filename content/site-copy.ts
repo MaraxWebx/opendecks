@@ -7,25 +7,25 @@ export const homeCopy = {
   eyebrow: brandClaim.lines,
   title: "OpenDecks Italia",
   description:
-    "Non solo serate. OpenDecks costruisce una rete fatta di selezione, archivio, contenuto e opportunita per la scena musicale.",
+    "Non solo serate. OpenDecks costruisce una rete fatta di selezione, archivio, contenuto e opportunità per la scena musicale.",
   primaryCta: "Scopri gli eventi",
   secondaryCta: "Leggi il manifesto",
   latestSetTitle: "Ascolta l'ultimo set della community.",
   latestSetDescription:
-    "L'archivio set non serve solo a ricordare una serata: serve a costruire memoria, mostrare ricerca e dare continuita alla scena.",
+    "L'archivio set non serve solo a ricordare una serata: serve a costruire memoria, mostrare ricerca e dare continuità alla scena.",
   latestShotsTitle: "Documentiamo quello che succede dentro e fuori dalla console.",
   latestShotsDescription:
     "Clip, recap, mini interviste e momenti live: ogni contenuto deve creare connessione, non solo hype.",
   seoTitle: "OpenDecks Italia",
   seoDescription:
-    "OpenDecks Italia e una piattaforma culturale itinerante nata a Napoli: eventi, archivio, call aperte e connessioni tra DJ, citta e comunita.",
+    "OpenDecks Italia e una piattaforma culturale itinerante nata a Napoli: eventi, archivio, call aperte e connessioni tra DJ, città e comunita.",
 };
 
 export const eventsPageCopy = {
   eyebrow: "Eventi",
   title: "Calendario di una rete in movimento",
   description:
-    "Ogni data e un nodo del progetto: eventi, archive, call aperte e collaborazione tra citta, venue e selezionatori.",
+    "Ogni data e un nodo del progetto: eventi, archive, call aperte e collaborazione tra città, venue e selezionatori.",
   seoTitle: "Eventi",
   seoDescription:
     "Scopri gli eventi OpenDecks Italia: date, location, line up e call aperte di un format culturale itinerante nato a Napoli.",
@@ -55,12 +55,12 @@ export const applicationFormCopy = {
   successDescription:
     "La tua candidatura e stata registrata correttamente. Verrai ricontattato per la selezione: controlla la tua casella email nei prossimi giorni.",
   errorEyebrow: "Invio non completato",
-  errorTitle: "La candidatura non e stata registrata.",
+  errorTitle: "La candidatura Non è stata registrata.",
   supportCta: "Hai bisogno di supporto? Contattaci",
   retryCta: "Invia un'altra candidatura",
   submitCta: "Invia candidatura",
   requiredFields:
-    "Campi richiesti: nome, citta, email, telefono, foto, Instagram e set.",
+    "Campi richiesti: nome, città, email, telefono, foto, Instagram e set.",
 };
 
 export const emailCopy = {

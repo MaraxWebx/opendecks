@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
 
     if (existingRosterEntry) {
       return NextResponse.json(
-        { error: "Esiste gia un DJ roster associato a questa email." },
+        { error: "Esiste già un DJ roster associato a questa email." },
         { status: 409 },
       );
     }

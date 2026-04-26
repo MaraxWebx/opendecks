@@ -17,9 +17,9 @@ export default async function ArchivePage() {
                 Un frammento della serata con i nostri selectors.
               </h1>
               <p className="mt-4 max-w-[42rem] text-lg leading-8 text-white/76">
-                Una pagina piu visiva, vicina a un moodboard fotografico: quattro
-                colonne, ritmo irregolare, contenuti media misti e testo ridotto al
-                minimo.
+                Una pagina più visiva, vicina a un moodboard fotografico:
+                quattro colonne, ritmo irregolare, contenuti media misti e testo
+                ridotto al minimo.
               </p>
             </div>
 

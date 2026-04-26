@@ -294,7 +294,7 @@ export function AdminDjRosterManager({
           await resolveMunicipalityFromQuery(cityQuery);
 
         if (!resolvedMunicipality) {
-          throw new Error("Seleziona una citta valida dall'autocomplete.");
+          throw new Error("Seleziona una città valida dall'autocomplete.");
         }
       }
 
@@ -359,7 +359,7 @@ export function AdminDjRosterManager({
                   className={ui.form.field}
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Nome, citta, email, telefono, evento..."
+                  placeholder="Nome, città, email, telefono, evento..."
                 />
               </div>
               <button
@@ -376,7 +376,9 @@ export function AdminDjRosterManager({
               </button>
             </div>
 
-            {message ? <p className="text-sm text-white/65">{message}</p> : null}
+            {message ? (
+              <p className="text-sm text-white/65">{message}</p>
+            ) : null}
           </div>
 
           <div className={`${ui.surface.panel} min-w-0 p-0 sm:p-6`}>
@@ -389,7 +391,10 @@ export function AdminDjRosterManager({
             <div className="grid gap-4">
               {filteredRoster.length ? (
                 filteredRoster.map((entry) => (
-                  <article key={entry.id} className={`${ui.surface.card} min-w-0`}>
+                  <article
+                    key={entry.id}
+                    className={`${ui.surface.card} min-w-0`}
+                  >
                     <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
                       <div className="grid min-w-0 gap-2">
                         <div className="flex flex-wrap items-center gap-2 text-sm text-white/58">
@@ -397,7 +402,9 @@ export function AdminDjRosterManager({
                             {formatCityProvince(entry.city, entry.province)}
                           </span>
                           <span>
-                            {new Date(entry.approvedAt).toLocaleDateString("it-IT")}
+                            {new Date(entry.approvedAt).toLocaleDateString(
+                              "it-IT",
+                            )}
                           </span>
                           {!entry.applicationId ? (
                             <span className="inline-flex rounded-md border border-[color:var(--color-brand-20)] px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.16em] text-white/75">
@@ -460,7 +467,10 @@ export function AdminDjRosterManager({
                           }
                           disabled={busyId === entry.id}
                           onClick={() =>
-                            toggleMembership(entry, !entry.membershipCardEnabled)
+                            toggleMembership(
+                              entry,
+                              !entry.membershipCardEnabled,
+                            )
                           }
                         >
                           {busyId === entry.id
@@ -505,12 +515,15 @@ export function AdminDjRosterManager({
                       {selectedDj.name}
                     </h2>
                     <p className="text-sm leading-7 text-white/68">
-                      Scheda DJ, profilo, membership e storico eventi nello stesso layout admin.
+                      Scheda DJ, profilo, membership e storico eventi nello
+                      stesso layout admin.
                     </p>
                   </div>
                 </div>
 
-                {message ? <p className="text-sm text-white/70">{message}</p> : null}
+                {message ? (
+                  <p className="text-sm text-white/70">{message}</p>
+                ) : null}
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <DetailItem
@@ -532,7 +545,9 @@ export function AdminDjRosterManager({
                   />
                   <DetailItem
                     label="Approvato il"
-                    value={new Date(selectedDj.approvedAt).toLocaleString("it-IT")}
+                    value={new Date(selectedDj.approvedAt).toLocaleString(
+                      "it-IT",
+                    )}
                   />
                   <DetailItem
                     label="Membership"
@@ -554,10 +569,12 @@ export function AdminDjRosterManager({
                           : "bg-[color:var(--color-brand-12)] text-white"
                       }`}
                     >
-                      {selectedDj.membershipCardEnabled ? "Attiva" : "Non attiva"}
+                      {selectedDj.membershipCardEnabled
+                        ? "Attiva"
+                        : "Non attiva"}
                     </span>
                     <span className="text-sm text-white/70">
-                      Card ID: {selectedDj.membershipCardId || "Non emessa"}
+                      Card ID: {selectedDj.membershipCardId || "Non èmessa"}
                     </span>
                     <button
                       type="button"
@@ -686,9 +703,7 @@ export function AdminDjRosterManager({
                       label="Telefono"
                       value={selectedDj.phone || "Non disponibile"}
                       href={
-                        selectedDj.phone
-                          ? `tel:${selectedDj.phone}`
-                          : undefined
+                        selectedDj.phone ? `tel:${selectedDj.phone}` : undefined
                       }
                     />
                     <InfoRow
@@ -751,150 +766,150 @@ export function AdminDjRosterManager({
           ) : (
             <form className="grid gap-5" onSubmit={handleCreateManualDj}>
               <div className="grid gap-4 md:grid-cols-2">
-                  <Field label="Nome DJ" htmlFor="manual-dj-name">
-                    <input
-                      id="manual-dj-name"
-                      className={fieldClass}
-                      value={manualForm.name}
-                      onChange={(event) =>
-                        updateManualForm("name", event.target.value)
-                      }
-                      required
-                    />
-                  </Field>
+                <Field label="Nome DJ" htmlFor="manual-dj-name">
+                  <input
+                    id="manual-dj-name"
+                    className={fieldClass}
+                    value={manualForm.name}
+                    onChange={(event) =>
+                      updateManualForm("name", event.target.value)
+                    }
+                    required
+                  />
+                </Field>
 
-                  <Field label="Citta" htmlFor="manual-dj-city">
-                    <div className="relative">
-                      <input
-                        id="manual-dj-city"
-                        className={fieldClass}
-                        value={cityQuery}
-                        onChange={(event) => {
-                          const nextQuery = event.target.value;
-                          setCityQuery(nextQuery);
+                <Field label="Citta" htmlFor="manual-dj-city">
+                  <div className="relative">
+                    <input
+                      id="manual-dj-city"
+                      className={fieldClass}
+                      value={cityQuery}
+                      onChange={(event) => {
+                        const nextQuery = event.target.value;
+                        setCityQuery(nextQuery);
+                        setCityMenuOpen(true);
+                        void resolveMunicipalityFromQuery(nextQuery);
+                      }}
+                      onFocus={() => {
+                        if (cityOptions.length) {
                           setCityMenuOpen(true);
-                          void resolveMunicipalityFromQuery(nextQuery);
-                        }}
-                        onFocus={() => {
-                          if (cityOptions.length) {
-                            setCityMenuOpen(true);
-                          }
-                        }}
-                        onBlur={() => {
-                          window.setTimeout(() => {
-                            setCityMenuOpen(false);
-                            void resolveMunicipalityFromQuery(cityQuery);
-                          }, 120);
-                        }}
-                        placeholder="Scrivi e seleziona il comune, es. Roma - (RM)"
-                        autoComplete="off"
-                        required
-                      />
-                      {cityMenuOpen && cityOptions.length ? (
-                        <div className="absolute z-20 mt-2 max-h-64 w-full overflow-auto rounded-lg border border-[#E31F29]/20 bg-[#0b0b0c] p-2 shadow-[0_18px_50px_rgba(0,0,0,0.45)]">
-                          {cityOptions.map((municipality) => (
-                            <button
-                              key={municipality.code}
-                              type="button"
-                              className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-white/82 transition hover:bg-white/6"
-                              onMouseDown={(event) => {
-                                event.preventDefault();
-                                applyMunicipalitySelection(municipality);
-                                setCityMenuOpen(false);
-                              }}
-                            >
-                              <span>{municipality.label}</span>
-                              <span className="text-xs uppercase tracking-[0.14em] text-white/45">
-                                {municipality.region}
-                              </span>
-                            </button>
-                          ))}
-                        </div>
-                      ) : null}
-                    </div>
-                  </Field>
-
-                  <Field label="Email" htmlFor="manual-dj-email">
-                    <input
-                      id="manual-dj-email"
-                      type="email"
-                      className={fieldClass}
-                      value={manualForm.email}
-                      onChange={(event) =>
-                        updateManualForm("email", event.target.value)
-                      }
+                        }
+                      }}
+                      onBlur={() => {
+                        window.setTimeout(() => {
+                          setCityMenuOpen(false);
+                          void resolveMunicipalityFromQuery(cityQuery);
+                        }, 120);
+                      }}
+                      placeholder="Scrivi e seleziona il comune, es. Roma - (RM)"
+                      autoComplete="off"
                       required
                     />
-                  </Field>
+                    {cityMenuOpen && cityOptions.length ? (
+                      <div className="absolute z-20 mt-2 max-h-64 w-full overflow-auto rounded-lg border border-[#E31F29]/20 bg-[#0b0b0c] p-2 shadow-[0_18px_50px_rgba(0,0,0,0.45)]">
+                        {cityOptions.map((municipality) => (
+                          <button
+                            key={municipality.code}
+                            type="button"
+                            className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-white/82 transition hover:bg-white/6"
+                            onMouseDown={(event) => {
+                              event.preventDefault();
+                              applyMunicipalitySelection(municipality);
+                              setCityMenuOpen(false);
+                            }}
+                          >
+                            <span>{municipality.label}</span>
+                            <span className="text-xs uppercase tracking-[0.14em] text-white/45">
+                              {municipality.region}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                </Field>
 
-                  <Field label="Telefono" htmlFor="manual-dj-phone">
-                    <input
-                      id="manual-dj-phone"
-                      type="tel"
-                      className={fieldClass}
-                      value={manualForm.phone}
-                      onChange={(event) =>
-                        updateManualForm("phone", event.target.value)
-                      }
-                      required
-                    />
-                  </Field>
+                <Field label="Email" htmlFor="manual-dj-email">
+                  <input
+                    id="manual-dj-email"
+                    type="email"
+                    className={fieldClass}
+                    value={manualForm.email}
+                    onChange={(event) =>
+                      updateManualForm("email", event.target.value)
+                    }
+                    required
+                  />
+                </Field>
 
-                  <Field label="Link Instagram" htmlFor="manual-dj-instagram">
-                    <input
-                      id="manual-dj-instagram"
-                      type="url"
-                      className={fieldClass}
-                      value={manualForm.instagram}
-                      onChange={(event) =>
-                        updateManualForm("instagram", event.target.value)
-                      }
-                      placeholder="https://instagram.com/..."
-                      required
-                    />
-                  </Field>
+                <Field label="Telefono" htmlFor="manual-dj-phone">
+                  <input
+                    id="manual-dj-phone"
+                    type="tel"
+                    className={fieldClass}
+                    value={manualForm.phone}
+                    onChange={(event) =>
+                      updateManualForm("phone", event.target.value)
+                    }
+                    required
+                  />
+                </Field>
 
-                  <Field label="Link set" htmlFor="manual-dj-set-link">
-                    <input
-                      id="manual-dj-set-link"
-                      type="url"
-                      className={fieldClass}
-                      value={manualForm.setLink}
-                      onChange={(event) =>
-                        updateManualForm("setLink", event.target.value)
-                      }
-                      required
-                    />
-                  </Field>
+                <Field label="Link Instagram" htmlFor="manual-dj-instagram">
+                  <input
+                    id="manual-dj-instagram"
+                    type="url"
+                    className={fieldClass}
+                    value={manualForm.instagram}
+                    onChange={(event) =>
+                      updateManualForm("instagram", event.target.value)
+                    }
+                    placeholder="https://instagram.com/..."
+                    required
+                  />
+                </Field>
 
-                  <Field label="Foto personale" htmlFor="manual-dj-photo">
-                    <input
-                      id="manual-dj-photo"
-                      type="file"
-                      accept="image/png,image/jpeg,image/webp,image/avif"
-                      className={fieldClass}
-                      onChange={(event) =>
-                        setPhotoFile(event.target.files?.[0] || null)
-                      }
-                      required
-                    />
-                    <span className="text-xs text-white/45">
-                      Carica una foto chiara del profilo. Formati supportati:
-                      JPG, PNG, WEBP, AVIF.
-                    </span>
-                  </Field>
+                <Field label="Link set" htmlFor="manual-dj-set-link">
+                  <input
+                    id="manual-dj-set-link"
+                    type="url"
+                    className={fieldClass}
+                    value={manualForm.setLink}
+                    onChange={(event) =>
+                      updateManualForm("setLink", event.target.value)
+                    }
+                    required
+                  />
+                </Field>
 
-                  <Field label="Bio" htmlFor="manual-dj-bio" full>
-                    <textarea
-                      id="manual-dj-bio"
-                      className={`${fieldClass} min-h-32 resize-y`}
-                      value={manualForm.bio}
-                      onChange={(event) =>
-                        updateManualForm("bio", event.target.value)
-                      }
-                    />
-                  </Field>
-                </div>
+                <Field label="Foto personale" htmlFor="manual-dj-photo">
+                  <input
+                    id="manual-dj-photo"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/avif"
+                    className={fieldClass}
+                    onChange={(event) =>
+                      setPhotoFile(event.target.files?.[0] || null)
+                    }
+                    required
+                  />
+                  <span className="text-xs text-white/45">
+                    Carica una foto chiara del profilo. Formati supportati: JPG,
+                    PNG, WEBP, AVIF.
+                  </span>
+                </Field>
+
+                <Field label="Bio" htmlFor="manual-dj-bio" full>
+                  <textarea
+                    id="manual-dj-bio"
+                    className={`${fieldClass} min-h-32 resize-y`}
+                    value={manualForm.bio}
+                    onChange={(event) =>
+                      updateManualForm("bio", event.target.value)
+                    }
+                  />
+                </Field>
+              </div>
 
               <div className="flex flex-wrap gap-3">
                 <button

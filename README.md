@@ -40,7 +40,7 @@ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=
 `SMTP_FROM` e opzionale: se manca, il progetto usa automaticamente `SMTP_USER` come mittente.
 `CONTACT_EMAIL_TO` e opzionale: se manca, i messaggi del form contatti arrivano a `SMTP_USER`.
 
-Se `MONGODB_URI` non e presente, il progetto usa dati demo in memoria.
+Se `MONGODB_URI` Non è presente, il progetto usa dati demo in memoria.
 
 ## Deploy Vercel
 

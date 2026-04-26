@@ -79,7 +79,7 @@ P2. Flusso candidature
 - Eliminazione candidatura
 - Verificare che candidatura evento passato:
   - entri nel roster
-  - non entri nella lineup evento passato
+  - Non èntri nella lineup evento passato
 
 P2. Flusso DJ roster
 - Inserimento DJ manuale

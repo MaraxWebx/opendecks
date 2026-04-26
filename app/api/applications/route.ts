@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
   if (existingApplication) {
     return NextResponse.json(
-      { error: "Esiste gia una candidatura associata a questa email." },
+      { error: "Esiste già una candidatura associata a questa email." },
       { status: 409 }
     );
   }

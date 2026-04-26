@@ -8,51 +8,51 @@ export const membershipHomeCopy = {
 
 export const membershipInfoSections = [
   {
-    title: "Cos'e la Membership Card",
+    title: "Cos'è la Membership Card",
     body:
-      "La Membership Card Open Decks e una card digitale gratuita assegnata alle persone che partecipano al progetto Open Decks Italia. Non e un titolo o una classifica: e uno strumento di partecipazione al circuito e alla community.",
+      "La Membership Card Open Decks è una card digitale gratuita assegnata alle persone che partecipano al progetto Open Decks Italia. Non è un titolo né una classifica: è uno strumento di partecipazione al circuito e alla community.",
   },
   {
-    title: "Chi puo partecipare",
+    title: "Chi può partecipare",
     body:
-      "Open Decks e aperto a chi vuole suonare o esibirsi in pubblico, sia alla prima esperienza sia con un percorso gia consolidato. Il progetto crea uno spazio dove provare, continuare, condividere il proprio sound e incontrare un nuovo pubblico.",
+      "Open Decks è aperto a chi vuole suonare o esibirsi in pubblico, sia alla prima esperienza sia con un percorso già consolidato. Il progetto crea uno spazio dove provare, continuare, condividere il proprio sound e incontrare un nuovo pubblico.",
   },
   {
     title: "Come viene assegnata",
     body:
-      "La card non viene assegnata automaticamente alla prima partecipazione. È un riconoscimento che si conquista nel tempo, attraverso presenza, impegno e contributo reale al progetto. Viene attribuita dallo staff a chi, dopo aver preso parte agli Open Decks o essere entrato tramite selezione interna, dimostra continuità e partecipazione attiva nella community.",
+      "La card non viene assegnata automaticamente alla prima partecipazione. È un riconoscimento che si conquista nel tempo, attraverso presenza, impegno e contributo reale al progetto. Viene attribuita dallo staff a chi, dopo aver preso parte agli Open Decks o dopo essere entrato tramite selezione interna, dimostra continuità e partecipazione attiva nella community.",
   },
   {
     title: "Vantaggi",
     body:
-      "La Membership consente prenotazione anticipata degli slot, accesso alle tappe Open Decks in diverse città, possibilità di essere coinvolti in eventi e showcase e maggiore visibilità all'interno del progetto.",
+      "La Membership consente la prenotazione anticipata degli slot, l'accesso alle tappe Open Decks in diverse città, la possibilità di essere coinvolti in eventi e showcase e una maggiore visibilità all'interno del progetto.",
   },
   {
-    title: "Responsabilita",
+    title: "Responsabilità",
     body:
       "La Membership si basa su rispetto, puntualità e partecipazione. Chi prenota uno slot deve presentarsi, rispettare la durata assegnata e mantenere un comportamento corretto verso staff, pubblico e altri partecipanti.",
   },
   {
-    title: "Continuita",
+    title: "Continuità",
     body:
-      "La card e pensata per chi partecipa al progetto nel tempo. Puo essere rivalutata se un membro interrompe completamente il coinvolgimento, non mantiene presenza nella community o non dimostra piu interesse verso il circuito.",
+      "La card è pensata per chi partecipa al progetto nel tempo. Può essere rivalutata se un membro interrompe completamente il coinvolgimento, non mantiene una presenza attiva nella community o non dimostra più interesse verso il circuito.",
   },
 ];
 
 export const membershipRegulationSections = [
   {
-    title: "1. Cos'e la Membership Card",
+    title: "1. Cos'è la Membership Card",
     body:
-      "La Membership Card Open Decks e una card digitale gratuita assegnata alle persone che partecipano al progetto Open Decks Italia. Rappresenta l'accesso al circuito degli eventi e alla community. Non e un titolo o una classificazione, ma uno strumento di partecipazione al progetto.",
+      "La Membership Card Open Decks è una card digitale gratuita assegnata alle persone che partecipano al progetto Open Decks Italia. Rappresenta l'accesso al circuito degli eventi e alla community. Non è un titolo né una classifica, ma uno strumento di partecipazione al progetto.",
   },
   {
-    title: "2. Chi puo partecipare",
+    title: "2. Chi può partecipare",
     body:
-      "Open Decks e uno spazio aperto a chiunque voglia suonare o esibirsi in pubblico, sia alla prima esperienza che con esperienza gia consolidata.",
+      "Open Decks è uno spazio aperto a chiunque voglia suonare o esibirsi in pubblico, sia alla prima esperienza sia con un percorso già consolidato.",
     items: [
-      "si puo suonare per la prima volta",
-      "si puo continuare un percorso gia iniziato",
-      "si puo far conoscere il proprio sound a un nuovo pubblico",
+      "si può suonare per la prima volta",
+      "si può continuare un percorso già iniziato",
+      "si può far conoscere il proprio sound a un nuovo pubblico",
     ],
   },
   {
@@ -60,7 +60,7 @@ export const membershipRegulationSections = [
     body: "La Membership Card viene assegnata dallo staff Open Decks a chi:",
     items: [
       "ha partecipato ad almeno un evento Open Decks",
-      "e stato inserito nel circuito tramite selezione dello staff",
+      "è stato inserito nel circuito tramite selezione dello staff",
       "fa parte della community attiva del progetto",
     ],
   },
@@ -69,15 +69,15 @@ export const membershipRegulationSections = [
     body: "La Membership consente:",
     items: [
       "prenotazione anticipata degli slot",
-      "accesso alle tappe Open Decks in diverse citta oltre Napoli",
-      "possibilita di essere coinvolti in eventi e showcase",
-      "maggiore visibilita all'interno del progetto",
+      "accesso alle tappe Open Decks in diverse città oltre Napoli",
+      "possibilità di essere coinvolti in eventi e showcase",
+      "maggiore visibilità all'interno del progetto",
     ],
   },
   {
     title: "5. Regole di partecipazione",
     body:
-      "La Membership si basa sul rispetto e sulla partecipazione attiva. E richiesto di:",
+      "La Membership si basa sul rispetto e sulla partecipazione attiva. È richiesto di:",
     items: [
       "presentarsi puntualmente agli slot prenotati",
       "rispettare la durata assegnata",
@@ -86,32 +86,32 @@ export const membershipRegulationSections = [
     ],
   },
   {
-    title: "6. Partecipazione e continuita",
+    title: "6. Partecipazione e continuità",
     body:
-      "La Membership e pensata per chi partecipa al progetto nel tempo. Puo essere rivalutata quando un membro:",
+      "La Membership è pensata per chi partecipa al progetto nel tempo. Può essere rivalutata quando un membro:",
     items: [
       "partecipa a un evento e poi interrompe completamente il coinvolgimento nel progetto",
       "non mantiene alcuna presenza nella community",
-      "non dimostra piu interesse a far parte del circuito Open Decks",
+      "non dimostra più interesse a far parte del circuito Open Decks",
     ],
     note:
-      "Open Decks si basa su una community attiva: la Membership e riservata a chi continua a farne parte, nei propri tempi e modi.",
+      "Open Decks si basa su una community attiva: la Membership è riservata a chi continua a farne parte, nei propri tempi e modi.",
   },
   {
     title: "7. Assenze e comportamento",
     body:
-      "No-show, cioe assenza senza comunicazione, comporta la rimozione immediata della Membership Card. Violazioni delle regole o mancanza di rispetto verso staff, pubblico o altri partecipanti possono comportare la rimozione della Membership.",
+      "No-show, cioè assenza senza comunicazione, comporta la rimozione immediata della Membership Card. Violazioni delle regole o mancanza di rispetto verso staff, pubblico o altri partecipanti possono comportare la rimozione della Membership.",
     note:
-      "La Membership e basata sulla responsabilita e sul rispetto del progetto e della community.",
+      "La Membership è basata sulla responsabilità e sul rispetto del progetto e della community.",
   },
   {
     title: "8. Accesso agli eventi",
     body:
-      "La Membership consente l'accesso al circuito Open Decks in diverse citta italiane, in base all'organizzazione delle singole tappe. Tra le citta attualmente attive: Roma e Milano.",
+      "La Membership consente l'accesso al circuito Open Decks in diverse città italiane, in base all'organizzazione delle singole tappe. Tra le città attualmente attive: Roma e Milano.",
   },
   {
     title: "9. Visione del progetto",
     body:
-      "Open Decks e un progetto aperto che unisce persone attraverso la musica e la condivisione dei propri set in contesti reali. L'obiettivo e creare uno spazio dove chiunque possa suonare, esprimersi e farsi conoscere attraverso la pratica e la presenza diretta negli eventi.",
+      "Open Decks è un progetto aperto che unisce persone attraverso la musica e la condivisione dei propri set in contesti reali. L'obiettivo è creare uno spazio dove chiunque possa suonare, esprimersi e farsi conoscere attraverso la pratica e la presenza diretta negli eventi.",
   },
 ];

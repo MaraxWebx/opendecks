@@ -17,28 +17,160 @@ const provincePositions: Array<{
   top: string;
   left: string;
 }> = [
-  { label: "TO", displayName: "Torino", keywords: [" torino ", " to "], top: "23%", left: "29%" },
-  { label: "MI", displayName: "Milano", keywords: [" milano ", " mi "], top: "20%", left: "34%" },
-  { label: "BG", displayName: "Bergamo", keywords: [" bergamo ", " bg "], top: "22%", left: "37%" },
-  { label: "BS", displayName: "Brescia", keywords: [" brescia ", " bs "], top: "22%", left: "39%" },
-  { label: "VR", displayName: "Verona", keywords: [" verona ", " vr "], top: "23%", left: "42%" },
-  { label: "PD", displayName: "Padova", keywords: [" padova ", " pd "], top: "23%", left: "45%" },
-  { label: "VE", displayName: "Venezia", keywords: [" venezia ", " ve "], top: "22%", left: "48%" },
-  { label: "BO", displayName: "Bologna", keywords: [" bologna ", " bo "], top: "31%", left: "40%" },
-  { label: "FI", displayName: "Firenze", keywords: [" firenze ", " fi "], top: "39%", left: "39%" },
-  { label: "GE", displayName: "Genova", keywords: [" genova ", " ge "], top: "29%", left: "30%" },
-  { label: "AN", displayName: "Ancona", keywords: [" ancona ", " an "], top: "38%", left: "49%" },
-  { label: "PG", displayName: "Perugia", keywords: [" perugia ", " pg "], top: "44%", left: "45%" },
-  { label: "RM", displayName: "Roma", keywords: [" roma ", " rm "], top: "50%", left: "46%" },
-  { label: "NA", displayName: "Napoli", keywords: [" napoli ", " napli ", " na "], top: "65%", left: "50%" },
-  { label: "BA", displayName: "Bari", keywords: [" bari ", " ba "], top: "64%", left: "64%" },
-  { label: "TA", displayName: "Taranto", keywords: [" taranto ", " ta "], top: "72%", left: "60%" },
-  { label: "LE", displayName: "Lecce", keywords: [" lecce ", " le "], top: "79%", left: "61%" },
-  { label: "CZ", displayName: "Catanzaro", keywords: [" catanzaro ", " cz "], top: "81%", left: "54%" },
-  { label: "RC", displayName: "Reggio Calabria", keywords: [" reggio calabria ", " rc "], top: "86%", left: "53%" },
-  { label: "PA", displayName: "Palermo", keywords: [" palermo ", " pa "], top: "90%", left: "38%" },
-  { label: "CT", displayName: "Catania", keywords: [" catania ", " ct "], top: "88%", left: "47%" },
-  { label: "CA", displayName: "Cagliari", keywords: [" cagliari ", " ca "], top: "74%", left: "26%" },
+  {
+    label: "TO",
+    displayName: "Torino",
+    keywords: [" torino ", " to "],
+    top: "23%",
+    left: "29%",
+  },
+  {
+    label: "MI",
+    displayName: "Milano",
+    keywords: [" milano ", " mi "],
+    top: "20%",
+    left: "34%",
+  },
+  {
+    label: "BG",
+    displayName: "Bergamo",
+    keywords: [" bergamo ", " bg "],
+    top: "22%",
+    left: "37%",
+  },
+  {
+    label: "BS",
+    displayName: "Brescia",
+    keywords: [" brescia ", " bs "],
+    top: "22%",
+    left: "39%",
+  },
+  {
+    label: "VR",
+    displayName: "Verona",
+    keywords: [" verona ", " vr "],
+    top: "23%",
+    left: "42%",
+  },
+  {
+    label: "PD",
+    displayName: "Padova",
+    keywords: [" padova ", " pd "],
+    top: "23%",
+    left: "45%",
+  },
+  {
+    label: "VE",
+    displayName: "Venezia",
+    keywords: [" venezia ", " ve "],
+    top: "22%",
+    left: "48%",
+  },
+  {
+    label: "BO",
+    displayName: "Bologna",
+    keywords: [" bologna ", " bo "],
+    top: "31%",
+    left: "40%",
+  },
+  {
+    label: "FI",
+    displayName: "Firenze",
+    keywords: [" firenze ", " fi "],
+    top: "39%",
+    left: "39%",
+  },
+  {
+    label: "GE",
+    displayName: "Genova",
+    keywords: [" genova ", " ge "],
+    top: "29%",
+    left: "30%",
+  },
+  {
+    label: "AN",
+    displayName: "Ancona",
+    keywords: [" ancona ", " an "],
+    top: "38%",
+    left: "49%",
+  },
+  {
+    label: "PG",
+    displayName: "Perugia",
+    keywords: [" perugia ", " pg "],
+    top: "44%",
+    left: "45%",
+  },
+  {
+    label: "RM",
+    displayName: "Roma",
+    keywords: [" roma ", " rm "],
+    top: "50%",
+    left: "46%",
+  },
+  {
+    label: "NA",
+    displayName: "Napoli",
+    keywords: [" napoli ", " napli ", " na "],
+    top: "65%",
+    left: "50%",
+  },
+  {
+    label: "BA",
+    displayName: "Bari",
+    keywords: [" bari ", " ba "],
+    top: "64%",
+    left: "64%",
+  },
+  {
+    label: "TA",
+    displayName: "Taranto",
+    keywords: [" taranto ", " ta "],
+    top: "72%",
+    left: "60%",
+  },
+  {
+    label: "LE",
+    displayName: "Lecce",
+    keywords: [" lecce ", " le "],
+    top: "79%",
+    left: "61%",
+  },
+  {
+    label: "CZ",
+    displayName: "Catanzaro",
+    keywords: [" catanzaro ", " cz "],
+    top: "81%",
+    left: "54%",
+  },
+  {
+    label: "RC",
+    displayName: "Reggio Calabria",
+    keywords: [" reggio calabria ", " rc "],
+    top: "86%",
+    left: "53%",
+  },
+  {
+    label: "PA",
+    displayName: "Palermo",
+    keywords: [" palermo ", " pa "],
+    top: "90%",
+    left: "38%",
+  },
+  {
+    label: "CT",
+    displayName: "Catania",
+    keywords: [" catania ", " ct "],
+    top: "88%",
+    left: "47%",
+  },
+  {
+    label: "CA",
+    displayName: "Cagliari",
+    keywords: [" cagliari ", " ca "],
+    top: "74%",
+    left: "26%",
+  },
 ];
 
 const fallbackPositions = [
@@ -79,7 +211,7 @@ export default async function ProjectPage() {
         <SectionHeading
           eyebrow="Manifesto"
           title="Non solo una serata. Una rete."
-          description="La visione e semplice: selezionare, documentare, connettere. OpenDecks non deve produrre solo intrattenimento, ma movimento culturale reale."
+          description="La visione è semplice: selezionare, documentare, connettere. OpenDecks non deve produrre solo intrattenimento, ma movimento culturale reale."
         />
         <div className="grid gap-6 md:grid-cols-2">
           {manifestoParagraphs.map((paragraph) => (
@@ -97,7 +229,7 @@ export default async function ProjectPage() {
         <SectionHeading
           eyebrow="Membership Card"
           title="Accesso alla community attiva Open Decks."
-          description="La card digitale non e una classifica: e lo strumento con cui il progetto riconosce chi partecipa, resta in contatto con la rete e puo essere coinvolto nelle prossime tappe."
+          description="La card digitale non è una classifica: è lo strumento con cui il progetto riconosce chi partecipa, resta in contatto con la rete e può essere coinvolto nelle prossime tappe."
         />
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {membershipInfoSections.map((section) => (
@@ -123,7 +255,7 @@ export default async function ProjectPage() {
         <SectionHeading
           eyebrow="Hub"
           title="Cosa significa essere un hub"
-          description="Un hub e un punto centrale di connessione. Non e il posto dove si suona e si va via: e il punto in cui persone, opportunita, contenuti e collaborazioni iniziano a muoversi da sole."
+          description="Un hub è un punto centrale di connessione. Non è il posto dove si suona e si va via: è il punto in cui persone, opportunità, contenuti e collaborazioni iniziano a muoversi da sole."
         />
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {hubPillars.map((pillar) => (
@@ -149,7 +281,7 @@ export default async function ProjectPage() {
         <SectionHeading
           eyebrow="Mappa"
           title="Una rete che gira, si espande e si connette."
-          description="Invece di una cartina rigida, qui la rete appare come un globo editoriale: una scena che si muove, si allarga e comincia a lasciare tracce in piu territori."
+          description="Invece di una cartina rigida, qui la rete appare come un globo editoriale: una scena che si muove, si allarga e comincia a lasciare tracce in più territori."
         />
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_360px]">
@@ -347,7 +479,9 @@ function buildPlaces(events: Awaited<ReturnType<typeof getEvents>>) {
     });
   }
 
-  return [...grouped.values()].sort((a, b) => a.name.localeCompare(b.name, "it"));
+  return [...grouped.values()].sort((a, b) =>
+    a.name.localeCompare(b.name, "it"),
+  );
 }
 
 function resolveProvince(name: string, address: string) {

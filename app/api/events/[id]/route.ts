@@ -79,7 +79,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       return NextResponse.json(
         {
           error:
-            "Esiste gia un evento con questo titolo. Modifica il titolo per generare uno slug diverso.",
+            "Esiste già un evento con questo titolo. Modifica il titolo per generare uno slug diverso.",
           field: "title",
           code: "duplicate_event_slug",
         },

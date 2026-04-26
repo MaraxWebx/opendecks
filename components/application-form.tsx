@@ -103,7 +103,9 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
     }
 
     const localMatch =
-      cityOptions.find((municipality) => municipality.label === normalizedLabel) || null;
+      cityOptions.find(
+        (municipality) => municipality.label === normalizedLabel,
+      ) || null;
 
     if (localMatch) {
       applyMunicipalitySelection(localMatch);
@@ -201,10 +203,11 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
       }
 
       if (!form.province) {
-        const resolvedMunicipality = await resolveMunicipalityFromQuery(cityQuery);
+        const resolvedMunicipality =
+          await resolveMunicipalityFromQuery(cityQuery);
 
         if (!resolvedMunicipality) {
-          throw new Error("Seleziona una citta valida dall'autocomplete.");
+          throw new Error("Seleziona una città valida dall'autocomplete.");
         }
       }
 

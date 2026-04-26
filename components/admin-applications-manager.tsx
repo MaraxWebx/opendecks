@@ -210,7 +210,7 @@ export function AdminApplicationsManager({
                   className={ui.form.field}
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Nome, evento, citta, Instagram..."
+                  placeholder="Nome, evento, città, Instagram..."
                 />
               </div>
               <div className="grid gap-2">
@@ -294,7 +294,10 @@ export function AdminApplicationsManager({
                         {application.name}
                       </h3>
                       <p className={`${ui.text.body} break-words`}>
-                        {formatCityProvince(application.city, application.province)}{" "}
+                        {formatCityProvince(
+                          application.city,
+                          application.province,
+                        )}{" "}
                         / {application.instagram}
                       </p>
                       <p className="break-words text-sm text-white/55">
