@@ -50,6 +50,8 @@ type SelectedDjFormState = {
   bio: string;
 };
 
+type MembershipFilter = "all" | "enabled" | "disabled";
+
 const fieldClass =
   "min-w-0 w-full rounded-lg border border-[#E31F29]/20 bg-white/[0.04] px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[#E31F29]/60";
 
@@ -62,6 +64,8 @@ export function AdminDjRosterManager({
   const createPanelRef = useRef<HTMLDivElement | null>(null);
   const [roster, setRoster] = useState(initialRoster);
   const [query, setQuery] = useState("");
+  const [membershipFilter, setMembershipFilter] =
+    useState<MembershipFilter>("all");
   const [selectedDj, setSelectedDj] = useState<DjRosterRecord | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
@@ -110,6 +114,14 @@ export function AdminDjRosterManager({
     const normalizedQuery = query.trim().toLowerCase();
 
     return roster.filter((item) => {
+      if (membershipFilter === "enabled" && !item.membershipCardEnabled) {
+        return false;
+      }
+
+      if (membershipFilter === "disabled" && item.membershipCardEnabled) {
+        return false;
+      }
+
       if (!normalizedQuery) {
         return true;
       }
@@ -128,7 +140,7 @@ export function AdminDjRosterManager({
         .toLowerCase()
         .includes(normalizedQuery);
     });
-  }, [query, roster]);
+  }, [query, roster, membershipFilter]);
 
   const selectedDjHistory = useMemo(() => {
     if (!selectedDj) {
@@ -645,19 +657,42 @@ export function AdminDjRosterManager({
       {!selectedDj && !isCreateOpen ? (
         <>
           <div className="grid gap-4 px-1 sm:px-6">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div className="grid flex-1 gap-2">
-                <label htmlFor="dj-roster-query" className={ui.form.label}>
-                  Cerca DJ
-                </label>
-                <input
-                  id="dj-roster-query"
-                  className={ui.form.field}
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Nome, città, email, telefono, evento..."
-                />
+            <div className="grid gap-3 md:grid-cols-[1fr_auto]">
+              <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_240px]">
+                <div className="grid gap-2">
+                  <label htmlFor="dj-roster-query" className={ui.form.label}>
+                    Cerca DJ
+                  </label>
+                  <input
+                    id="dj-roster-query"
+                    className={ui.form.field}
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    placeholder="Nome, città, email, telefono, evento..."
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <label htmlFor="membership-filter" className={ui.form.label}>
+                    Membership
+                  </label>
+                  <select
+                    id="membership-filter"
+                    className={ui.form.select}
+                    value={membershipFilter}
+                    onChange={(event) =>
+                      setMembershipFilter(
+                        event.target.value as MembershipFilter,
+                      )
+                    }
+                  >
+                    <option value="all">Tutti</option>
+                    <option value="enabled">Solo membership attive</option>
+                    <option value="disabled">Senza membership</option>
+                  </select>
+                </div>
               </div>
+
               <button
                 type="button"
                 className={ui.action.primary}
@@ -737,12 +772,12 @@ export function AdminDjRosterManager({
                           <h3 className="text-xl font-semibold text-[#f7f3ee] transition group-hover:text-white">
                             {entry.name}
                           </h3>
-                          {/*   <p className="truncate text-sm text-white/52">
+                          <p className="truncate text-sm text-white/52">
                             {entry.email}
                           </p>
                           <p className="truncate text-sm text-white/46">
                             {entry.instagram}
-                          </p> */}
+                          </p>
                           {entry.membershipCardId ? (
                             <p className="truncate text-xs uppercase tracking-[0.16em] text-white/34">
                               {entry.membershipCardId}

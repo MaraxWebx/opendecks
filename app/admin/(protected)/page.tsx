@@ -52,10 +52,7 @@ export default async function AdminPage() {
   const djByRegion = buildCounts(
     djRoster.map((entry) => entry.region || "Non definita"),
   );
-  const recentPerformance = buildRecentEventPerformance(
-    events,
-    applications,
-  );
+  const recentPerformance = buildRecentEventPerformance(events, applications);
 
   return (
     <div className="min-w-0">
@@ -154,9 +151,9 @@ export default async function AdminPage() {
                     <h3 className="truncate text-lg font-semibold text-[#f7f3ee] transition group-hover:text-white">
                       {application.name}
                     </h3>
-                    <p className="truncate text-sm text-white/68">
+                    {/*    <p className="truncate text-sm text-white/68">
                       {formatCityProvince(application.city, application.province)}
-                    </p>
+                    </p> */}
                     <p className="truncate text-sm text-white/52">
                       {application.email}
                     </p>

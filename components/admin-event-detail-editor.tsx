@@ -331,8 +331,8 @@ export function AdminEventDetailEditor({
                 <DetailItem
                   label="Location"
                   value={
-                    locations.find((item) => item.id === form.locationId)?.name ||
-                    "Non selezionata"
+                    locations.find((item) => item.id === form.locationId)
+                      ?.name || "Non selezionata"
                   }
                 />
                 <DetailItem
@@ -368,7 +368,9 @@ export function AdminEventDetailEditor({
               <div className={ui.surface.card}>
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <div>
-                    <span className={ui.form.label}>Statistiche candidature</span>
+                    <span className={ui.form.label}>
+                      Statistiche candidature
+                    </span>
                     <p className="mt-2 text-sm text-white/62">
                       Nuove, in review e approvate relative a questo evento.
                     </p>
@@ -454,15 +456,19 @@ export function AdminEventDetailEditor({
                   src={
                     imageFile ? URL.createObjectURL(imageFile) : form.coverImage
                   }
-                  alt={buildEventCoverAlt(form.title, form.locationId, locations)}
+                  alt={buildEventCoverAlt(
+                    form.title,
+                    form.locationId,
+                    locations,
+                  )}
                   className="w-full object-cover"
                 />
               </div>
               <div className="mt-4 grid gap-2 text-sm text-white/74">
                 <p>
                   <strong className="text-white">Location:</strong>{" "}
-                  {locations.find((item) => item.id === form.locationId)?.name ||
-                    "Non selezionata"}
+                  {locations.find((item) => item.id === form.locationId)
+                    ?.name || "Non selezionata"}
                 </p>
                 <p>
                   <strong className="text-white">Indirizzo:</strong>{" "}
@@ -471,7 +477,8 @@ export function AdminEventDetailEditor({
                 </p>
                 <p>
                   <strong className="text-white">Data:</strong>{" "}
-                  {new Date(form.date).toLocaleDateString("it-IT")} / {form.time}
+                  {new Date(form.date).toLocaleDateString("it-IT")} /{" "}
+                  {form.time}
                 </p>
                 <p>
                   <strong className="text-white">Line up pubblica:</strong>{" "}
@@ -489,7 +496,9 @@ export function AdminEventDetailEditor({
                       <button
                         key={record.id}
                         type="button"
-                        onClick={() => router.push(`/admin/dj?djId=${record.id}`)}
+                        onClick={() =>
+                          router.push(`/admin/dj?djId=${record.id}`)
+                        }
                         className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/12 px-2.5 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-200 transition hover:border-emerald-400/40 hover:bg-emerald-500/18"
                       >
                         <span className="relative h-6 w-6 shrink-0 overflow-hidden rounded-full border border-white/10 bg-black/25">
@@ -539,7 +548,8 @@ export function AdminEventDetailEditor({
                       {form.title}
                     </h2>
                     <p className="text-sm leading-7 text-white/68">
-                      Modifica dati, line up e pubblicazione nello stesso layout admin.
+                      Modifica dati, line up e pubblicazione nello stesso layout
+                      admin.
                     </p>
                   </div>
                 </div>
@@ -674,7 +684,11 @@ export function AdminEventDetailEditor({
                     </Field>
                   </div>
                   <div className="grid gap-4">
-                    <Field label="Descrizione" htmlFor="detail-description" full>
+                    <Field
+                      label="Descrizione"
+                      htmlFor="detail-description"
+                      full
+                    >
                       <textarea
                         id="detail-description"
                         className={`${ui.form.field} min-h-40 resize-y`}
@@ -704,7 +718,9 @@ export function AdminEventDetailEditor({
                         <TagMultiSelect
                           tags={tags}
                           value={form.tagIds}
-                          onChange={(nextValue) => updateField("tagIds", nextValue)}
+                          onChange={(nextValue) =>
+                            updateField("tagIds", nextValue)
+                          }
                           onTagsChange={setTags}
                         />
                       </div>
@@ -730,17 +746,23 @@ export function AdminEventDetailEditor({
                 <div className="mt-4 overflow-hidden rounded-lg border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)]">
                   <img
                     src={
-                      imageFile ? URL.createObjectURL(imageFile) : form.coverImage
+                      imageFile
+                        ? URL.createObjectURL(imageFile)
+                        : form.coverImage
                     }
-                    alt={buildEventCoverAlt(form.title, form.locationId, locations)}
+                    alt={buildEventCoverAlt(
+                      form.title,
+                      form.locationId,
+                      locations,
+                    )}
                     className="w-full object-cover"
                   />
                 </div>
                 <div className="mt-4 grid gap-2 text-sm text-white/74">
                   <p>
                     <strong className="text-white">Location:</strong>{" "}
-                    {locations.find((item) => item.id === form.locationId)?.name ||
-                      "Non selezionata"}
+                    {locations.find((item) => item.id === form.locationId)
+                      ?.name || "Non selezionata"}
                   </p>
                   <p>
                     <strong className="text-white">Indirizzo:</strong>{" "}
@@ -749,7 +771,8 @@ export function AdminEventDetailEditor({
                   </p>
                   <p>
                     <strong className="text-white">Data:</strong>{" "}
-                    {new Date(form.date).toLocaleDateString("it-IT")} / {form.time}
+                    {new Date(form.date).toLocaleDateString("it-IT")} /{" "}
+                    {form.time}
                   </p>
                   <p>
                     <strong className="text-white">Line up pubblica:</strong>{" "}
@@ -767,7 +790,9 @@ export function AdminEventDetailEditor({
                         <button
                           key={record.id}
                           type="button"
-                          onClick={() => router.push(`/admin/dj?djId=${record.id}`)}
+                          onClick={() =>
+                            router.push(`/admin/dj?djId=${record.id}`)
+                          }
                           className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/12 px-2.5 py-1.5 text-xs uppercase tracking-[0.12em] text-emerald-200 transition hover:border-emerald-400/40 hover:bg-emerald-500/18"
                         >
                           <span className="relative h-6 w-6 shrink-0 overflow-hidden rounded-full border border-white/10 bg-black/25">
