@@ -3,10 +3,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { createContactSubmission } from "@/lib/data";
 import { sendContactEmail } from "@/lib/email";
 import { buildPrivacyConsentRecord } from "@/lib/privacy";
+import { applyRateLimit, getClientIp } from "@/lib/rate-limit";
 import { verifyRecaptchaToken } from "@/lib/recaptcha";
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request.headers);
+    const rateLimitResponse = applyRateLimit({
+      key: `contact:${ip}`,
+      limit: 5,
+      windowMs: 10 * 60 * 1000,
+      message: "Troppi invii dal form contatti. Riprova tra qualche minuto.",
+    });
+
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
     const body = await request.json();
 
     const requiredFields = ["name", "email", "message"];
@@ -26,8 +39,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const remoteIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-    const recaptchaValid = await verifyRecaptchaToken(body?.recaptchaToken, remoteIp);
+    const recaptchaValid = await verifyRecaptchaToken(body?.recaptchaToken, ip);
 
     if (!recaptchaValid) {
       return NextResponse.json(

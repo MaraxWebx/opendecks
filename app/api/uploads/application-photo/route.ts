@@ -1,9 +1,23 @@
 import { put } from "@vercel/blob";
 import { NextRequest, NextResponse } from "next/server";
+import { applyRateLimit, getClientIp } from "@/lib/rate-limit";
 
 const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
+const MAX_APPLICATION_PHOTO_SIZE = 5 * 1024 * 1024;
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIp(request.headers);
+  const rateLimitResponse = applyRateLimit({
+    key: `application-photo:${ip}`,
+    limit: 8,
+    windowMs: 10 * 60 * 1000,
+    message: "Troppi upload foto. Riprova tra qualche minuto.",
+  });
+
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
   const formData = await request.formData();
   const file = formData.get("file");
 
@@ -15,6 +29,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: "Formato non supportato. Usa JPG, PNG, WEBP o AVIF." },
       { status: 400 }
+    );
+  }
+
+  if (file.size > MAX_APPLICATION_PHOTO_SIZE) {
+    return NextResponse.json(
+      { error: "La foto supera il limite di 5 MB." },
+      { status: 400 },
     );
   }
 

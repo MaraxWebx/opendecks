@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdminApiAuth } from "@/lib/admin-auth";
 
 const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
+const MAX_EVENT_IMAGE_SIZE = 8 * 1024 * 1024;
 
 export async function POST(request: NextRequest) {
   const unauthorized = await requireAdminApiAuth();
@@ -23,6 +24,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: "Formato non supportato. Usa JPG, PNG, WEBP o AVIF." },
       { status: 400 }
+    );
+  }
+
+  if (file.size > MAX_EVENT_IMAGE_SIZE) {
+    return NextResponse.json(
+      { error: "L'immagine supera il limite di 8 MB." },
+      { status: 400 },
     );
   }
 

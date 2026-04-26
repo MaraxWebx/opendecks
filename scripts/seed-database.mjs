@@ -1,15 +1,24 @@
-import { createHash } from "node:crypto";
+import { randomBytes, scryptSync } from "node:crypto";
 import { MongoClient, ServerApiVersion } from "mongodb";
 import seedData from "../data/seed-data.json" with { type: "json" };
 
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB || "opendecks";
-const adminUsername = process.env.ADMIN_USERNAME || "admin";
-const adminPassword = process.env.ADMIN_PASSWORD || "opendecks123";
-const adminName = process.env.ADMIN_NAME || adminUsername;
+const adminUsername = process.env.ADMIN_USERNAME?.trim();
+const adminPassword = process.env.ADMIN_PASSWORD;
+const adminName = process.env.ADMIN_NAME?.trim() || adminUsername;
+
+function hashPasswordSecure(password, salt = randomBytes(16).toString("hex")) {
+  const derivedKey = scryptSync(password, salt, 64).toString("hex");
+  return `scrypt:${salt}:${derivedKey}`;
+}
 
 if (!uri) {
   throw new Error("MONGODB_URI non configurato.");
+}
+
+if (!adminUsername || !adminPassword) {
+  throw new Error("Configura ADMIN_USERNAME e ADMIN_PASSWORD prima del seed.");
 }
 
 const client = new MongoClient(uri, {
@@ -37,7 +46,7 @@ try {
       {
         username: adminUsername,
         name: adminName,
-        passwordHash: createHash("sha256").update(adminPassword).digest("hex"),
+        passwordHash: hashPasswordSecure(adminPassword),
         role: "admin"
       }
     ],

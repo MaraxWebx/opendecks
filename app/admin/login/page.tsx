@@ -62,9 +62,6 @@ export default async function AdminLoginPage({
                 Entra
               </button>
             </div>
-            <p className={ui.text.muted}>
-              Credenziali di default in sviluppo: admin-opendecks123
-            </p>
             {error ? (
               <p className="text-sm text-red-300">Credenziali non valide.</p>
             ) : null}

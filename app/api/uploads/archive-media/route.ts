@@ -13,6 +13,7 @@ const allowedTypes = new Set([
   "video/webm",
   "video/quicktime"
 ]);
+const MAX_ARCHIVE_MEDIA_SIZE = 25 * 1024 * 1024;
 
 export async function POST(request: NextRequest) {
   const unauthorized = await requireAdminApiAuth();
@@ -32,6 +33,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: "Formato non supportato. Usa immagini, gif o video compatibili." },
       { status: 400 }
+    );
+  }
+
+  if (file.size > MAX_ARCHIVE_MEDIA_SIZE) {
+    return NextResponse.json(
+      { error: "Il file supera il limite di 25 MB." },
+      { status: 400 },
     );
   }
 

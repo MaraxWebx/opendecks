@@ -7,9 +7,22 @@ import {
 } from "@/lib/email";
 import { getItalianProvince, italianProvinceCodes } from "@/lib/italian-provinces";
 import { buildPrivacyConsentRecord } from "@/lib/privacy";
+import { applyRateLimit, getClientIp } from "@/lib/rate-limit";
 import { verifyRecaptchaToken } from "@/lib/recaptcha";
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIp(request.headers);
+  const rateLimitResponse = applyRateLimit({
+    key: `applications:${ip}`,
+    limit: 5,
+    windowMs: 10 * 60 * 1000,
+    message: "Troppi invii candidatura. Riprova tra qualche minuto.",
+  });
+
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
   const body = await request.json();
 
   const requiredFields = ["eventId", "eventTitle", "name", "city", "province", "email", "phone", "photoUrl", "instagram", "setLink"];
@@ -36,8 +49,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const remoteIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  const recaptchaValid = await verifyRecaptchaToken(body?.recaptchaToken, remoteIp);
+  const recaptchaValid = await verifyRecaptchaToken(body?.recaptchaToken, ip);
 
   if (!recaptchaValid) {
     return NextResponse.json(

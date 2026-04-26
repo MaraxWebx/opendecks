@@ -5,13 +5,18 @@ Ultimo aggiornamento
 - Stato generale: NON pronto al rilascio
 - Stato blocchi principali:
   - API admin mutative protette lato server: OK
-  - Build production verificata: OK, ma solo fuori sandbox locale
+  - Sessione admin firmata: OK
+  - Rate limiting minimo su login/form/upload pubblico: OK
+  - Limiti dimensione upload: OK
+  - Security headers base: OK
+  - Build production verificata: OK, anche dopo hardening sicurezza
   - Lint configurato: KO
   - Flussi core verificati manualmente: KO
 
 Esito controlli automatici eseguiti oggi
 - `npx tsc --noEmit`: OK
 - `npm run build`: OK fuori sandbox
+- `npm run build` dopo hardening auth/rate limit/upload/security headers: OK fuori sandbox
 - `npm run build` dentro sandbox: KO per errore ambiente/permessi Windows su `C:\Users\anton`
 - `npm run lint`: KO
   - Next chiede configurazione ESLint interattiva, quindi il progetto non ha ancora un lint CI-safe
@@ -34,9 +39,10 @@ P1. Sicurezza
 - [x] Verificare che `.env.local` non sia tracciato da git
 - [ ] Verificare environment variables reali su Vercel
 - [ ] Rimuovere placeholder e credenziali provvisorie dagli ambienti live
-- [ ] Rimuovere o sostituire fallback credenziali admin di sviluppo in produzione:
+- [x] Rimuovere fallback credenziali admin di sviluppo dal codice:
   - `ADMIN_USERNAME || "admin"`
   - `ADMIN_PASSWORD || "opendecks123"`
+- [ ] Verificare che in produzione siano impostati `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`
 - [ ] Rimuovere o parametrizzare `ADMIN_CC_EMAIL` hardcoded in [lib/email.ts](/c:/Users/anton/works/opendecks/lib/email.ts:9)
 
 P1. Protezione API admin
@@ -83,10 +89,28 @@ P1. Build e rilascio
   - oggi `npm run lint` non è usabile in CI
 
 P1. Auth e protezione admin
+- [x] Sessione admin firmata con cookie HMAC e scadenza
+- [x] Middleware admin allineato alla firma sessione
+- [x] Hash password seed/admin migrato da SHA-256 semplice a scrypt
 - [ ] Verificare login admin
 - [ ] Verificare logout admin
 - [ ] Verificare redirect corretto se non autenticato
 - [ ] Verificare via test manuale che tutte le API mutative rispondano `401` senza sessione admin
+
+P1. Anti-abuse e hardening
+- [x] Rate limit login admin
+- [x] Rate limit form contatti
+- [x] Rate limit candidature pubbliche
+- [x] Rate limit upload foto candidatura
+- [x] Limite dimensione upload foto candidatura
+- [x] Limite dimensione upload immagini evento
+- [x] Limite dimensione upload media archive
+- [x] Security headers base:
+  - `Referrer-Policy`
+  - `X-Content-Type-Options`
+  - `X-Frame-Options`
+  - `Permissions-Policy`
+  - `Strict-Transport-Security`
 
 P1. Privacy, cookie e analytics
 - [x] Banner cookie con categoria analytics separata
