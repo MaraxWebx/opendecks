@@ -18,6 +18,7 @@ declare global {
 }
 
 const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
+const RECAPTCHA_TIMEOUT_MS = 20_000;
 
 function loadRecaptchaScript() {
   if (typeof window === "undefined") {
@@ -39,7 +40,9 @@ function loadRecaptchaScript() {
       );
 
       if (existingScript) {
-        existingScript.addEventListener("load", () => resolve(), { once: true });
+        existingScript.addEventListener("load", () => resolve(), {
+          once: true,
+        });
         existingScript.addEventListener(
           "error",
           () => reject(new Error("Script reCAPTCHA non caricato.")),
@@ -53,7 +56,8 @@ function loadRecaptchaScript() {
       script.async = true;
       script.defer = true;
       script.onload = () => resolve();
-      script.onerror = () => reject(new Error("Script reCAPTCHA non caricato."));
+      script.onerror = () =>
+        reject(new Error("Script reCAPTCHA non caricato."));
       document.head.appendChild(script);
     },
   );
@@ -68,7 +72,27 @@ export function useInvisibleRecaptcha() {
     resolve: (token: string) => void;
     reject: (error: Error) => void;
   } | null>(null);
-  const [isReady, setIsReady] = useState(!siteKey && process.env.NODE_ENV !== "production");
+  const timeoutRef = useRef<number | null>(null);
+  const [isReady, setIsReady] = useState(
+    !siteKey && process.env.NODE_ENV !== "production",
+  );
+
+  function clearPendingExecution(error?: Error) {
+    if (timeoutRef.current !== null) {
+      window.clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
+    if (error) {
+      resolverRef.current?.reject(error);
+    }
+
+    resolverRef.current = null;
+
+    if (widgetIdRef.current !== null) {
+      window.grecaptcha?.reset(widgetIdRef.current);
+    }
+  }
 
   useEffect(() => {
     if (!siteKey) {
@@ -98,26 +122,19 @@ export function useInvisibleRecaptcha() {
             size: "invisible",
             badge: "bottomright",
             callback: (token: string) => {
-              resolverRef.current?.resolve(token);
-              resolverRef.current = null;
+              const resolver = resolverRef.current;
+              clearPendingExecution();
+              resolver?.resolve(token);
             },
             "expired-callback": () => {
-              resolverRef.current?.reject(
+              clearPendingExecution(
                 new Error("Verifica reCAPTCHA scaduta. Riprova."),
               );
-              resolverRef.current = null;
-              if (widgetIdRef.current !== null) {
-                window.grecaptcha?.reset(widgetIdRef.current);
-              }
             },
             "error-callback": () => {
-              resolverRef.current?.reject(
+              clearPendingExecution(
                 new Error("reCAPTCHA non disponibile. Riprova."),
               );
-              resolverRef.current = null;
-              if (widgetIdRef.current !== null) {
-                window.grecaptcha?.reset(widgetIdRef.current);
-              }
             },
           });
 
@@ -132,6 +149,7 @@ export function useInvisibleRecaptcha() {
 
     return () => {
       active = false;
+      clearPendingExecution();
     };
   }, []);
 
@@ -149,19 +167,29 @@ export function useInvisibleRecaptcha() {
     }
 
     if (resolverRef.current) {
-      throw new Error("Verifica reCAPTCHA già in corso.");
+      clearPendingExecution();
     }
 
     return new Promise<string>((resolve, reject) => {
       resolverRef.current = { resolve, reject };
+      timeoutRef.current = window.setTimeout(() => {
+        clearPendingExecution(
+          new Error("Verifica reCAPTCHA non completata. Riprova."),
+        );
+      }, RECAPTCHA_TIMEOUT_MS);
       window.grecaptcha?.reset(widgetIdRef.current ?? undefined);
       window.grecaptcha?.execute(widgetIdRef.current ?? undefined);
     });
+  }
+
+  function resetRecaptcha() {
+    clearPendingExecution();
   }
 
   return {
     recaptchaContainerRef: containerRef,
     executeRecaptcha,
     isRecaptchaReady: isReady,
+    resetRecaptcha,
   };
 }

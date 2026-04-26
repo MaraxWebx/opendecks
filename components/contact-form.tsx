@@ -26,6 +26,7 @@ const initialState: FormState = {
 export function ContactForm() {
   const [form, setForm] = useState<FormState>(initialState);
   const [status, setStatus] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [sending, setSending] = useState(false);
   const {
     recaptchaContainerRef,
@@ -39,6 +40,12 @@ export function ContactForm() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (submitting || sending) {
+      return;
+    }
+
+    setSubmitting(true);
     setStatus("");
 
     try {
@@ -69,6 +76,7 @@ export function ContactForm() {
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Errore invio messaggio.");
     } finally {
+      setSubmitting(false);
       setSending(false);
     }
   }
@@ -166,10 +174,16 @@ export function ContactForm() {
           </label>
 
           <div className="flex flex-wrap items-center gap-3">
-            <button type="submit" className={ui.action.primary} disabled={sending}>
+            <button
+              type="submit"
+              className={ui.action.primary}
+              disabled={submitting || sending}
+            >
               Invia richiesta
             </button>
-            <span className="text-sm text-white/55">{status}</span>
+            <span className="text-sm text-white/55">
+              {submitting && !sending ? "Verifica sicurezza in corso." : status}
+            </span>
           </div>
           <div ref={recaptchaContainerRef} />
           {!isRecaptchaReady ? (

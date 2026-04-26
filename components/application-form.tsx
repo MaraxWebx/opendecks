@@ -39,6 +39,8 @@ type MunicipalityOption = {
   label: string;
 };
 
+type SubmissionStage = "idle" | "security" | "upload" | "saving";
+
 const initialState: FormState = {
   eventSlug: "",
   name: "",
@@ -58,14 +60,16 @@ const fieldClass =
   "w-full rounded-lg border border-[#E31F29]/20 bg-white/[0.04] px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[#E31F29]/60";
 
 export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
+  const defaultEventSlug = initialSlug || events[0]?.slug || "";
   const [form, setForm] = useState<FormState>({
     ...initialState,
-    eventSlug: initialSlug || events[0]?.slug || "",
+    eventSlug: defaultEventSlug,
   });
   const [cityQuery, setCityQuery] = useState("");
   const [cityOptions, setCityOptions] = useState<MunicipalityOption[]>([]);
   const [cityMenuOpen, setCityMenuOpen] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoInputKey, setPhotoInputKey] = useState(0);
   const [status, setStatus] = useState<{
     type: "idle" | "ok" | "error";
     message: string;
@@ -73,12 +77,26 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
     type: "idle",
     message: "",
   });
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submissionStage, setSubmissionStage] =
+    useState<SubmissionStage>("idle");
   const {
     recaptchaContainerRef,
     executeRecaptcha,
     isRecaptchaReady,
   } = useInvisibleRecaptcha();
+
+  function resetApplicationForm(eventSlug = defaultEventSlug) {
+    setForm({
+      ...initialState,
+      eventSlug,
+    });
+    setCityQuery("");
+    setCityOptions([]);
+    setCityMenuOpen(false);
+    setPhotoFile(null);
+    setPhotoInputKey((current) => current + 1);
+  }
 
   function applyMunicipalitySelection(municipality: MunicipalityOption | null) {
     if (!municipality) {
@@ -198,6 +216,13 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (submitting || submissionStage !== "idle") {
+      return;
+    }
+
+    setSubmitting(true);
+    setSubmissionStage("security");
     setStatus({ type: "idle", message: "" });
 
     try {
@@ -216,9 +241,10 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
         }
       }
 
-      const photoUrl = await uploadPhoto(photoFile);
       const recaptchaToken = await executeRecaptcha();
-      setLoading(true);
+      setSubmissionStage("upload");
+      const photoUrl = await uploadPhoto(photoFile);
+      setSubmissionStage("saving");
 
       const response = await fetch("/api/applications", {
         method: "POST",
@@ -251,24 +277,36 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
         throw new Error(result?.error || "Invio non riuscito.");
       }
 
-      setForm({
-        ...initialState,
-        eventSlug: selectedEvent.slug,
-      });
-      setCityQuery("");
-      setCityMenuOpen(false);
-      setPhotoFile(null);
+      resetApplicationForm(selectedEvent.slug);
       setStatus({ type: "ok", message: "Candidatura inviata correttamente." });
     } catch (error) {
+      resetApplicationForm(form.eventSlug || defaultEventSlug);
       setStatus({
         type: "error",
         message:
           error instanceof Error ? error.message : "Si e verificato un errore.",
       });
     } finally {
-      setLoading(false);
+      setSubmitting(false);
+      setSubmissionStage("idle");
     }
   }
+
+  const loaderContent =
+    submissionStage === "upload"
+      ? {
+          eyebrow: "Caricamento foto",
+          title: "Stiamo preparando i materiali",
+          description:
+            "La foto personale viene caricata e collegata alla candidatura.",
+        }
+      : submissionStage === "saving"
+        ? {
+            eyebrow: applicationFormCopy.loaderEyebrow,
+            title: applicationFormCopy.loaderTitle,
+            description: applicationFormCopy.loaderDescription,
+          }
+        : null;
 
   function updateField<Key extends keyof FormState>(
     key: Key,
@@ -278,6 +316,10 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
       ...current,
       [key]: value,
     }));
+  }
+
+  function restartApplicationFlow() {
+    window.location.href = `/prenota?retry=${Date.now()}`;
   }
 
   return (
@@ -317,13 +359,6 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
             </Link>
           </div>
         </div>
-      ) : loading ? (
-        <GlobalLoader
-          compact
-          eyebrow={applicationFormCopy.loaderEyebrow}
-          title={applicationFormCopy.loaderTitle}
-          description={applicationFormCopy.loaderDescription}
-        />
       ) : status.type === "error" ? (
         <div className="grid gap-6 rounded-xl border border-[#E31F29]/24 bg-[linear-gradient(180deg,rgba(227,31,41,0.1)_0%,rgba(255,255,255,0.03)_100%)] p-6 md:p-8">
           <div className="flex flex-col items-start gap-5">
@@ -352,7 +387,7 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
             <button
               type="button"
               className={ui.action.secondary}
-              onClick={() => setStatus({ type: "idle", message: "" })}
+              onClick={restartApplicationFlow}
             >
               {applicationFormCopy.retryCta}
             </button>
@@ -389,7 +424,7 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
             <button
               type="button"
               className={ui.action.secondary}
-              onClick={() => setStatus({ type: "idle", message: "" })}
+              onClick={restartApplicationFlow}
             >
               {applicationFormCopy.retryCta}
             </button>
@@ -399,7 +434,11 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
           </div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="grid gap-6">
+        <div className="relative">
+          <form
+            onSubmit={handleSubmit}
+            className={submissionStage !== "idle" ? "pointer-events-none grid gap-6 opacity-30" : "grid gap-6"}
+          >
           <div className="grid gap-3">
             <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
               {applicationFormCopy.eyebrow}
@@ -574,6 +613,7 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
                 Foto personale
               </label>
               <input
+                key={photoInputKey}
                 id="photo"
                 type="file"
                 accept="image/png,image/jpeg,image/webp,image/avif"
@@ -627,25 +667,6 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#E31F29] bg-[#E31F29] px-5 py-3 text-sm font-medium text-white transition hover:border-[#c91922] hover:bg-[#c91922]"
-              type="submit"
-              disabled={loading}
-            >
-              {applicationFormCopy.submitCta}
-            </button>
-            <span className="text-sm text-white/60">
-              {applicationFormCopy.requiredFields}
-            </span>
-          </div>
-          <div ref={recaptchaContainerRef} />
-          {!isRecaptchaReady ? (
-            <span className="text-xs text-white/45">
-              Verifica sicurezza in caricamento.
-            </span>
-          ) : null}
-
           <label className="flex items-start gap-3 rounded-lg border border-[#E31F29]/16 bg-white/[0.02] px-4 py-3 text-sm leading-6 text-white/72">
             <input
               type="checkbox"
@@ -668,7 +689,41 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
               .
             </span>
           </label>
-        </form>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#E31F29] bg-[#E31F29] px-5 py-3 text-sm font-medium text-white transition hover:border-[#c91922] hover:bg-[#c91922]"
+              type="submit"
+              disabled={submitting || submissionStage !== "idle"}
+            >
+              {submissionStage === "security"
+                ? "Verifica sicurezza..."
+                : applicationFormCopy.submitCta}
+            </button>
+            <span className="text-sm text-white/60">
+              {applicationFormCopy.requiredFields}
+            </span>
+          </div>
+          <div ref={recaptchaContainerRef} />
+          {!isRecaptchaReady ? (
+            <span className="text-xs text-white/45">
+              Verifica sicurezza in caricamento.
+            </span>
+          ) : null}
+          </form>
+
+          {loaderContent ? (
+            <div className="absolute inset-0 z-10 rounded-xl border border-[#E31F29]/18 bg-black/72 backdrop-blur-sm">
+              <GlobalLoader
+                compact
+                eyebrow={loaderContent.eyebrow}
+                title={loaderContent.title}
+                description={loaderContent.description}
+                className="min-h-full"
+              />
+            </div>
+          ) : null}
+        </div>
       )}
     </div>
   );
