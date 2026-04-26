@@ -23,7 +23,7 @@ export default function PrivacyPolicyPage() {
           <p className="max-w-3xl text-base leading-8 text-white/72">
             Questa pagina descrive in modo sintetico come OpenDecks Italia
             gestisce i dati inviati tramite sito, candidature DJ e richieste di
-            contatto. E una base statica iniziale e andra aggiornata quando
+            contatto. È una base statica iniziale e andrà aggiornata quando
             verranno collegati nuovi servizi esterni.
           </p>
         </div>
@@ -47,11 +47,11 @@ export default function PrivacyPolicyPage() {
           />
           <PolicyBlock
             title="Servizi tecnici utilizzati"
-            content="Il sito utilizza attualmente infrastruttura Vercel, database MongoDB Atlas, Vercel Blob per upload file e SMTP per invio email operative. Eventuali ulteriori servizi come analytics, reCAPTCHA o strumenti marketing verranno aggiunti a questa informativa quando saranno attivati."
+            content="Il sito utilizza attualmente infrastruttura Vercel, database MongoDB Atlas, Vercel Blob per upload file, SMTP per invio email operative e Google Analytics 4 in ambiente di produzione, solo previo consenso dell'utente. Eventuali ulteriori servizi come reCAPTCHA o strumenti marketing verranno aggiunti a questa informativa quando saranno attivati."
           />
           <PolicyBlock
             title="Cookie"
-            content="Attualmente il sito utilizza cookie o strumenti tecnici strettamente necessari al funzionamento. Se verranno attivati servizi di analytics o marketing, il banner e questa pagina saranno aggiornati di conseguenza."
+            content="Il sito utilizza cookie o strumenti tecnici strettamente necessari al funzionamento e, solo in produzione e previo consenso, strumenti analytics per misurare l'utilizzo del sito. Il banner consente di accettare o rifiutare le categorie opzionali."
           />
           <PolicyBlock
             title="Conservazione dei dati"

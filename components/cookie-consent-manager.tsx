@@ -68,7 +68,7 @@ export function CookieConsentManager() {
             consentModal: {
               title: "Cookie e privacy",
               description:
-                "Usiamo cookie tecnici necessari per il funzionamento del sito. Quando attiveremo analytics, reCAPTCHA o altri servizi esterni, potrai gestire qui il consenso. Leggi la <a href=\"/privacy-policy\" class=\"cc__link\">Privacy Policy</a>.",
+                "Usiamo cookie tecnici necessari per il funzionamento del sito. Se acconsenti, possiamo attivare analytics per misurare l'utilizzo del sito. Potrai gestire qui il consenso anche per eventuali futuri servizi esterni. Leggi la <a href=\"/privacy-policy\" class=\"cc__link\">Privacy Policy</a>.",
               acceptAllBtn: "Accetta tutto",
               acceptNecessaryBtn: "Solo necessari",
               showPreferencesBtn: "Gestisci preferenze",
@@ -97,7 +97,7 @@ export function CookieConsentManager() {
                 {
                   title: "Analytics",
                   description:
-                    "Questa categoria verra usata quando collegheremo strumenti statistici come Google Analytics.",
+                    "Questa categoria controlla strumenti statistici come Google Analytics, attivati solo con il tuo consenso.",
                   linkedCategory: "analytics",
                 },
                 {

@@ -4,6 +4,7 @@ import "vanilla-cookieconsent/dist/cookieconsent.css";
 
 import { CookieConsentManager } from "@/components/cookie-consent-manager";
 import { Footer } from "@/components/footer";
+import { GoogleAnalyticsManager } from "@/components/google-analytics-manager";
 import { Header } from "@/components/header";
 import { buildMetadata } from "@/lib/seo";
 
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <main>{children}</main>
           <Footer />
         </div>
+        <GoogleAnalyticsManager />
         <CookieConsentManager />
       </body>
     </html>
