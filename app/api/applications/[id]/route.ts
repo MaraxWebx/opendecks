@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { requireAdminApiAuth } from "@/lib/admin-auth";
-import { deleteApplication, getApplications, getEvents, updateApplication } from "@/lib/data";
+import { deleteApplication, getApplications, getEvents, updateApplication, updateEvent } from "@/lib/data";
 import { sendApplicationApprovedEmail } from "@/lib/email";
 import { ApplicationRecord } from "@/lib/types";
 
@@ -41,6 +41,12 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     const linkedEvent = events.find((event) => event.id === application.eventId) || null;
     const isFutureEvent = linkedEvent?.status === "upcoming";
 
+    // Add the approved DJ to the event's lineup if not already present
+    if (linkedEvent && !linkedEvent.lineupDjIds.includes(application.id)) {
+      const updatedLineupDjIds = [...linkedEvent.lineupDjIds, application.id];
+      await updateEvent(linkedEvent.id, { lineupDjIds: updatedLineupDjIds });
+    }
+
     try {
       await sendApplicationApprovedEmail({
         to: application.email,
@@ -54,6 +60,14 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       });
     } catch (error) {
       console.error("Application approval email failed:", error);
+    }
+  } else if (currentApplication.status === "selected" && application.status !== "selected") {
+    // Remove the DJ from the event's lineup if status changed from selected
+    const events = await getEvents();
+    const linkedEvent = events.find((event) => event.id === application.eventId);
+    if (linkedEvent && linkedEvent.lineupDjIds.includes(application.id)) {
+      const updatedLineupDjIds = linkedEvent.lineupDjIds.filter(id => id !== application.id);
+      await updateEvent(linkedEvent.id, { lineupDjIds: updatedLineupDjIds });
     }
   }
 
