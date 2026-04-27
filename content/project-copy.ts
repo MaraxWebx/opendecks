@@ -11,7 +11,7 @@ export const projectPageCopy = {
 
 export const manifestoParagraphs = [
   "OpenDecks Italia nasce come spazio aperto e cresce come rete culturale itinerante. La base operativa è Napoli, ma la sua natura resta mobile: eventi, call aperte, archivio e connessioni tra città diverse.",
-  "Non costruiamo solo lineup. Costruiamo selezione, memoria, contenuti e opportunità. L'obiettivo è dare continuità alla scena musicale e far emergere talenti con una direzione chiara.",
+  "Non costruiamo solo lineup. Costruiamo selezione, memoria, contenuti e opportunità. L'obiettivo è dare continuità alla scena musicale e far emergere dj e selectors con una direzione chiara.",
 ];
 
 export const hubPillars = [
