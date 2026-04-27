@@ -20,8 +20,6 @@ export async function POST(request: NextRequest) {
       "province",
       "email",
       "phone",
-      "instagram",
-      "setLink",
     ];
     const missingField = requiredFields.find((field) => !body?.[field]);
 

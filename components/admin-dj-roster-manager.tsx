@@ -1113,7 +1113,6 @@ export function AdminDjRosterManager({
                           onChange={(event) =>
                             updateSelectedForm("instagram", event.target.value)
                           }
-                          required
                         />
                       </Field>
 
@@ -1126,7 +1125,6 @@ export function AdminDjRosterManager({
                           onChange={(event) =>
                             updateSelectedForm("setLink", event.target.value)
                           }
-                          required
                         />
                       </Field>
 
@@ -1400,7 +1398,6 @@ export function AdminDjRosterManager({
                       updateManualForm("instagram", event.target.value)
                     }
                     placeholder="https://instagram.com/..."
-                    required
                   />
                 </Field>
 
@@ -1413,7 +1410,6 @@ export function AdminDjRosterManager({
                     onChange={(event) =>
                       updateManualForm("setLink", event.target.value)
                     }
-                    required
                   />
                 </Field>
 

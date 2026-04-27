@@ -24,8 +24,6 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     "province",
     "email",
     "phone",
-    "instagram",
-    "setLink",
   ];
   const missingField = requiredFields.find((field) => !body?.[field]);
 
