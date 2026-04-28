@@ -50,11 +50,26 @@ export function searchItalianMunicipalities(query: string, limit = 12) {
   }
 
   return italianMunicipalities
-    .filter((municipality) => {
+    .map((municipality) => {
       const city = normalizeMunicipalityValue(municipality.city);
       const label = normalizeMunicipalityValue(municipality.label);
-      return city.includes(normalizedQuery) || label.includes(normalizedQuery);
+
+      return {
+        municipality,
+        city,
+        label,
+        score: municipalitySearchScore(city, label, normalizedQuery),
+      };
     })
+    .filter((entry) => entry.score > 0)
+    .sort((left, right) => {
+      if (left.score !== right.score) {
+        return right.score - left.score;
+      }
+
+      return left.city.localeCompare(right.city, "it");
+    })
+    .map((entry) => entry.municipality)
     .slice(0, limit);
 }
 
@@ -87,4 +102,40 @@ function normalizeMunicipalityValue(value: string) {
 
 function safeMunicipalityString(value: string | null | undefined) {
   return typeof value === "string" ? value.trim() : "";
+}
+
+function municipalitySearchScore(
+  city: string,
+  label: string,
+  query: string,
+) {
+  if (city === query) {
+    return 500;
+  }
+
+  if (label === query) {
+    return 450;
+  }
+
+  if (city.startsWith(query)) {
+    return 300;
+  }
+
+  if (label.startsWith(query)) {
+    return 250;
+  }
+
+  if (city.includes(` ${query}`)) {
+    return 150;
+  }
+
+  if (label.includes(` ${query}`)) {
+    return 120;
+  }
+
+  if (city.includes(query) || label.includes(query)) {
+    return 50;
+  }
+
+  return 0;
 }

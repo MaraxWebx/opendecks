@@ -323,9 +323,7 @@ function ShotsStack({ items }: { items: ArchiveRecord[] }) {
 }
 
 function pickRandomArchiveShots(items: ArchiveRecord[], count: number) {
-  return [...items]
-    .sort(() => Math.random() - 0.5)
-    .slice(0, count);
+  return [...items].sort(() => Math.random() - 0.5).slice(0, count);
 }
 
 function SoundCloudIcon() {
