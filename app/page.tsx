@@ -5,15 +5,9 @@ import { membershipHomeCopy } from "@/content/membership-copy";
 import { brandClaim, homeCopy } from "@/content/site-copy";
 import { HomeEventsCarousel } from "@/components/home-events-carousel";
 import { HomeHeroVideo } from "@/components/home-hero-video";
-import { getEvents, getUpcomingEvent } from "@/lib/data";
+import { getArchiveEntries, getEvents, getUpcomingEvent } from "@/lib/data";
 import { buildMetadata } from "@/lib/seo";
-
-const homeShots = [
-  "/img/home/shots/shot-1.jpeg",
-  "/img/home/shots/shot-2.jpg",
-  "/img/home/shots/shot-3.jpg",
-  "/img/home/shots/shot-4.jpg",
-];
+import { ArchiveRecord } from "@/lib/types";
 
 export const metadata: Metadata = buildMetadata({
   title: homeCopy.seoTitle,
@@ -22,10 +16,12 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default async function HomePage() {
-  const [nextEvent, events] = await Promise.all([
+  const [nextEvent, events, archive] = await Promise.all([
     getUpcomingEvent(),
     getEvents(),
+    getArchiveEntries(),
   ]);
+  const homeShots = pickRandomArchiveShots(archive, 4);
 
   return (
     <div className="overflow-x-hidden bg-[#050505] text-[#f7f3ee]">
@@ -33,7 +29,7 @@ export default async function HomePage() {
         <div className="relative w-full overflow-hidden bg-[#101010]">
           <HomeHeroVideo
             className="h-[82vh] min-h-[32rem] w-full object-cover brightness-[0.38] contrast-105 saturate-[0.82]"
-            src="/video/home-banner.mp4"
+            src="/video/OpendecksVideo.webm"
           />
           <div className="absolute inset-0 grid place-items-center px-6 text-center">
             <div className="grid justify-items-center gap-5">
@@ -186,7 +182,7 @@ export default async function HomePage() {
           </div>
 
           <div className="grid gap-4 p-4 md:grid-cols-[minmax(0,520px)_minmax(0,1fr)] md:items-center md:gap-8 md:p-6">
-            <ShotsStack />
+            <ShotsStack items={homeShots} />
 
             <div className="grid gap-4">
               <span className="text-xs uppercase tracking-[0.24em] text-[#E31F29]">
@@ -288,32 +284,48 @@ function MembershipCardPreview() {
   );
 }
 
-function ShotsStack() {
+function ShotsStack({ items }: { items: ArchiveRecord[] }) {
+  const offsets = [
+    "left-0 top-0 rotate-[-8deg]",
+    "left-5 top-2 rotate-[-3deg]",
+    "left-10 top-4 rotate-[4deg]",
+    "left-14 top-7 rotate-[8deg]",
+  ];
+
   return (
     <div className="relative mx-auto aspect-[4/3] w-full max-w-[540px]">
-      {homeShots.map((src, index) => {
-        const offsets = [
-          "left-0 top-0 rotate-[-8deg]",
-          "left-5 top-2 rotate-[-3deg]",
-          "left-10 top-4 rotate-[4deg]",
-          "left-14 top-7 rotate-[8deg]",
-        ];
-
-        return (
-          <div
-            key={src}
-            className={`absolute h-[88%] w-[74%] overflow-hidden rounded-xl bg-[#111] shadow-[0_18px_50px_rgba(0,0,0,0.28)] ${offsets[index]}`}
-          >
+      {items.map((item, index) => (
+        <div
+          key={item.id}
+          className={`absolute h-[88%] w-[74%] overflow-hidden rounded-xl bg-[#111] shadow-[0_18px_50px_rgba(0,0,0,0.28)] ${offsets[index] || offsets[offsets.length - 1]}`}
+        >
+          {item.mediaType === "video" ? (
+            <video
+              src={item.mediaUrl}
+              poster={item.thumbnailUrl}
+              className="h-full w-full object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+          ) : (
             <img
-              src={src}
-              alt={`OpenDecks shot ${index + 1}`}
+              src={item.thumbnailUrl || item.mediaUrl}
+              alt={item.alt || item.title || `OpenDecks shot ${index + 1}`}
               className="h-full w-full object-cover"
             />
-          </div>
-        );
-      })}
+          )}
+        </div>
+      ))}
     </div>
   );
+}
+
+function pickRandomArchiveShots(items: ArchiveRecord[], count: number) {
+  return [...items]
+    .sort(() => Math.random() - 0.5)
+    .slice(0, count);
 }
 
 function SoundCloudIcon() {
