@@ -724,65 +724,79 @@ export function AdminDjRosterManager({
                 filteredRoster.map((entry) => (
                   <article
                     key={entry.id}
-                    className="group flex h-full flex-col overflow-hidden rounded-lg border border-[#E31F29]/14 bg-[linear-gradient(180deg,rgba(255,255,255,0.03)_0%,rgba(255,255,255,0.015)_100%)] transition hover:border-[#E31F29]/30 hover:bg-[linear-gradient(180deg,rgba(227,31,41,0.09)_0%,rgba(255,255,255,0.04)_100%)]"
+                    className="group flex h-full overflow-hidden rounded-xl border border-[#E31F29]/14 bg-[linear-gradient(145deg,rgba(255,255,255,0.035)_0%,rgba(255,255,255,0.012)_100%)] transition hover:border-[#E31F29]/30 hover:bg-[linear-gradient(145deg,rgba(227,31,41,0.08)_0%,rgba(255,255,255,0.04)_100%)]"
                   >
                     <button
                       type="button"
-                      className="flex flex-col items-stretch text-left"
+                      className="grid w-full grid-cols-[108px_minmax(0,1fr)] items-stretch text-left"
                       onClick={() => {
                         setIsCreateOpen(false);
                         setCreateMessage("");
                         setSelectedDj(entry);
                       }}
                     >
-                      <div className="relative h-56 overflow-hidden bg-white/5">
+                      <div className="relative flex min-h-full items-center justify-center overflow-hidden border-r border-white/8 bg-[linear-gradient(180deg,rgba(227,31,41,0.16)_0%,rgba(7,7,8,0.96)_100%)] p-3">
                         {entry.photoUrl ? (
-                          <img
-                            src={entry.photoUrl}
-                            alt={entry.name}
-                            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                          />
+                          <>
+                            <img
+                              src={entry.photoUrl}
+                              alt=""
+                              aria-hidden="true"
+                              className="absolute inset-0 h-full w-full object-cover opacity-25 blur-2xl transition duration-300 group-hover:scale-105"
+                            />
+                            <img
+                              src={entry.photoUrl}
+                              alt={entry.name}
+                              className="relative h-full max-h-40 w-full rounded-md object-contain"
+                            />
+                          </>
                         ) : (
                           <div className="grid h-full w-full place-items-center text-sm font-semibold uppercase tracking-[0.16em] text-white/72">
                             {buildInitials(entry.name)}
                           </div>
                         )}
-                        <span className="absolute -bottom-2 -right-2 h-5 w-5 rounded-full border-2 border-[#120d0d] bg-[#E31F29]" />
+                        <span className="absolute bottom-2 right-2 h-3.5 w-3.5 rounded-full border border-[#120d0d] bg-[#E31F29]" />
                       </div>
 
-                      <div className="grid gap-3 p-5">
-                        <div className="flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.18em] text-white/44">
-                          {!entry.applicationId ? (
-                            <span className="inline-flex rounded-full border border-[color:var(--color-brand-20)] px-2 py-1 text-[0.62rem] text-white/75">
-                              Manuale
-                            </span>
-                          ) : entry.sourceApplicationEventTitle ? (
-                            <span className="inline-flex rounded-full border border-[color:var(--color-brand-20)] px-2 py-1 text-[0.62rem] text-white/75">
-                              {entry.sourceApplicationEventTitle}
-                            </span>
-                          ) : null}
-                          {entry.membershipCardEnabled ? (
-                            <span className="inline-flex rounded-full bg-emerald-500/15 px-2 py-1 text-[0.62rem] text-emerald-300">
-                              Membership
-                            </span>
-                          ) : null}
+                      <div className="grid min-w-0 content-between gap-4 p-5">
+                        <div className="grid gap-3">
+                          <div className="flex flex-wrap items-center gap-2 text-[0.68rem] uppercase tracking-[0.18em] text-white/44">
+                            {!entry.applicationId ? (
+                              <span className="inline-flex rounded-full border border-[color:var(--color-brand-20)] px-2 py-1 text-[0.62rem] text-white/75">
+                                Manuale
+                              </span>
+                            ) : entry.sourceApplicationEventTitle ? (
+                              <span className="inline-flex max-w-full truncate rounded-full border border-[color:var(--color-brand-20)] px-2 py-1 text-[0.62rem] text-white/75">
+                                {entry.sourceApplicationEventTitle}
+                              </span>
+                            ) : null}
+                            {entry.membershipCardEnabled ? (
+                              <span className="inline-flex rounded-full bg-emerald-500/15 px-2 py-1 text-[0.62rem] text-emerald-300">
+                                Membership
+                              </span>
+                            ) : null}
+                          </div>
+
+                          <div className="grid min-w-0 gap-1">
+                            <h3 className="text-xl font-semibold text-[#f7f3ee] transition group-hover:text-white">
+                              {entry.name}
+                            </h3>
+                            <p className="truncate text-sm text-white/52">
+                              {entry.email}
+                            </p>
+                            <p className="truncate text-sm text-white/46">
+                              {entry.instagram}
+                            </p>
+                          </div>
                         </div>
 
-                        <div className="grid gap-1">
-                          <h3 className="text-xl font-semibold text-[#f7f3ee] transition group-hover:text-white">
-                            {entry.name}
-                          </h3>
-                          <p className="truncate text-sm text-white/52">
-                            {entry.email}
+                        <div className="flex items-center justify-between gap-3 border-t border-white/8 pt-3">
+                          <p className="truncate text-xs uppercase tracking-[0.16em] text-white/34">
+                            {entry.membershipCardId || "Profilo roster"}
                           </p>
-                          <p className="truncate text-sm text-white/46">
-                            {entry.instagram}
-                          </p>
-                          {entry.membershipCardId ? (
-                            <p className="truncate text-xs uppercase tracking-[0.16em] text-white/34">
-                              {entry.membershipCardId}
-                            </p>
-                          ) : null}
+                          <span className="text-xs uppercase tracking-[0.18em] text-white/45 transition group-hover:text-white/72">
+                            Apri
+                          </span>
                         </div>
                         {/* 
                         <div className="grid gap-1 text-sm text-white/65">
@@ -1187,11 +1201,17 @@ export function AdminDjRosterManager({
                 <span className={ui.text.eyebrow}>Profilo</span>
                 <div className="mt-4 overflow-hidden rounded-lg border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)]">
                   {selectedDj.photoUrl ? (
-                    <div className="relative">
+                    <div className="relative flex h-72 items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_top,rgba(227,31,41,0.2),rgba(10,10,10,0.94)_72%)] p-4">
+                      <img
+                        src={selectedDj.photoUrl}
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute inset-0 h-full w-full scale-105 object-cover opacity-25 blur-3xl"
+                      />
                       <img
                         src={selectedDj.photoUrl}
                         alt={selectedDj.name}
-                        className="h-72 w-full object-cover"
+                        className="relative h-full w-full rounded-md object-contain"
                       />
                       <div className="absolute bottom-3 right-3 inline-flex items-center rounded-full border border-white/15 bg-black/72 px-3 py-1.5 text-[0.68rem] font-medium uppercase tracking-[0.18em] text-white shadow-[0_10px_30px_rgba(0,0,0,0.32)] backdrop-blur-sm">
                         <span className="mr-2 h-2 w-2 rounded-full bg-[color:var(--color-brand)]" />
