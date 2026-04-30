@@ -32,6 +32,48 @@ const emptyForm: LocationFormState = {
   description: "",
 };
 
+const europeanCountryCodes = [
+  "it",
+  "fr",
+  "de",
+  "es",
+  "pt",
+  "ch",
+  "at",
+  "be",
+  "nl",
+  "lu",
+  "gb",
+  "ie",
+  "dk",
+  "se",
+  "no",
+  "fi",
+  "is",
+  "pl",
+  "cz",
+  "sk",
+  "hu",
+  "si",
+  "hr",
+  "ro",
+  "bg",
+  "gr",
+  "ee",
+  "lv",
+  "lt",
+  "mt",
+  "cy",
+  "al",
+  "ba",
+  "me",
+  "mk",
+  "rs",
+  "xk",
+  "md",
+  "ua",
+];
+
 declare global {
   interface Window {
     google?: any;
@@ -124,7 +166,7 @@ export function AdminLocationsManager({
           addressInputRef.current,
           {
             types: ["address"],
-            componentRestrictions: { country: "it" },
+            componentRestrictions: { country: europeanCountryCodes },
             fields: ["formatted_address", "name"],
           },
         );

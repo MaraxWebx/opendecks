@@ -2,13 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { applicationFormCopy } from "@/content/site-copy";
 import { EventRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
 import { GlobalLoader } from "@/components/global-loader";
 import { useInvisibleRecaptcha } from "@/components/use-invisible-recaptcha";
+import {
+  buildCityAutocompleteOptionFromPlace,
+  loadGoogleMapsPlaces,
+  type CityAutocompleteOption,
+} from "@/lib/google-places";
 
 type ApplicationFormProps = {
   events: EventRecord[];
@@ -30,14 +35,7 @@ type FormState = {
   privacyAccepted: boolean;
 };
 
-type MunicipalityOption = {
-  code: string;
-  city: string;
-  province: string;
-  provinceCode: string;
-  region: string;
-  label: string;
-};
+type MunicipalityOption = CityAutocompleteOption;
 
 type SubmissionStage = "idle" | "security" | "upload" | "saving";
 
@@ -68,6 +66,8 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
   const [cityQuery, setCityQuery] = useState("");
   const [cityOptions, setCityOptions] = useState<MunicipalityOption[]>([]);
   const [cityMenuOpen, setCityMenuOpen] = useState(false);
+  const [isGoogleAutocompleteReady, setIsGoogleAutocompleteReady] =
+    useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoInputKey, setPhotoInputKey] = useState(0);
   const [status, setStatus] = useState<{
@@ -85,6 +85,8 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
     executeRecaptcha,
     isRecaptchaReady,
   } = useInvisibleRecaptcha();
+  const cityInputRef = useRef<HTMLInputElement | null>(null);
+  const cityAutocompleteRef = useRef<any>(null);
 
   function resetApplicationForm(eventSlug = defaultEventSlug) {
     setForm({
@@ -153,6 +155,72 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
   }
 
   useEffect(() => {
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
+    if (!apiKey) {
+      setIsGoogleAutocompleteReady(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    loadGoogleMapsPlaces(apiKey)
+      .then(() => {
+        if (
+          cancelled ||
+          !cityInputRef.current ||
+          !window.google?.maps?.places
+        ) {
+          return;
+        }
+
+        cityAutocompleteRef.current = new window.google.maps.places.Autocomplete(
+          cityInputRef.current,
+          {
+            types: ["geocode"],
+            fields: ["address_components", "name", "place_id", "formatted_address"],
+          },
+        );
+
+        cityAutocompleteRef.current.addListener("place_changed", () => {
+          const place = cityAutocompleteRef.current?.getPlace?.();
+          const municipality = buildCityAutocompleteOptionFromPlace(place);
+
+          if (!municipality) {
+            return;
+          }
+
+          applyMunicipalitySelection(municipality);
+          setCityOptions([]);
+          setCityMenuOpen(false);
+        });
+
+        setIsGoogleAutocompleteReady(true);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setIsGoogleAutocompleteReady(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+
+      if (cityAutocompleteRef.current && window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(cityAutocompleteRef.current);
+      }
+
+      cityAutocompleteRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isGoogleAutocompleteReady) {
+      setCityOptions([]);
+      setCityMenuOpen(false);
+      return;
+    }
+
     const normalizedQuery = cityQuery.trim();
 
     if (normalizedQuery.length < 2) {
@@ -188,7 +256,7 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
       active = false;
       window.clearTimeout(timeoutId);
     };
-  }, [cityQuery]);
+  }, [cityQuery, isGoogleAutocompleteReady]);
 
   async function uploadPhoto(file: File | null) {
     if (!file) {
@@ -502,26 +570,40 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
               <div className="relative">
                 <input
                   id="city"
+                  ref={cityInputRef}
                   className={fieldClass}
                   value={cityQuery}
                   onChange={(event) => {
                     const nextQuery = event.target.value;
                     setCityQuery(nextQuery);
-                    setCityMenuOpen(true);
-                    void resolveMunicipalityFromQuery(nextQuery);
+                    setForm((current) => ({
+                      ...current,
+                      city: "",
+                      province: "",
+                      region: "",
+                    }));
+
+                    if (!isGoogleAutocompleteReady) {
+                      setCityMenuOpen(true);
+                      void resolveMunicipalityFromQuery(nextQuery);
+                    }
                   }}
                   onFocus={() => {
-                    if (cityOptions.length) {
+                    if (!isGoogleAutocompleteReady && cityOptions.length) {
                       setCityMenuOpen(true);
                     }
                   }}
                   onBlur={() => {
+                    if (isGoogleAutocompleteReady) {
+                      return;
+                    }
+
                     window.setTimeout(() => {
                       setCityMenuOpen(false);
                       void resolveMunicipalityFromQuery(cityQuery);
                     }, 120);
                   }}
-                  placeholder="Scrivi e seleziona il comune, es. Roma - (RM)"
+                  placeholder="Scrivi e seleziona la citta, es. Roma o Berlin"
                   autoComplete="off"
                   required
                 />

@@ -5,7 +5,6 @@ import {
   sendApplicationConfirmationEmail,
   sendApplicationNotificationEmail,
 } from "@/lib/email";
-import { getItalianProvince, italianProvinceCodes } from "@/lib/italian-provinces";
 import { buildPrivacyConsentRecord } from "@/lib/privacy";
 import { applyRateLimit, getClientIp } from "@/lib/rate-limit";
 import { verifyRecaptchaToken } from "@/lib/recaptcha";
@@ -25,19 +24,12 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json();
 
-  const requiredFields = ["eventId", "eventTitle", "name", "city", "province", "email", "phone", "photoUrl", "instagram", "setLink"];
+  const requiredFields = ["eventId", "eventTitle", "name", "city", "email", "phone", "photoUrl", "instagram", "setLink"];
   const missingField = requiredFields.find((field) => !body?.[field]);
 
   if (missingField) {
     return NextResponse.json(
       { error: `Campo obbligatorio mancante: ${missingField}` },
-      { status: 400 }
-    );
-  }
-
-  if (!italianProvinceCodes.includes(body.province)) {
-    return NextResponse.json(
-      { error: "Provincia non valida." },
       { status: 400 }
     );
   }
@@ -71,22 +63,21 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const province = getItalianProvince(body.province);
   const relatedEvent = events.find((event) => event.id === body.eventId);
 
   const application = await createApplication({
     eventId: body.eventId,
     eventTitle: body.eventTitle,
-    name: body.name,
-    city: body.city,
-    province: body.province,
-    region: province?.region || "",
+    name: String(body.name).trim(),
+    city: String(body.city).trim(),
+    province: String(body.province || "").trim(),
+    region: String(body.region || "").trim(),
     email: normalizedEmail,
-    phone: body.phone,
-    photoUrl: body.photoUrl,
-    instagram: body.instagram,
-    setLink: body.setLink,
-    bio: body.bio || "",
+    phone: String(body.phone).trim(),
+    photoUrl: String(body.photoUrl).trim(),
+    instagram: String(body.instagram).trim(),
+    setLink: String(body.setLink).trim(),
+    bio: String(body.bio || "").trim(),
     ...buildPrivacyConsentRecord()
   });
 

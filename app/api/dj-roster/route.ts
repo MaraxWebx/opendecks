@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { requireAdminApiAuth } from "@/lib/admin-auth";
 import { createDjRosterEntry, getDjRosterEntries } from "@/lib/data";
-import { getItalianProvince, italianProvinceCodes } from "@/lib/italian-provinces";
 
 export async function POST(request: NextRequest) {
   const unauthorized = await requireAdminApiAuth();
@@ -17,7 +16,6 @@ export async function POST(request: NextRequest) {
     const requiredFields = [
       "name",
       "city",
-      "province",
       "email",
       "phone",
     ];
@@ -28,10 +26,6 @@ export async function POST(request: NextRequest) {
         { error: `Campo obbligatorio mancante: ${missingField}` },
         { status: 400 },
       );
-    }
-
-    if (!italianProvinceCodes.includes(body.province)) {
-      return NextResponse.json({ error: "Provincia non valida." }, { status: 400 });
     }
 
     const roster = await getDjRosterEntries();
@@ -48,12 +42,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const province = getItalianProvince(body.province);
     const rosterEntry = await createDjRosterEntry({
       name: String(body.name).trim(),
       city: String(body.city).trim(),
-      province: body.province,
-      region: province?.region || "",
+      province: String(body.province || "").trim(),
+      region: String(body.region || "").trim(),
       email: normalizedEmail,
       phone: String(body.phone).trim(),
       photoUrl: String(body.photoUrl || "").trim(),

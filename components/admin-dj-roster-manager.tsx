@@ -6,6 +6,11 @@ import Link from "next/link";
 import { DeleteIconButton } from "@/components/delete-icon-button";
 import { GlobalLoader } from "@/components/global-loader";
 import { getDjEventHistory } from "@/lib/dj-roster";
+import {
+  buildCityAutocompleteOptionFromPlace,
+  loadGoogleMapsPlaces,
+  type CityAutocompleteOption,
+} from "@/lib/google-places";
 import { DjRosterRecord, EventRecord } from "@/lib/types";
 import { ui } from "@/lib/ui";
 
@@ -28,14 +33,7 @@ type ManualDjFormState = {
   bio: string;
 };
 
-type MunicipalityOption = {
-  code: string;
-  city: string;
-  province: string;
-  provinceCode: string;
-  region: string;
-  label: string;
-};
+type MunicipalityOption = CityAutocompleteOption;
 
 type SelectedDjFormState = {
   name: string;
@@ -79,6 +77,8 @@ export function AdminDjRosterManager({
   const [cityQuery, setCityQuery] = useState("");
   const [cityOptions, setCityOptions] = useState<MunicipalityOption[]>([]);
   const [cityMenuOpen, setCityMenuOpen] = useState(false);
+  const [isGoogleAutocompleteReady, setIsGoogleAutocompleteReady] =
+    useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [selectedForm, setSelectedForm] = useState<SelectedDjFormState | null>(
     null,
@@ -91,6 +91,10 @@ export function AdminDjRosterManager({
   const [selectedPhotoFile, setSelectedPhotoFile] = useState<File | null>(null);
   const [isSavingSelected, setIsSavingSelected] = useState(false);
   const [isDeletingSelected, setIsDeletingSelected] = useState(false);
+  const manualCityInputRef = useRef<HTMLInputElement | null>(null);
+  const selectedCityInputRef = useRef<HTMLInputElement | null>(null);
+  const manualCityAutocompleteRef = useRef<any>(null);
+  const selectedCityAutocompleteRef = useRef<any>(null);
 
   useEffect(() => {
     if (!initialSelectedId) {
@@ -205,6 +209,122 @@ export function AdminDjRosterManager({
   }
 
   useEffect(() => {
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
+    if (!apiKey) {
+      setIsGoogleAutocompleteReady(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    loadGoogleMapsPlaces(apiKey)
+      .then(() => {
+        if (!cancelled) {
+          setIsGoogleAutocompleteReady(true);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setIsGoogleAutocompleteReady(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (
+      !isGoogleAutocompleteReady ||
+      !isCreateOpen ||
+      !manualCityInputRef.current ||
+      !window.google?.maps?.places
+    ) {
+      return;
+    }
+
+    manualCityAutocompleteRef.current = new window.google.maps.places.Autocomplete(
+      manualCityInputRef.current,
+      {
+        types: ["geocode"],
+        fields: ["address_components", "name", "place_id", "formatted_address"],
+      },
+    );
+
+    manualCityAutocompleteRef.current.addListener("place_changed", () => {
+      const place = manualCityAutocompleteRef.current?.getPlace?.();
+      const municipality = buildCityAutocompleteOptionFromPlace(place);
+
+      if (!municipality) {
+        return;
+      }
+
+      applyMunicipalitySelection(municipality);
+      setCityOptions([]);
+      setCityMenuOpen(false);
+    });
+
+    return () => {
+      if (manualCityAutocompleteRef.current && window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(
+          manualCityAutocompleteRef.current,
+        );
+      }
+
+      manualCityAutocompleteRef.current = null;
+    };
+  }, [isCreateOpen, isGoogleAutocompleteReady]);
+
+  useEffect(() => {
+    if (
+      !isGoogleAutocompleteReady ||
+      !isEditOpen ||
+      !selectedDj ||
+      !selectedCityInputRef.current ||
+      !window.google?.maps?.places
+    ) {
+      return;
+    }
+
+    selectedCityAutocompleteRef.current =
+      new window.google.maps.places.Autocomplete(selectedCityInputRef.current, {
+        types: ["geocode"],
+        fields: ["address_components", "name", "place_id", "formatted_address"],
+      });
+
+    selectedCityAutocompleteRef.current.addListener("place_changed", () => {
+      const place = selectedCityAutocompleteRef.current?.getPlace?.();
+      const municipality = buildCityAutocompleteOptionFromPlace(place);
+
+      if (!municipality) {
+        return;
+      }
+
+      applySelectedMunicipalitySelection(municipality);
+      setSelectedCityOptions([]);
+      setSelectedCityMenuOpen(false);
+    });
+
+    return () => {
+      if (selectedCityAutocompleteRef.current && window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(
+          selectedCityAutocompleteRef.current,
+        );
+      }
+
+      selectedCityAutocompleteRef.current = null;
+    };
+  }, [isEditOpen, isGoogleAutocompleteReady, selectedDj]);
+
+  useEffect(() => {
+    if (isGoogleAutocompleteReady) {
+      setCityOptions([]);
+      setCityMenuOpen(false);
+      return;
+    }
+
     const normalizedQuery = cityQuery.trim();
 
     if (normalizedQuery.length < 2) {
@@ -240,7 +360,7 @@ export function AdminDjRosterManager({
       active = false;
       window.clearTimeout(timeoutId);
     };
-  }, [cityQuery]);
+  }, [cityQuery, isGoogleAutocompleteReady]);
 
   useEffect(() => {
     if (!selectedDj) {
@@ -615,6 +735,12 @@ export function AdminDjRosterManager({
   }
 
   useEffect(() => {
+    if (isGoogleAutocompleteReady) {
+      setSelectedCityOptions([]);
+      setSelectedCityMenuOpen(false);
+      return;
+    }
+
     const normalizedQuery = selectedCityQuery.trim();
 
     if (!selectedDj || normalizedQuery.length < 2) {
@@ -650,7 +776,7 @@ export function AdminDjRosterManager({
       active = false;
       window.clearTimeout(timeoutId);
     };
-  }, [selectedCityQuery, selectedDj]);
+  }, [selectedCityQuery, selectedDj, isGoogleAutocompleteReady]);
 
   return (
     <div className="grid min-w-0 gap-4">
@@ -1039,22 +1165,36 @@ export function AdminDjRosterManager({
                         <div className="relative">
                           <input
                             id="selected-dj-city"
+                            ref={selectedCityInputRef}
                             className={fieldClass}
                             value={selectedCityQuery}
                             onChange={(event) => {
                               const nextQuery = event.target.value;
                               setSelectedCityQuery(nextQuery);
-                              setSelectedCityMenuOpen(true);
-                              void resolveSelectedMunicipalityFromQuery(
-                                nextQuery,
-                              );
+                              updateSelectedForm("city", "");
+                              updateSelectedForm("province", "");
+                              updateSelectedForm("region", "");
+
+                              if (!isGoogleAutocompleteReady) {
+                                setSelectedCityMenuOpen(true);
+                                void resolveSelectedMunicipalityFromQuery(
+                                  nextQuery,
+                                );
+                              }
                             }}
                             onFocus={() => {
-                              if (selectedCityOptions.length) {
+                              if (
+                                !isGoogleAutocompleteReady &&
+                                selectedCityOptions.length
+                              ) {
                                 setSelectedCityMenuOpen(true);
                               }
                             }}
                             onBlur={() => {
+                              if (isGoogleAutocompleteReady) {
+                                return;
+                              }
+
                               window.setTimeout(() => {
                                 setSelectedCityMenuOpen(false);
                                 void resolveSelectedMunicipalityFromQuery(
@@ -1062,7 +1202,7 @@ export function AdminDjRosterManager({
                                 );
                               }, 120);
                             }}
-                            placeholder="Scrivi e seleziona il comune"
+                            placeholder="Scrivi e seleziona la citta"
                             autoComplete="off"
                             required
                           />
@@ -1335,26 +1475,40 @@ export function AdminDjRosterManager({
                   <div className="relative">
                     <input
                       id="manual-dj-city"
+                      ref={manualCityInputRef}
                       className={fieldClass}
                       value={cityQuery}
                       onChange={(event) => {
                         const nextQuery = event.target.value;
                         setCityQuery(nextQuery);
-                        setCityMenuOpen(true);
-                        void resolveMunicipalityFromQuery(nextQuery);
+                        setManualForm((current) => ({
+                          ...current,
+                          city: "",
+                          province: "",
+                          region: "",
+                        }));
+
+                        if (!isGoogleAutocompleteReady) {
+                          setCityMenuOpen(true);
+                          void resolveMunicipalityFromQuery(nextQuery);
+                        }
                       }}
                       onFocus={() => {
-                        if (cityOptions.length) {
+                        if (!isGoogleAutocompleteReady && cityOptions.length) {
                           setCityMenuOpen(true);
                         }
                       }}
                       onBlur={() => {
+                        if (isGoogleAutocompleteReady) {
+                          return;
+                        }
+
                         window.setTimeout(() => {
                           setCityMenuOpen(false);
                           void resolveMunicipalityFromQuery(cityQuery);
                         }, 120);
                       }}
-                      placeholder="Scrivi e seleziona il comune, es. Roma - (RM)"
+                      placeholder="Scrivi e seleziona la citta, es. Roma o Berlin"
                       autoComplete="off"
                       required
                     />
