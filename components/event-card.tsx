@@ -11,18 +11,18 @@ export function EventCard({ event, tags }: EventCardProps) {
   const eventTags = tags.filter((tag) => event.tagIds.includes(tag.id));
   const statusBadge = event.applicationsOpen
     ? {
-        label: "Slot aperti",
+        label: "Slot open",
         className:
           "border-emerald-300/70 bg-emerald-500 text-white shadow-[0_14px_28px_rgba(16,185,129,0.28)]",
       }
     : event.status === "past"
       ? {
-        label: "Passed",
+          label: "Event passed",
           className:
             "border-amber-200/80 bg-amber-400 text-white shadow-[0_14px_28px_rgba(251,191,36,0.28)]",
         }
       : {
-          label: "Slot chiusi",
+          label: "Slot closed",
           className:
             "border-red-300/75 bg-[#E31F29] text-white shadow-[0_14px_28px_rgba(227,31,41,0.28)]",
         };

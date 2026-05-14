@@ -454,6 +454,21 @@ export function AdminEventsManager({
 
             {viewMode === "calendar" ? (
               <div className="grid gap-4">
+                <div className="flex flex-wrap gap-3 text-xs uppercase tracking-[0.14em] text-white/62">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] px-3 py-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                    Open
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] px-3 py-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-[#E31F29]" />
+                    Chiuso
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] px-3 py-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+                    Passato
+                  </span>
+                </div>
+
                 <div className="-mx-1 overflow-x-auto pb-2">
                   <div className="grid min-w-[42rem] grid-cols-7 gap-2 px-1 md:min-w-0">
                     {["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"].map(
@@ -483,11 +498,23 @@ export function AdminEventsManager({
                           >
                             {day.dayNumber}
                           </span>
-                          {day.events.length ? (
-                            <span className="shrink-0 rounded-full bg-[color:var(--color-brand-12)] px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-white">
-                              {day.events.length}
-                            </span>
-                          ) : null}
+                          <div className="flex items-center gap-2">
+                            {day.events.length ? (
+                              <div className="flex items-center gap-1">
+                                {getDayStatusDots(day.events).map((dotClass) => (
+                                  <span
+                                    key={`${day.date}-${dotClass}`}
+                                    className={`h-2 w-2 rounded-full ${dotClass}`}
+                                  />
+                                ))}
+                              </div>
+                            ) : null}
+                            {day.events.length ? (
+                              <span className="shrink-0 rounded-full bg-[color:var(--color-brand-12)] px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-white">
+                                {day.events.length}
+                              </span>
+                            ) : null}
+                          </div>
                         </div>
 
                         <div className="grid min-w-0 gap-2">
@@ -498,8 +525,13 @@ export function AdminEventsManager({
                               className="min-w-0 rounded-lg border border-[color:var(--color-brand-14)] bg-[color:var(--color-brand-10)] p-2 transition hover:border-[color:var(--color-brand-38)] hover:bg-[color:var(--color-brand-12)]"
                               title={`Apri ${event.title}`}
                             >
-                              <p className="text-xs break-words font-medium leading-5 text-white">
+                              <p className="flex items-start gap-2 text-xs break-words font-medium leading-5 text-white">
+                                <span
+                                  className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${getEventStatusDotClass(event)}`}
+                                />
+                                <span className="min-w-0 break-words">
                                 {event.title}
+                                </span>
                               </p>
                               <p className="mt-1 break-words text-[11px] leading-4 text-white/70">
                                 {event.time} / {event.locationName}
@@ -910,6 +942,22 @@ function buildCalendarDays(month: string, events: EventRecord[]) {
       events: dayEvents,
     };
   });
+}
+
+function getEventStatusDotClass(event: EventRecord) {
+  if (event.applicationsOpen) {
+    return "bg-emerald-400";
+  }
+
+  if (event.status === "past") {
+    return "bg-amber-400";
+  }
+
+  return "bg-[#E31F29]";
+}
+
+function getDayStatusDots(events: EventRecord[]) {
+  return Array.from(new Set(events.map(getEventStatusDotClass)));
 }
 
 function buildEventCoverAlt(
