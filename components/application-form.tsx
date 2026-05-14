@@ -924,7 +924,6 @@ function StepOneCalendar({
 
   return (
     <div className="grid gap-5">
-      <div className="px-1 md:px-0">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-[0.72rem] uppercase tracking-[0.18em] text-[#E31F29]">
@@ -963,10 +962,9 @@ function StepOneCalendar({
           </button>
         </div>
       </div>
-      </div>
 
-      <div className="-mx-4 rounded-2xl border border-[#E31F29]/16 bg-[#080808] px-2 py-3 md:mx-0 md:p-4">
-        <div className="mb-2 grid grid-cols-7 gap-2 px-2 md:px-0">
+      <div className="rounded-2xl border border-[#E31F29]/16 bg-[#080808] px-0 py-3 md:p-4">
+        <div className="mb-2 grid grid-cols-7 gap-2">
           {weekDays.map((day) => (
             <div
               key={day}
@@ -977,7 +975,7 @@ function StepOneCalendar({
           ))}
         </div>
 
-        <div className="grid grid-cols-7 gap-2 px-2 md:px-0">
+        <div className="grid grid-cols-7 gap-2">
           {calendarDays.map((day) => {
             const hasEvents = day.events.length > 0;
             const isSelected = day.date === selectedDate;
@@ -1016,7 +1014,7 @@ function StepOneCalendar({
         </div>
       </div>
 
-      <div className="grid gap-3 px-1 md:px-0">
+      <div className="grid gap-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <p className="text-[0.68rem] uppercase tracking-[0.16em] text-[#E31F29]">
