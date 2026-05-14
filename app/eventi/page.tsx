@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { eventsPageCopy } from "@/content/site-copy";
-import { EventCard } from "@/components/event-card";
+import { PublicEventsBrowser } from "@/components/public-events-browser";
 import { getEvents, getTags } from "@/lib/data";
 import { buildMetadata } from "@/lib/seo";
 
@@ -15,6 +15,7 @@ export const metadata: Metadata = buildMetadata({
 
 export default async function EventsPage() {
   const [events, tags] = await Promise.all([getEvents(), getTags()]);
+  const initialMonthKey = getCurrentRomeMonthKey();
 
   return (
     <div className="mx-auto w-full max-w-[1240px] px-4 md:px-6">
@@ -30,13 +31,25 @@ export default async function EventsPage() {
         </p>
       </section>
 
-      <section className="pb-14 md:pb-16">
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {events.map((event) => (
-            <EventCard key={event.id} event={event} tags={tags} />
-          ))}
-        </div>
-      </section>
+      <PublicEventsBrowser
+        events={events}
+        tags={tags}
+        initialMonthKey={initialMonthKey}
+      />
     </div>
   );
+}
+
+function getCurrentRomeMonthKey() {
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Rome",
+    year: "numeric",
+    month: "2-digit",
+  });
+
+  const parts = formatter.formatToParts(new Date());
+  const year = parts.find((part) => part.type === "year")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+
+  return `${year}-${month}`;
 }

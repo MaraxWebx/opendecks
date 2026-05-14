@@ -9,15 +9,37 @@ type EventCardProps = {
 
 export function EventCard({ event, tags }: EventCardProps) {
   const eventTags = tags.filter((tag) => event.tagIds.includes(tag.id));
+  const statusBadge = event.applicationsOpen
+    ? {
+        label: "Slot aperti",
+        className:
+          "border-emerald-300/70 bg-emerald-500 text-white shadow-[0_14px_28px_rgba(16,185,129,0.28)]",
+      }
+    : event.status === "past"
+      ? {
+        label: "Passed",
+          className:
+            "border-amber-200/80 bg-amber-400 text-white shadow-[0_14px_28px_rgba(251,191,36,0.28)]",
+        }
+      : {
+          label: "Slot chiusi",
+          className:
+            "border-red-300/75 bg-[#E31F29] text-white shadow-[0_14px_28px_rgba(227,31,41,0.28)]",
+        };
 
   return (
     <article className="overflow-hidden rounded-xl border border-[#E31F29]/15 bg-white/[0.03]">
-      <div className="overflow-hidden bg-[#111]">
+      <div className="relative overflow-hidden bg-[#111]">
         <img
           className="aspect-[4/3] w-full object-cover transition duration-300 hover:scale-[1.02]"
           src={event.coverImage}
           alt={event.coverAlt}
         />
+        <div
+          className={`absolute -right-11 top-6 z-10 inline-flex min-w-[12.5rem] rotate-[42deg] items-center justify-center border px-3 py-2 text-center text-[0.68rem] font-semibold uppercase tracking-[0.16em] ${statusBadge.className}`}
+        >
+          {statusBadge.label}
+        </div>
       </div>
       <div className="p-5">
         <div className="mb-3 flex flex-wrap gap-2 text-sm text-white/55">

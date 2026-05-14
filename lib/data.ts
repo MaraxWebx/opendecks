@@ -118,7 +118,7 @@ export async function getUpcomingEvent() {
 
   const events = await getEvents();
   const upcomingEvents = events
-    .filter((event) => getEventStatusFromDate(event.date, event.time) === "upcoming")
+    .filter((event) => isEventOnOrAfterToday(event.date))
     .sort((a, b) => getEventTimestamp(a.date, a.time) - getEventTimestamp(b.date, b.time));
 
   return upcomingEvents[0] || null;
@@ -790,9 +790,23 @@ function getEventStatusFromDate(date: string, time?: string): EventRecord["statu
   return getEventTimestamp(date, time) >= Date.now() ? "upcoming" : "past";
 }
 
+function isEventOnOrAfterToday(date: string) {
+  return getDateOnlyTimestamp(date) >= getTodayDateOnlyTimestamp();
+}
+
 function getEventTimestamp(date: string, time?: string) {
   const normalizedTime = /^\d{2}:\d{2}$/.test(time || "") ? `${time}:00` : "23:59:59";
   return new Date(`${date}T${normalizedTime}`).getTime();
+}
+
+function getDateOnlyTimestamp(date: string) {
+  return new Date(`${date}T00:00:00`).getTime();
+}
+
+function getTodayDateOnlyTimestamp() {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  return now.getTime();
 }
 
 function normalizeApplication(record: ApplicationRecord & { _id?: ObjectId }) {
