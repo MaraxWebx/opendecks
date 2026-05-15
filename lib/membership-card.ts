@@ -99,7 +99,7 @@ function buildAccentMarks() {
 function buildFooterCopy() {
   return [
     ...wrapTextCommands(
-      "OpenDecks Italia e una piattaforma culturale itinerante nata a Napoli: selezione, archivio, contenuto e connessione tra artisti, venue e comunita.",
+      "OpenDecks Italia e una piattaforma culturale itinerante nata a Napoli: selezione, archivio, contenuto e connessione tra artisti, venue e comunità.",
       {
         x: 54,
         y: 252,

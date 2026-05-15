@@ -18,7 +18,7 @@ export const homeCopy = {
     "Clip, recap, mini interviste e momenti live: ogni contenuto deve creare connessione, non solo hype.",
   seoTitle: "OpenDecks Italia",
   seoDescription:
-    "OpenDecks Italia e una piattaforma culturale itinerante nata a Napoli: eventi, archivio, call aperte e connessioni tra DJ, città e comunita.",
+    "OpenDecks Italia e una piattaforma culturale itinerante nata a Napoli: eventi, archivio, call aperte e connessioni tra DJ, città e comunità.",
 };
 
 export const eventsPageCopy = {
