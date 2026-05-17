@@ -84,7 +84,6 @@ export function DjMultiSelect({ djs, value, onChange }: DjMultiSelectProps) {
                 event.preventDefault();
                 onChange([...value, dj.id]);
                 setQuery("");
-                setOpen(false);
               }}
             >
               <span>{dj.name}</span>
