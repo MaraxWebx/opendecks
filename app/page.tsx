@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import { membershipHomeCopy } from "@/content/membership-copy";
@@ -33,15 +34,25 @@ export default async function HomePage() {
           />
           <div className="absolute inset-0 grid place-items-center px-6 text-center">
             <div className="grid justify-items-center gap-5">
-              <span className="text-sm uppercase tracking-[0.32em] text-[#E31F29]">
-                {brandClaim.compact}
-              </span>
-              <h1 className="text-[clamp(2.8rem,8vw,5.6rem)] font-semibold uppercase leading-none tracking-[-0.06em] text-[#f7f2e8]">
-                {homeCopy.title}
-              </h1>
-              <p className="max-w-3xl text-sm leading-7 text-white/76 md:text-base">
-                {homeCopy.description}
-              </p>
+              <div className="items-center justify-center flex flex-col">
+                <h1>
+                  <Image
+                    src="/img/loghi/LOGO-OPEN-DECKS_bianco.png"
+                    alt="OpenDecks Italia"
+                    width={480}
+                    height={96}
+                    priority
+                    className="h-auto w-[clamp(14rem,40vw,30rem)] object-contain"
+                  />
+                </h1>
+                <span className="text-sm uppercase tracking-[0.32em] text-[#E31F29] font-extrabold">
+                  {brandClaim.compact}
+                </span>
+                <p className="max-w-3xl text-sm leading-7 text-white/76 md:text-base">
+                  {homeCopy.description}
+                </p>
+              </div>
+
               <div className="flex flex-wrap justify-center gap-3">
                 <Link
                   href="/eventi"
