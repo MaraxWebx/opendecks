@@ -110,11 +110,21 @@ export async function Footer() {
       <div className="mx-auto flex w-full max-w-[1240px] flex-col items-start justify-between gap-3 border-t border-[#E31F29]/20 px-4 py-5 text-sm text-white/55 md:flex-row md:items-center md:px-6">
         <p>Copyright 2026 OpenDecks Italia.</p>
         <Link
-          href="https://www.instagram.com/marettax_/"
-          className="transition hover:text-white/80"
+          href="https://www.touchsitesoftware.it"
           target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Made by Touchsite"
+          className="transition hover:text-white/80 group inline-flex items-center gap-1 whitespace-nowrap"
         >
-          ❤️☠️🧠by Marettax
+          <span>Made by</span>
+          <Image
+            src="/img/loghi/touchsite-min-logo.png"
+            alt="Touchsite"
+            width={20}
+            height={20}
+            className=" w-auto object-contain"
+          />
+          <span className="font-bold">Touchsite</span>
         </Link>
       </div>
     </footer>
