@@ -15,6 +15,7 @@ import { GlobalLoader } from "@/components/global-loader";
 import { DjMultiSelect } from "@/components/dj-multi-select";
 import { ModalCloseButton } from "@/components/modal-close-button";
 import { TagMultiSelect } from "@/components/tag-multi-select";
+import { EVENT_COVER_PLACEHOLDER } from "@/lib/event-cover";
 
 type AdminEventsManagerProps = {
   initialEvents: EventRecord[];
@@ -825,8 +826,16 @@ export function AdminEventsManager({
                       className="w-full object-cover"
                     />
                   ) : (
-                    <div className="grid h-72 place-items-center bg-white/4 px-6 text-center text-sm text-white/45">
-                      Carica una cover per vedere l'anteprima dell'evento.
+                    <div className="grid gap-2">
+                      <img
+                        src={EVENT_COVER_PLACEHOLDER}
+                        alt="Cover placeholder Open Decks"
+                        className="w-full object-cover"
+                      />
+                      <p className="px-4 pb-3 text-center text-xs text-white/45">
+                        Nessuna immagine caricata: verrà usata questa cover di
+                        default.
+                      </p>
                     </div>
                   )}
                 </div>

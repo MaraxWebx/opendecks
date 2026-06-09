@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdminApiAuth } from "@/lib/admin-auth";
 import { deleteEvent, getApplications, getDjRosterEntries, getEvents, getLocations, updateEvent } from "@/lib/data";
 import { sendDjEventAssignmentEmail } from "@/lib/email";
+import { EVENT_COVER_PLACEHOLDER } from "@/lib/event-cover";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -31,7 +32,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       locationId: selectedLocation.id,
       locationName: selectedLocation.name,
       locationAddress: selectedLocation.address,
-      coverImage: body.coverImage,
+      coverImage: body.coverImage || EVENT_COVER_PLACEHOLDER,
       coverAlt: buildEventCoverAlt(body.title, selectedLocation.name),
       date: body.date,
       time: body.time,

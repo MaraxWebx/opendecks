@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { requireAdminApiAuth } from "@/lib/admin-auth";
 import { createEvent, getEvents, getLocations } from "@/lib/data";
+import { EVENT_COVER_PLACEHOLDER } from "@/lib/event-cover";
 
 export async function GET() {
   const events = await getEvents();
@@ -21,7 +22,6 @@ export async function POST(request: NextRequest) {
     const requiredFields = [
       "title",
       "locationId",
-      "coverImage",
       "date",
       "time"
     ];
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
       locationId: selectedLocation.id,
       locationName: selectedLocation.name,
       locationAddress: selectedLocation.address,
-      coverImage: body.coverImage,
+      coverImage: body.coverImage || EVENT_COVER_PLACEHOLDER,
       coverAlt: buildEventCoverAlt(body.title, selectedLocation.name),
       date: body.date,
       time: body.time,
