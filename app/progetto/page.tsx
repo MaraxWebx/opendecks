@@ -355,9 +355,6 @@ export default async function ProjectPage() {
                         {place.count}
                       </span>
                     </div>
-                    <p className="mt-2 text-sm leading-6 text-white/62">
-                      {place.titles.join(" / ")}
-                    </p>
                   </div>
                 ))}
               </div>
