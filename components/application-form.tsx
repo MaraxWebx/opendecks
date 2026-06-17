@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { GlobalLoader } from "@/components/global-loader";
 import { useInvisibleRecaptcha } from "@/components/use-invisible-recaptcha";
 import { applicationFormCopy } from "@/content/site-copy";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 import {
   buildCityAutocompleteOptionFromPlace,
   loadGoogleMapsPlaces,
@@ -83,6 +84,18 @@ const fieldClass =
 
 const weekDays = ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"];
 
+const applicationJourneyStepLabels: Record<WizardStep, string> = {
+  1: "event_selection",
+  2: "profile_details",
+  3: "assets_confirmation",
+};
+
+const applicationStepFieldCounts: Record<WizardStep, number> = {
+  1: 1,
+  2: 5,
+  3: 4,
+};
+
 export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
   const defaultEventSlug = initialSlug || events[0]?.slug || "";
   const defaultSelectedEvent =
@@ -126,6 +139,8 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
   } = useInvisibleRecaptcha();
   const cityInputRef = useRef<HTMLInputElement | null>(null);
   const cityAutocompleteRef = useRef<any>(null);
+  const trackedStepViewRef = useRef<WizardStep | null>(null);
+  const hasTrackedJourneyStartRef = useRef(false);
 
   const monthKeys = useMemo(
     () =>
@@ -153,6 +168,129 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
 
   const selectedEvent =
     events.find((item) => item.slug === form.eventSlug) || null;
+  const currentStepName = applicationJourneyStepLabels[currentStep];
+
+  function buildAnalyticsParams(
+    overrides: Record<string, string | number | boolean | undefined> = {},
+  ) {
+    return {
+      form_id: "dj_application_form",
+      form_type: "multi_step",
+      journey_name: "dj_application",
+      page_location: "/prenota",
+      total_steps: 3,
+      current_step: currentStep,
+      current_step_name: currentStepName,
+      step_number: currentStep,
+      step_name: currentStepName,
+      step_field_count: applicationStepFieldCounts[currentStep],
+      selected_month: selectedMonthKey,
+      selected_date: selectedDate || undefined,
+      available_events_count: events.length,
+      available_events_in_month_count: calendarEvents.length,
+      available_events_in_date_count: selectedDateEvents.length,
+      event_slug: selectedEvent?.slug,
+      event_title: selectedEvent?.title,
+      event_date: selectedEvent?.date,
+      event_location: selectedEvent?.locationName,
+      event_status: selectedEvent?.status,
+      event_applications_open: selectedEvent?.applicationsOpen,
+      has_selected_event: Boolean(selectedEvent),
+      has_name: Boolean(form.name.trim()),
+      has_city: Boolean(form.city.trim()),
+      has_province: Boolean(form.province.trim()),
+      has_region: Boolean(form.region.trim()),
+      has_instagram: Boolean(form.instagram.trim()),
+      has_email: Boolean(form.email.trim()),
+      has_phone: Boolean(form.phone.trim()),
+      has_set_link: Boolean(form.setLink.trim()),
+      has_bio: Boolean(form.bio.trim()),
+      has_privacy_acceptance: form.privacyAccepted,
+      has_photo_file: Boolean(photoFile),
+      city_input_method: isGoogleAutocompleteReady
+        ? "google_places"
+        : "local_autocomplete",
+      city_query_length: cityQuery.trim().length,
+      field_error_count: Object.keys(fieldErrors).length,
+      submission_stage: submissionStage,
+      is_recaptcha_ready: isRecaptchaReady,
+      ...overrides,
+    };
+  }
+
+  useEffect(() => {
+    if (!events.length) {
+      return;
+    }
+
+    if (!hasTrackedJourneyStartRef.current) {
+      trackAnalyticsEvent("application_form_started", buildAnalyticsParams());
+      hasTrackedJourneyStartRef.current = true;
+    }
+  }, [
+    calendarEvents.length,
+    cityQuery,
+    currentStep,
+    currentStepName,
+    events.length,
+    fieldErrors,
+    form.bio,
+    form.city,
+    form.email,
+    form.instagram,
+    form.name,
+    form.phone,
+    form.privacyAccepted,
+    form.province,
+    form.region,
+    form.setLink,
+    isGoogleAutocompleteReady,
+    isRecaptchaReady,
+    photoFile,
+    selectedDate,
+    selectedEvent,
+    selectedDateEvents.length,
+    selectedMonthKey,
+    submissionStage,
+  ]);
+
+  useEffect(() => {
+    if (!events.length) {
+      return;
+    }
+
+    if (trackedStepViewRef.current === currentStep) {
+      return;
+    }
+
+    trackAnalyticsEvent("application_form_step_viewed", buildAnalyticsParams());
+    trackedStepViewRef.current = currentStep;
+  }, [
+    calendarEvents.length,
+    cityQuery,
+    currentStep,
+    currentStepName,
+    events.length,
+    fieldErrors,
+    form.bio,
+    form.city,
+    form.email,
+    form.instagram,
+    form.name,
+    form.phone,
+    form.privacyAccepted,
+    form.province,
+    form.region,
+    form.setLink,
+    isGoogleAutocompleteReady,
+    isRecaptchaReady,
+    photoFile,
+    selectedDate,
+    selectedEvent,
+    selectedDateEvents.length,
+    selectedMonthKey,
+    submissionStage,
+  ]);
 
   useEffect(() => {
     if (!selectedDate && events[0]) {
@@ -424,6 +562,10 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
       const currentEvent = events.find((item) => item.slug === form.eventSlug);
 
       if (!currentEvent) {
+        trackAnalyticsEvent("application_form_validation_error", buildAnalyticsParams({
+          validation_scope: "submit",
+          validation_field: "event_slug",
+        }));
         throw new Error("Seleziona un evento valido.");
       }
 
@@ -435,6 +577,10 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
           setFieldErrors({
             city: "Seleziona una citta valida dall'autocomplete.",
           });
+          trackAnalyticsEvent("application_form_validation_error", buildAnalyticsParams({
+            validation_scope: "submit",
+            validation_field: "city",
+          }));
           throw new Error("Controlla i campi evidenziati.");
         }
       }
@@ -453,8 +599,17 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
 
       if (!validation.valid) {
         setFieldErrors(validation.fieldErrors || {});
+        trackAnalyticsEvent("application_form_validation_error", buildAnalyticsParams({
+          validation_scope: "submit",
+          validation_fields: Object.keys(validation.fieldErrors || {}).join(","),
+          validation_error_count: Object.keys(validation.fieldErrors || {}).length,
+        }));
         throw new Error(validation.message);
       }
+
+      trackAnalyticsEvent("application_form_submit_attempted", buildAnalyticsParams({
+        submit_origin_step: currentStep,
+      }));
 
       const recaptchaToken = await executeRecaptcha();
       setSubmissionStage("upload");
@@ -492,9 +647,22 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
         throw new Error(result?.error || "Invio non riuscito.");
       }
 
+      trackAnalyticsEvent("application_form_step_completed", buildAnalyticsParams({
+        completed_step_number: 3,
+        completed_step_name: applicationJourneyStepLabels[3],
+      }));
+      trackAnalyticsEvent("generate_lead", buildAnalyticsParams({
+        lead_type: "dj_application",
+      }));
+
       resetApplicationForm(currentEvent.slug);
       setStatus({ type: "ok", message: "Candidatura inviata correttamente." });
     } catch (error) {
+      trackAnalyticsEvent("application_form_submit_failed", buildAnalyticsParams({
+        submission_stage: submissionStage,
+        error_message:
+          error instanceof Error ? error.message.slice(0, 100) : "unknown_error",
+      }));
       setStatus({
         type: "error",
         message:
@@ -547,6 +715,19 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
       ...current,
       [key]: value,
     }));
+
+    if (key === "eventSlug") {
+      const nextEvent = events.find((item) => item.slug === value);
+
+      trackAnalyticsEvent("application_event_selected", buildAnalyticsParams({
+        event_slug: nextEvent?.slug,
+        event_title: nextEvent?.title,
+        event_date: nextEvent?.date,
+        event_location: nextEvent?.locationName,
+        event_status: nextEvent?.status,
+        event_applications_open: nextEvent?.applicationsOpen,
+      }));
+    }
   }
 
   function restartApplicationFlow() {
@@ -563,11 +744,21 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
     }
 
     setSelectedMonthKey(nextMonth);
+    trackAnalyticsEvent("application_calendar_month_changed", buildAnalyticsParams({
+      month: nextMonth,
+      direction: direction === 1 ? "next" : "previous",
+    }));
   }
 
   function handleSelectDate(date: string) {
     setSelectedDate(date);
     const dayEvents = events.filter((event) => event.date === date);
+
+    trackAnalyticsEvent("application_date_selected", buildAnalyticsParams({
+      selected_date: date,
+      available_events_count: dayEvents.length,
+      available_events_in_selected_date_count: dayEvents.length,
+    }));
 
     if (dayEvents.length) {
       setForm((current) => ({
@@ -581,6 +772,11 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
 
   function goToStep(step: WizardStep) {
     setCurrentStep(step);
+    trackAnalyticsEvent("application_form_step_navigated", buildAnalyticsParams({
+      destination_step_number: step,
+      destination_step_name: applicationJourneyStepLabels[step],
+      navigation_direction: step > currentStep ? "forward" : "backward",
+    }));
   }
 
   function handleNextStep() {
@@ -593,9 +789,17 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
           type: "error",
           message: "Seleziona prima un evento dal calendario.",
         });
+        trackAnalyticsEvent("application_form_validation_error", buildAnalyticsParams({
+          validation_scope: "step_1",
+          validation_field: "event_slug",
+        }));
         return;
       }
       setStatus({ type: "idle", message: "" });
+      trackAnalyticsEvent("application_form_step_completed", buildAnalyticsParams({
+        completed_step_number: 1,
+        completed_step_name: applicationJourneyStepLabels[1],
+      }));
       setCurrentStep(2);
       return;
     }
@@ -615,10 +819,19 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
           type: "error",
           message: validation.message,
         });
+        trackAnalyticsEvent("application_form_validation_error", buildAnalyticsParams({
+          validation_scope: "step_2",
+          validation_fields: Object.keys(validation.fieldErrors || {}).join(","),
+          validation_error_count: Object.keys(validation.fieldErrors || {}).length,
+        }));
         return;
       }
 
       setStatus({ type: "idle", message: "" });
+      trackAnalyticsEvent("application_form_step_completed", buildAnalyticsParams({
+        completed_step_number: 2,
+        completed_step_name: applicationJourneyStepLabels[2],
+      }));
       setCurrentStep(3);
     }
   }
@@ -746,6 +959,10 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
                       return next;
                     });
                     setPhotoFile(file);
+                    trackAnalyticsEvent("application_photo_selected", buildAnalyticsParams({
+                      has_file: Boolean(file),
+                      file_extension: file?.name.split(".").pop()?.toLowerCase(),
+                    }));
                   }}
                 />
               ) : null}
