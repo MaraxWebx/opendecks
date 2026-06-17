@@ -23,15 +23,11 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
+  const normalizedPayload = normalizeApplicationPayload(body);
+  const validationError = validateApplicationPayload(normalizedPayload);
 
-  const requiredFields = ["eventId", "eventTitle", "name", "city", "email", "phone", "photoUrl", "instagram", "setLink"];
-  const missingField = requiredFields.find((field) => !body?.[field]);
-
-  if (missingField) {
-    return NextResponse.json(
-      { error: `Campo obbligatorio mancante: ${missingField}` },
-      { status: 400 }
-    );
+  if (validationError) {
+    return NextResponse.json({ error: validationError }, { status: 400 });
   }
 
   if (!body?.privacyAccepted) {
@@ -50,10 +46,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const normalizedEmail = String(body.email).trim().toLowerCase();
   const [applications, events] = await Promise.all([getApplications(), getEvents()]);
   const existingApplication = applications.find(
-    (application) => application.email.trim().toLowerCase() === normalizedEmail
+    (application) => application.email.trim().toLowerCase() === normalizedPayload.email
   );
 
   if (existingApplication) {
@@ -63,21 +58,35 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const relatedEvent = events.find((event) => event.id === body.eventId);
+  const relatedEvent = events.find((event) => event.id === normalizedPayload.eventId);
+
+  if (!relatedEvent) {
+    return NextResponse.json(
+      { error: "Evento non valido o non piu disponibile." },
+      { status: 400 }
+    );
+  }
+
+  if (!relatedEvent.applicationsOpen) {
+    return NextResponse.json(
+      { error: "Le candidature per questo evento sono chiuse." },
+      { status: 400 }
+    );
+  }
 
   const application = await createApplication({
-    eventId: body.eventId,
-    eventTitle: body.eventTitle,
-    name: String(body.name).trim(),
-    city: String(body.city).trim(),
-    province: String(body.province || "").trim(),
-    region: String(body.region || "").trim(),
-    email: normalizedEmail,
-    phone: String(body.phone).trim(),
-    photoUrl: String(body.photoUrl).trim(),
-    instagram: String(body.instagram).trim(),
-    setLink: String(body.setLink).trim(),
-    bio: String(body.bio || "").trim(),
+    eventId: normalizedPayload.eventId,
+    eventTitle: relatedEvent.title,
+    name: normalizedPayload.name,
+    city: normalizedPayload.city,
+    province: normalizedPayload.province,
+    region: normalizedPayload.region,
+    email: normalizedPayload.email,
+    phone: normalizedPayload.phone,
+    photoUrl: normalizedPayload.photoUrl,
+    instagram: normalizedPayload.instagram,
+    setLink: normalizedPayload.setLink,
+    bio: normalizedPayload.bio,
     ...buildPrivacyConsentRecord()
   });
 
@@ -122,4 +131,93 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json({ application }, { status: 201 });
+}
+
+type NormalizedApplicationPayload = {
+  eventId: string;
+  eventTitle: string;
+  name: string;
+  city: string;
+  province: string;
+  region: string;
+  email: string;
+  phone: string;
+  photoUrl: string;
+  instagram: string;
+  setLink: string;
+  bio: string;
+};
+
+function normalizeApplicationPayload(body: unknown): NormalizedApplicationPayload {
+  const input = (body && typeof body === "object" ? body : {}) as Record<string, unknown>;
+
+  return {
+    eventId: normalizeString(input.eventId),
+    eventTitle: normalizeString(input.eventTitle),
+    name: normalizeString(input.name),
+    city: normalizeString(input.city),
+    province: normalizeString(input.province),
+    region: normalizeString(input.region),
+    email: normalizeString(input.email).toLowerCase(),
+    phone: normalizeString(input.phone),
+    photoUrl: normalizeString(input.photoUrl),
+    instagram: normalizeString(input.instagram),
+    setLink: normalizeString(input.setLink),
+    bio: normalizeString(input.bio),
+  };
+}
+
+function validateApplicationPayload(input: NormalizedApplicationPayload) {
+  const requiredFields: Array<[keyof NormalizedApplicationPayload, string]> = [
+    ["eventId", "evento"],
+    ["eventTitle", "titolo evento"],
+    ["name", "nome"],
+    ["city", "citta"],
+    ["email", "email"],
+    ["phone", "telefono"],
+    ["photoUrl", "foto"],
+    ["instagram", "link Instagram"],
+    ["setLink", "link set"],
+  ];
+
+  for (const [field, label] of requiredFields) {
+    if (!input[field]) {
+      return `Campo obbligatorio mancante: ${label}`;
+    }
+  }
+
+  if (!isValidEmail(input.email)) {
+    return "Inserisci un indirizzo email valido.";
+  }
+
+  if (!isValidHttpUrl(input.instagram)) {
+    return "Inserisci un link Instagram valido.";
+  }
+
+  if (!isValidHttpUrl(input.setLink)) {
+    return "Inserisci un link set valido.";
+  }
+
+  if (!isValidHttpUrl(input.photoUrl)) {
+    return "La foto caricata non ha un URL valido.";
+  }
+
+  return "";
+}
+
+function normalizeString(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function isValidEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function isValidHttpUrl(value: string) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
 }

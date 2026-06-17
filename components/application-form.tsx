@@ -35,6 +35,23 @@ type FormState = {
   privacyAccepted: boolean;
 };
 
+type ValidationResult = {
+  valid: boolean;
+  message: string;
+  fieldErrors?: Partial<Record<FormFieldKey, string>>;
+};
+
+type FormFieldKey =
+  | "eventSlug"
+  | "name"
+  | "city"
+  | "instagram"
+  | "email"
+  | "phone"
+  | "setLink"
+  | "photo"
+  | "privacyAccepted";
+
 type MunicipalityOption = CityAutocompleteOption;
 type SubmissionStage = "idle" | "security" | "upload" | "saving";
 type WizardStep = 1 | 2 | 3;
@@ -99,6 +116,9 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [submissionStage, setSubmissionStage] =
     useState<SubmissionStage>("idle");
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<FormFieldKey, string>>
+  >({});
   const {
     recaptchaContainerRef,
     executeRecaptcha,
@@ -202,6 +222,7 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
     setCityMenuOpen(false);
     setPhotoFile(null);
     setPhotoInputKey((current) => current + 1);
+    setFieldErrors({});
   }
 
   function applyMunicipalitySelection(municipality: MunicipalityOption | null) {
@@ -397,6 +418,7 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
     setSubmitting(true);
     setSubmissionStage("security");
     setStatus({ type: "idle", message: "" });
+    setFieldErrors({});
 
     try {
       const currentEvent = events.find((item) => item.slug === form.eventSlug);
@@ -410,8 +432,28 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
           await resolveMunicipalityFromQuery(cityQuery);
 
         if (!resolvedMunicipality) {
-          throw new Error("Seleziona una citta valida dall'autocomplete.");
+          setFieldErrors({
+            city: "Seleziona una citta valida dall'autocomplete.",
+          });
+          throw new Error("Controlla i campi evidenziati.");
         }
+      }
+
+      const validation = validateApplicationForm({
+        ...form,
+        photoUrl: photoFile ? "selected" : "",
+        city: form.city.trim(),
+        province: form.province.trim(),
+        region: form.region.trim(),
+        email: form.email.trim(),
+        instagram: form.instagram.trim(),
+        phone: form.phone.trim(),
+        setLink: form.setLink.trim(),
+      });
+
+      if (!validation.valid) {
+        setFieldErrors(validation.fieldErrors || {});
+        throw new Error(validation.message);
       }
 
       const recaptchaToken = await executeRecaptcha();
@@ -453,7 +495,6 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
       resetApplicationForm(currentEvent.slug);
       setStatus({ type: "ok", message: "Candidatura inviata correttamente." });
     } catch (error) {
-      resetApplicationForm(form.eventSlug || defaultEventSlug);
       setStatus({
         type: "error",
         message:
@@ -485,6 +526,23 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
     key: Key,
     value: FormState[Key],
   ) {
+    setStatus((current) =>
+      current.type === "error" ? { type: "idle", message: "" } : current,
+    );
+    setFieldErrors((current) => {
+      const next = { ...current };
+
+      if (key === "eventSlug") delete next.eventSlug;
+      if (key === "name") delete next.name;
+      if (key === "instagram") delete next.instagram;
+      if (key === "email") delete next.email;
+      if (key === "phone") delete next.phone;
+      if (key === "setLink") delete next.setLink;
+      if (key === "privacyAccepted") delete next.privacyAccepted;
+
+      return next;
+    });
+
     setForm((current) => ({
       ...current,
       [key]: value,
@@ -528,6 +586,9 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
   function handleNextStep() {
     if (currentStep === 1) {
       if (!form.eventSlug) {
+        setFieldErrors({
+          eventSlug: "Seleziona prima un evento dal calendario.",
+        });
         setStatus({
           type: "error",
           message: "Seleziona prima un evento dal calendario.",
@@ -540,16 +601,19 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
     }
 
     if (currentStep === 2) {
-      if (
-        !form.name.trim() ||
-        !cityQuery.trim() ||
-        !form.instagram.trim() ||
-        !form.email.trim() ||
-        !form.phone.trim()
-      ) {
+      const validation = validateStepTwoForm({
+        name: form.name,
+        city: cityQuery,
+        instagram: form.instagram,
+        email: form.email,
+        phone: form.phone,
+      });
+
+      if (!validation.valid) {
+        setFieldErrors(validation.fieldErrors || {});
         setStatus({
           type: "error",
-          message: "Completa i dati principali prima di continuare.",
+          message: validation.message,
         });
         return;
       }
@@ -563,45 +627,6 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
     <div className="rounded-xl border border-[#E31F29]/18 bg-white/[0.03] p-4 md:p-6">
       {!events.length ? (
         <EmptyApplicationsState />
-      ) : status.type === "error" && currentStep === 1 ? (
-        <div className="relative">
-          <WizardShell
-            currentStep={currentStep}
-            selectedEvent={selectedEvent}
-            form={form}
-          >
-            <InlineError message={status.message} />
-            <StepOneCalendar
-              selectedMonthKey={selectedMonthKey}
-              monthKeys={monthKeys}
-              calendarDays={calendarDays}
-              selectedDate={selectedDate}
-              selectedDateEvents={selectedDateEvents}
-              selectedEventSlug={form.eventSlug}
-              onSelectMonth={handleSelectMonth}
-              onSelectDate={handleSelectDate}
-              onSelectEvent={(slug) => updateField("eventSlug", slug)}
-            />
-            <WizardActions
-              currentStep={currentStep}
-              canGoBack={false}
-              onBack={() => null}
-              onNext={handleNextStep}
-              submitting={submitting}
-              submissionStage={submissionStage}
-            />
-          </WizardShell>
-        </div>
-      ) : status.type === "error" ? (
-        <FeedbackState
-          type="error"
-          title={applicationFormCopy.errorTitle}
-          eyebrow={applicationFormCopy.errorEyebrow}
-          description={status.message}
-          retryCta={applicationFormCopy.retryCta}
-          supportCta={applicationFormCopy.supportCta}
-          onRetry={restartApplicationFlow}
-        />
       ) : status.type === "ok" ? (
         <FeedbackState
           type="ok"
@@ -627,6 +652,10 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
               selectedEvent={selectedEvent}
               form={form}
             >
+              {status.type === "error" && !hasFieldErrors(fieldErrors) ? (
+                <InlineError message={status.message} />
+              ) : null}
+
               {currentStep === 1 ? (
                 <StepOneCalendar
                   selectedMonthKey={selectedMonthKey}
@@ -635,6 +664,7 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
                   selectedDate={selectedDate}
                   selectedDateEvents={selectedDateEvents}
                   selectedEventSlug={form.eventSlug}
+                  eventError={fieldErrors.eventSlug}
                   onSelectMonth={handleSelectMonth}
                   onSelectDate={handleSelectDate}
                   onSelectEvent={(slug) => updateField("eventSlug", slug)}
@@ -648,6 +678,7 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
                   cityOptions={cityOptions}
                   cityQuery={cityQuery}
                   fieldClass={fieldClass}
+                  fieldErrors={fieldErrors}
                   form={form}
                   isGoogleAutocompleteReady={isGoogleAutocompleteReady}
                   onApplyMunicipalitySelection={applyMunicipalitySelection}
@@ -662,6 +693,16 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
                     }, 120);
                   }}
                   onCityChange={(value) => {
+                    setStatus((current) =>
+                      current.type === "error"
+                        ? { type: "idle", message: "" }
+                        : current,
+                    );
+                    setFieldErrors((current) => {
+                      const next = { ...current };
+                      delete next.city;
+                      return next;
+                    });
                     setCityQuery(value);
                     setForm((current) => ({
                       ...current,
@@ -687,12 +728,25 @@ export function ApplicationForm({ events, initialSlug }: ApplicationFormProps) {
               {currentStep === 3 ? (
                 <StepThreeAssets
                   fieldClass={fieldClass}
+                  fieldErrors={fieldErrors}
                   form={form}
                   photoFile={photoFile}
                   photoInputKey={photoInputKey}
                   selectedEvent={selectedEvent}
                   onUpdateField={updateField}
-                  onSelectPhoto={(file) => setPhotoFile(file)}
+                  onSelectPhoto={(file) => {
+                    setStatus((current) =>
+                      current.type === "error"
+                        ? { type: "idle", message: "" }
+                        : current,
+                    );
+                    setFieldErrors((current) => {
+                      const next = { ...current };
+                      delete next.photo;
+                      return next;
+                    });
+                    setPhotoFile(file);
+                  }}
                 />
               ) : null}
 
@@ -906,6 +960,7 @@ function StepOneCalendar({
   selectedDate,
   selectedDateEvents,
   selectedEventSlug,
+  eventError,
   onSelectMonth,
   onSelectDate,
   onSelectEvent,
@@ -916,6 +971,7 @@ function StepOneCalendar({
   selectedDate: string;
   selectedDateEvents: EventRecord[];
   selectedEventSlug: string;
+  eventError?: string;
   onSelectMonth: (direction: -1 | 1) => void;
   onSelectDate: (date: string) => void;
   onSelectEvent: (slug: string) => void;
@@ -1073,6 +1129,7 @@ function StepOneCalendar({
             );
           })}
         </div>
+        <FieldError message={eventError} />
       </div>
     </div>
   );
@@ -1084,6 +1141,7 @@ function StepTwoProfile({
   cityOptions,
   cityQuery,
   fieldClass,
+  fieldErrors,
   form,
   isGoogleAutocompleteReady,
   onApplyMunicipalitySelection,
@@ -1097,6 +1155,7 @@ function StepTwoProfile({
   cityOptions: MunicipalityOption[];
   cityQuery: string;
   fieldClass: string;
+  fieldErrors: Partial<Record<FormFieldKey, string>>;
   form: FormState;
   isGoogleAutocompleteReady: boolean;
   onApplyMunicipalitySelection: (municipality: MunicipalityOption) => void;
@@ -1129,11 +1188,12 @@ function StepTwoProfile({
           </label>
           <input
             id="name"
-            className={fieldClass}
+            className={getFieldClass(fieldClass, fieldErrors.name)}
             value={form.name}
             onChange={(event) => onUpdateField("name", event.target.value)}
             required
           />
+          <FieldError message={fieldErrors.name} />
         </div>
 
         <div className="grid gap-2">
@@ -1144,7 +1204,7 @@ function StepTwoProfile({
             <input
               id="city"
               ref={cityInputRef}
-              className={fieldClass}
+              className={getFieldClass(fieldClass, fieldErrors.city)}
               value={cityQuery}
               onChange={(event) => onCityChange(event.target.value)}
               onFocus={onCityFocus}
@@ -1179,6 +1239,7 @@ function StepTwoProfile({
               Suggerimenti citta attivi da tastiera.
             </span>
           ) : null}
+          <FieldError message={fieldErrors.city} />
         </div>
 
         <div className="grid gap-2">
@@ -1188,12 +1249,13 @@ function StepTwoProfile({
           <input
             id="instagram"
             type="url"
-            className={fieldClass}
+            className={getFieldClass(fieldClass, fieldErrors.instagram)}
             value={form.instagram}
             onChange={(event) => onUpdateField("instagram", event.target.value)}
             placeholder="https://instagram.com/..."
             required
           />
+          <FieldError message={fieldErrors.instagram} />
         </div>
 
         <div className="grid gap-2">
@@ -1203,12 +1265,13 @@ function StepTwoProfile({
           <input
             id="email"
             type="email"
-            className={fieldClass}
+            className={getFieldClass(fieldClass, fieldErrors.email)}
             value={form.email}
             onChange={(event) => onUpdateField("email", event.target.value)}
             placeholder="nome@email.com"
             required
           />
+          <FieldError message={fieldErrors.email} />
         </div>
 
         <div className="grid gap-2 md:col-span-2">
@@ -1218,12 +1281,13 @@ function StepTwoProfile({
           <input
             id="phone"
             type="tel"
-            className={fieldClass}
+            className={getFieldClass(fieldClass, fieldErrors.phone)}
             value={form.phone}
             onChange={(event) => onUpdateField("phone", event.target.value)}
             placeholder="+39 ..."
             required
           />
+          <FieldError message={fieldErrors.phone} />
         </div>
       </div>
     </div>
@@ -1232,6 +1296,7 @@ function StepTwoProfile({
 
 function StepThreeAssets({
   fieldClass,
+  fieldErrors,
   form,
   photoFile,
   photoInputKey,
@@ -1240,6 +1305,7 @@ function StepThreeAssets({
   onSelectPhoto,
 }: {
   fieldClass: string;
+  fieldErrors: Partial<Record<FormFieldKey, string>>;
   form: FormState;
   photoFile: File | null;
   photoInputKey: number;
@@ -1274,7 +1340,7 @@ function StepThreeAssets({
             id="photo"
             type="file"
             accept="image/png,image/jpeg,image/webp,image/avif"
-            className={fieldClass}
+            className={getFieldClass(fieldClass, fieldErrors.photo)}
             onChange={(event) => onSelectPhoto(event.target.files?.[0] || null)}
             required
           />
@@ -1287,6 +1353,7 @@ function StepThreeAssets({
               File selezionato: {photoFile.name}
             </span>
           ) : null}
+          <FieldError message={fieldErrors.photo} />
         </div>
 
         <div className="grid gap-2">
@@ -1296,7 +1363,7 @@ function StepThreeAssets({
           <input
             id="setLink"
             type="url"
-            className={fieldClass}
+            className={getFieldClass(fieldClass, fieldErrors.setLink)}
             value={form.setLink}
             onChange={(event) => onUpdateField("setLink", event.target.value)}
             placeholder="https://..."
@@ -1306,6 +1373,7 @@ function StepThreeAssets({
             Inserisci un link al set tramite SoundCloud, Mixcloud, Drive,
             Dropbox o WeTransfer temporaneo se necessario.
           </span>
+          <FieldError message={fieldErrors.setLink} />
         </div>
 
         <div className="grid gap-2 md:col-span-2">
@@ -1336,7 +1404,13 @@ function StepThreeAssets({
           </p>
         </div>
 
-        <label className="flex items-start gap-3 rounded-lg border border-[#E31F29]/16 bg-white/[0.02] px-4 py-3 text-sm leading-6 text-white/72">
+        <label
+          className={`flex items-start gap-3 rounded-lg px-4 py-3 text-sm leading-6 ${
+            fieldErrors.privacyAccepted
+              ? "border border-red-400/55 bg-red-500/10 text-red-100"
+              : "border border-[#E31F29]/16 bg-white/[0.02] text-white/72"
+          }`}
+        >
           <input
             type="checkbox"
             checked={form.privacyAccepted}
@@ -1358,6 +1432,7 @@ function StepThreeAssets({
             .
           </span>
         </label>
+        <FieldError message={fieldErrors.privacyAccepted} />
 
         <span className="text-sm text-white/60">
           {applicationFormCopy.requiredFields}
@@ -1425,6 +1500,14 @@ function InlineError({ message }: { message: string }) {
       {message}
     </div>
   );
+}
+
+function FieldError({ message }: { message?: string }) {
+  if (!message) {
+    return null;
+  }
+
+  return <p className="text-sm text-red-300">{message}</p>;
 }
 
 function BrandLogo() {
@@ -1523,4 +1606,141 @@ function ArrowRightIcon() {
       />
     </svg>
   );
+}
+
+function validateStepTwoForm(input: {
+  name: string;
+  city: string;
+  instagram: string;
+  email: string;
+  phone: string;
+}): ValidationResult {
+  if (!input.name.trim()) {
+    return {
+      valid: false,
+      message: "Controlla i campi evidenziati.",
+      fieldErrors: { name: "Campo obbligatorio." },
+    };
+  }
+
+  if (!input.city.trim()) {
+    return {
+      valid: false,
+      message: "Controlla i campi evidenziati.",
+      fieldErrors: { city: "Campo obbligatorio." },
+    };
+  }
+
+  if (!input.instagram.trim()) {
+    return {
+      valid: false,
+      message: "Controlla i campi evidenziati.",
+      fieldErrors: { instagram: "Campo obbligatorio." },
+    };
+  }
+
+  if (!isValidHttpUrl(input.instagram.trim())) {
+    return {
+      valid: false,
+      message: "Controlla i campi evidenziati.",
+      fieldErrors: { instagram: "Inserisci un link valido." },
+    };
+  }
+
+  if (!input.email.trim()) {
+    return {
+      valid: false,
+      message: "Controlla i campi evidenziati.",
+      fieldErrors: { email: "Campo obbligatorio." },
+    };
+  }
+
+  if (!isValidEmail(input.email.trim())) {
+    return {
+      valid: false,
+      message: "Controlla i campi evidenziati.",
+      fieldErrors: { email: "Inserisci un'email valida." },
+    };
+  }
+
+  if (!input.phone.trim()) {
+    return {
+      valid: false,
+      message: "Controlla i campi evidenziati.",
+      fieldErrors: { phone: "Campo obbligatorio." },
+    };
+  }
+
+  return { valid: true, message: "" };
+}
+
+function validateApplicationForm(input: FormState): ValidationResult {
+  const stepTwoValidation = validateStepTwoForm({
+    name: input.name,
+    city: input.city,
+    instagram: input.instagram,
+    email: input.email,
+    phone: input.phone,
+  });
+
+  if (!stepTwoValidation.valid) {
+    return stepTwoValidation;
+  }
+
+  if (!input.photoUrl.trim()) {
+    return {
+      valid: false,
+      message: "Controlla i campi evidenziati.",
+      fieldErrors: { photo: "Campo obbligatorio." },
+    };
+  }
+
+  if (!input.setLink.trim()) {
+    return {
+      valid: false,
+      message: "Controlla i campi evidenziati.",
+      fieldErrors: { setLink: "Campo obbligatorio." },
+    };
+  }
+
+  if (!isValidHttpUrl(input.setLink.trim())) {
+    return {
+      valid: false,
+      message: "Controlla i campi evidenziati.",
+      fieldErrors: { setLink: "Inserisci un link valido." },
+    };
+  }
+
+  if (!input.privacyAccepted) {
+    return {
+      valid: false,
+      message: "Controlla i campi evidenziati.",
+      fieldErrors: { privacyAccepted: "Devi accettare la Privacy Policy." },
+    };
+  }
+
+  return { valid: true, message: "" };
+}
+
+function getFieldClass(baseClass: string, hasError?: string) {
+  return hasError
+    ? `${baseClass} border-red-400 bg-red-500/10 focus:border-red-300`
+    : baseClass;
+}
+
+function hasFieldErrors(errors: Partial<Record<FormFieldKey, string>>) {
+  return Object.values(errors).some(Boolean);
+}
+
+function isValidEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function isValidHttpUrl(value: string) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
 }
