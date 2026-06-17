@@ -20,7 +20,13 @@ export default async function BookingPage({ searchParams }: BookingPageProps) {
     searchParams,
     getEvents(),
   ]);
-  const openEvents = events.filter((item) => item.applicationsOpen);
+  const openEvents = events
+    .filter((item) => item.applicationsOpen)
+    .sort(
+      (a, b) =>
+        new Date(`${a.date}T${normalizeTime(a.time)}`).getTime() -
+        new Date(`${b.date}T${normalizeTime(b.time)}`).getTime(),
+    );
 
   return (
     <div className="mx-auto w-full max-w-[1240px] px-4 md:px-6">
@@ -41,4 +47,8 @@ export default async function BookingPage({ searchParams }: BookingPageProps) {
       </section>
     </div>
   );
+}
+
+function normalizeTime(time: string) {
+  return /^\d{2}:\d{2}$/.test(time) ? `${time}:00` : "23:59:59";
 }
